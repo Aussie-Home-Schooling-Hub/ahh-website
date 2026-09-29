@@ -142,5 +142,16 @@
     &copy; Aussie Homeschooling Hub. Built in Australia, for Australian home educating families.
   </div>
 </footer>
+
+<script>
+(function() {
+  var id = location.hash ? location.hash.slice(1) : null;
+  if (!id) return;
+  var el = document.getElementById(id);
+  if (!el) return;
+  el.classList.add('anchor-highlight');
+  el.addEventListener('animationend', function() { el.classList.remove('anchor-highlight'); }, { once: true });
+})();
+</script>
 </body>
 </html>
