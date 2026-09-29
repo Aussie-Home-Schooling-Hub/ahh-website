@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shop — Aussie Homeschooling Hub</title>
+<link rel="stylesheet" href="styles.css">
+<script type="text/javascript" src="https://payhip.com/payhip.js"></script>
+
+</head>
+<body>
+<header class="site-header">
+  <div class="nav-inner">
+    <a href="index.html" class="brand">
+      <svg class="brand-mark" viewBox="0 0 40 40" fill="none">
+  <path d="M6 36 Q14 24 20 18 Q26 12 32 6" stroke="#7A8B4A" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <circle cx="30" cy="8" r="4.5" fill="#C9A24B"/><circle cx="25" cy="11" r="3.5" fill="#8F6F2E"/>
+  <circle cx="33" cy="13" r="3" fill="#8F6F2E"/><circle cx="27" cy="6" r="3" fill="#C9A24B"/>
+</svg>
+      <span class="brand-name">Aussie Homeschooling Hub</span>
+    </a>
+    <nav class="nav-links" id="nav-links">
+      <a href="index.html" class="">Home</a>
+      <a href="about.html" class="">About Me</a>
+      <a href="shop.html" class="current">Shop</a>
+      <a href="contact.html" class="">Contact</a>
+      <a href="https://payhip.com/AussieHomeschoolingHub" class="nav-cta" target="_blank" rel="noopener">Visit the Shop</a>
+    </nav>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="nav-links">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#3E2717" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+  </div>
+</header>
+<script>
+(function() {
+  var btn = document.getElementById('nav-toggle');
+  var nav = document.getElementById('nav-links');
+  if (!btn || !nav) return;
+  btn.addEventListener('click', function() {
+    var open = nav.classList.toggle('mobile-open');
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+})();
+</script>
+
+<section style="padding-top:56px; padding-bottom:48px;">
+  <div class="wrap">
+    <h1 style="font-size:38px; max-width:600px;">What I've built</h1>
+    <p style="font-size:17px; color:var(--walnut); max-width:560px; margin-top:14px;">Every tool here was built to solve a real problem I ran into myself &mdash; not the other way around.</p>
+  </div>
+</section>
+
+<section style="padding-top:0;">
+  <div class="wrap">
+    <!-- Flagship: Wattlewood -->
+    <div class="shop-flagship" style="background:var(--paper); border:1.5px solid var(--brass); border-radius:20px; padding:44px; display:grid; grid-template-columns:1fr auto; gap:36px; align-items:center; margin-bottom:56px;">
+      <div>
+        <div style="font-size:13px; font-weight:700; color:var(--brass-dark); margin-bottom:10px;">The full app</div>
+        <h2 style="font-size:30px; margin-bottom:14px;">Wattlewood</h2>
+        <p style="font-size:16px; color:var(--walnut); line-height:1.65; max-width:520px; margin-bottom:22px;">
+          A complete offline home education app. Maths, English, Science and Geography, three difficulty levels on every task, six themes your child can choose from, and a real evidence report built in as they go &mdash; not assembled afterward under pressure.
+        </p>
+        <div style="display:flex; gap:14px; align-items:center; flex-wrap:wrap;">
+          <a href="https://payhip.com/b/BmOoR" class="payhip-buy-button" data-theme="none" data-product="BmOoR">Get Wattlewood &mdash; $195</a>
+          <a href="https://payhip.com/b/MCdvQ" class="payhip-buy-button" data-theme="none" data-product="MCdvQ" style="background:transparent; color:var(--walnut-dark) !important; border:1.5px solid var(--brass);">Try the free preview first</a>
+        </div>
+      </div>
+      <svg width="150" height="160" viewBox="0 0 150 160" fill="none" style="justify-self:center;">
+        <path d="M20 150 Q55 100 80 70 Q105 40 135 12" stroke="#7A8B4A" stroke-width="5" fill="none" stroke-linecap="round" opacity="0.9"/>
+        <ellipse cx="55" cy="105" rx="16" ry="6" fill="#586339" transform="rotate(-35 55 105)"/>
+        <ellipse cx="75" cy="80" rx="15" ry="6" fill="#7A8B4A" transform="rotate(-42 75 80)"/>
+        <g><circle cx="135" cy="12" r="13" fill="#C9A24B"/><circle cx="115" cy="20" r="10" fill="#8F6F2E"/>
+           <circle cx="146" cy="28" r="9" fill="#8F6F2E"/></g>
+      </svg>
+    </div>
+
+    <!-- Secondary grid -->
+    <div class="shop-grid" style="display:grid; grid-template-columns:repeat(3, 1fr); gap:24px;">
+
+      <div style="background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:28px; display:flex; flex-direction:column;">
+        <h3 style="font-size:19px; margin-bottom:10px;">28 Days</h3>
+        <p style="font-size:14.5px; color:var(--walnut); line-height:1.6; flex-grow:1; margin-bottom:20px;">The real evidence guide &mdash; my own Show Cause story, plus a genuine state-by-state guide to registration, evidence and renewals.</p>
+        <a href="https://payhip.com/b/RQpYy" class="payhip-buy-button" data-theme="none" data-product="RQpYy">Get the guide &mdash; $19.95</a>
+      </div>
+
+      <div style="background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:28px; display:flex; flex-direction:column;">
+        <h3 style="font-size:19px; margin-bottom:10px;">Free Preview</h3>
+        <p style="font-size:14.5px; color:var(--walnut); line-height:1.6; flex-grow:1; margin-bottom:20px;">One full sample week of Wattlewood for Year 1-2, 3-4 or 5-6. No purchase needed, works fully offline.</p>
+        <a href="https://payhip.com/b/MCdvQ" class="payhip-buy-button" data-theme="none" data-product="MCdvQ">Try it free</a>
+      </div>
+
+      <div style="background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:28px; display:flex; flex-direction:column;">
+        <h3 style="font-size:19px; margin-bottom:10px;">Plan Builder</h3>
+        <p style="font-size:14.5px; color:var(--walnut); line-height:1.6; flex-grow:1; margin-bottom:20px;">A free, state-compliant learning plan builder &mdash; genuinely free, built to get your plan right from the start.</p>
+        <a href="https://payhip.com/b/8jq9J" class="payhip-buy-button" data-theme="none" data-product="8jq9J">Download free</a>
+      </div>
+
+      <div style="background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:28px; display:flex; flex-direction:column; grid-column: 2 / 3;">
+        <h3 style="font-size:19px; margin-bottom:10px;">Registration Pack</h3>
+        <p style="font-size:14.5px; color:var(--walnut); line-height:1.6; flex-grow:1; margin-bottom:20px;">Everything to get your home education registration application actually ready to submit.</p>
+        <a href="https://payhip.com/b/MwqyU" class="payhip-buy-button" data-theme="none" data-product="MwqyU">Download free</a>
+      </div>
+
+    </div>
+
+    <p style="text-align:center; margin-top:48px; font-size:15px; color:var(--walnut);">
+      Browsing the full range? <a href="https://payhip.com/AussieHomeschoolingHub" target="_blank" rel="noopener" style="color:var(--brass-dark); font-weight:700; text-decoration:none;">Visit the full shop on Payhip &rarr;</a>
+    </p>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand">
+        <svg class="brand-mark" viewBox="0 0 40 40" fill="none">
+  <path d="M6 36 Q14 24 20 18 Q26 12 32 6" stroke="#7A8B4A" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <circle cx="30" cy="8" r="4.5" fill="#C9A24B"/><circle cx="25" cy="11" r="3.5" fill="#8F6F2E"/>
+  <circle cx="33" cy="13" r="3" fill="#8F6F2E"/><circle cx="27" cy="6" r="3" fill="#C9A24B"/>
+</svg>
+        <span class="brand-name">Aussie Homeschooling Hub</span>
+      </div>
+      <p class="footer-tagline">Genuinely Australian-made tools and resources for home educating families, built from real experience.</p>
+    </div>
+    <div class="footer-links">
+      <div class="footer-col">
+        <h4>Explore</h4>
+        <a href="index.html">Home</a>
+        <a href="about.html">About Me</a>
+        <a href="shop.html">Shop</a>
+        <a href="contact.html">Contact</a>
+      </div>
+      <div class="footer-col">
+        <h4>Connect</h4>
+        <a href="https://www.facebook.com/Aussiehomeschoolinghub" target="_blank" rel="noopener">Facebook Page</a>
+        <a href="https://www.facebook.com/groups/2346526009450272" target="_blank" rel="noopener">Facebook Group</a>
+        <a href="https://payhip.com/AussieHomeschoolingHub" target="_blank" rel="noopener">Payhip Shop</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom wrap">
+    &copy; Aussie Homeschooling Hub. Built in Australia, for Australian home educating families.
+  </div>
+</footer>
+</body>
+</html>
