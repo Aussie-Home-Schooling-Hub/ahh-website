@@ -301,3 +301,10 @@ section { padding: 80px 0; }
   .entry, .card, .state-panel { border-color: #000; break-inside: avoid; }
   a { color: #000; }
 }
+
+/* Example report screenshots */
+.report-figure { margin: 24px 0; max-width: 720px; }
+.report-figure a { display: block; }
+.report-figure img { display: block; width: 100%; height: auto; border: 1.5px solid var(--line); border-radius: 8px; background: #fff; }
+.report-figure figcaption { font-size: 14px; line-height: 1.5; color: var(--walnut); margin-top: 8px; }
+@media print { .report-figure { break-inside: avoid; } }
