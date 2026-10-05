@@ -308,3 +308,69 @@ section { padding: 80px 0; }
 .report-figure img { display: block; width: 100%; height: auto; border: 1.5px solid var(--line); border-radius: 8px; background: #fff; }
 .report-figure figcaption { font-size: 14px; line-height: 1.5; color: var(--walnut); margin-top: 8px; }
 @media print { .report-figure { break-inside: avoid; } }
+
+/* NSW KLA comparison table (what-nsw-needs) */
+.kla-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 0 0 20px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--paper);
+}
+.kla-table {
+  width: 100%;
+  min-width: 320px;
+  border-collapse: collapse;
+  font-size: 15.5px;
+  line-height: 1.5;
+}
+.kla-table th,
+.kla-table td {
+  padding: 12px 14px;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+}
+.kla-table thead th {
+  background: rgba(201, 162, 75, 0.14);
+  color: var(--walnut-dark);
+  font-weight: 700;
+  font-size: 14px;
+}
+.kla-table tbody th {
+  font-weight: 700;
+  color: var(--walnut-dark);
+  width: 38%;
+}
+.kla-table tbody tr:last-child th,
+.kla-table tbody tr:last-child td { border-bottom: none; }
+@media (max-width: 420px) {
+  .kla-table,
+  .kla-table thead,
+  .kla-table tbody,
+  .kla-table th,
+  .kla-table td,
+  .kla-table tr { display: block; width: 100%; }
+  .kla-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
+  .kla-table tr {
+    border-bottom: 1px solid var(--line);
+    padding: 12px 14px;
+  }
+  .kla-table tbody tr:last-child { border-bottom: none; }
+  .kla-table tbody th {
+    width: auto;
+    padding: 0 0 6px;
+    border: none;
+  }
+  .kla-table tbody td {
+    padding: 0;
+    border: none;
+  }
+  .kla-table tbody td::before {
+    content: "AHH Year Packs: ";
+    font-weight: 700;
+    color: var(--walnut);
+  }
+}
