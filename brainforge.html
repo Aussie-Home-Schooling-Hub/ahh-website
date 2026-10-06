@@ -277,7 +277,8 @@ tailwind.config = {
   }
 
   @media print {
-    .no-print {
+    .no-print,
+  .no-print * {
       display: none !important;
     }
 
@@ -571,7 +572,7 @@ tailwind.config = {
       "dialog-student", "student-form", "student-dialog-title", "student-name",
       "student-form-error", "student-save", "student-cancel",
       "dialog-delete", "delete-message", "delete-confirm", "delete-cancel",
-      "dialog-check", "check-date", "check-ruler", "check-gap", "check-hint",
+      "dialog-check", "check-form", "check-date", "check-ruler", "check-gap", "check-hint",
       "btn-create-report", "check-cancel"
     ].forEach(function (id) {
       els[id] = $(id);
@@ -976,11 +977,14 @@ tailwind.config = {
     });
   }
 
-  function renderFacts(student) {
+  function renderFacts(student, force) {
     var facts = student ? student.facts : ["", "", ""];
     for (var i = 0; i < 3; i++) {
       var input = $("fact-" + (i + 1));
-      if (document.activeElement !== input) input.value = facts[i];
+      /* While a fact is being typed, leave that field alone. A student
+         switch must still replace every field, or the previous child's
+         fact stays on screen. */
+      if (force || document.activeElement !== input) input.value = facts[i];
     }
     var ready = factsReady(student);
     els["intake-wrap"].hidden = !!(student && ready);
@@ -1118,7 +1122,7 @@ tailwind.config = {
     setWorkingEnabled(!!student);
     if (!student) {
       els.intake.value = "";
-      renderFacts(null);
+      renderFacts(null, true);
       renderCanvas(null);
       renderLog(null);
       updateWorkbook(null);
@@ -1126,8 +1130,8 @@ tailwind.config = {
       hidePlagiarism();
       return;
     }
-    if (document.activeElement !== els.intake) els.intake.value = student.intake;
-    renderFacts(student);
+    els.intake.value = student.intake;
+    renderFacts(student, true);
     renderCanvas(student);
     renderLog(student);
     updateWorkbook(student);
