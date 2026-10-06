@@ -219,8 +219,9 @@
     position: relative;
     z-index: 1;
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
-    gap: 0.75rem;
+    gap: 0.4rem 0.75rem;
     align-items: flex-start;
     min-height: 2cm;
     padding: 0.35rem 0.6rem 0.35rem calc(2cm + 0.55rem);
@@ -238,8 +239,18 @@
   .workbook-body { padding-bottom: 1.25rem; min-height: 8rem; }
 
   /* The date box starts empty. The hint is only a placeholder, so it is
-     not the saved date and it is not copied onto the report. */
-  .date-cue { position: relative; z-index: 3; width: 12rem; max-width: 46%; margin: 0; }
+     not the saved date and it is not copied onto the report. It takes
+     the full width under the top-margin cue so the hint and a typed
+     date stay inside the box instead of being clipped. */
+  .date-cue {
+    position: relative;
+    z-index: 3;
+    flex: 1 1 100%;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    margin: 0;
+  }
   .workbook-date {
     display: block;
     width: 100%;
@@ -248,12 +259,13 @@
     border-radius: 0.4rem;
     background: #fff;
     color: #2A1B10;
+    font-size: 1rem;
     font-weight: 700;
-    padding: 0.4rem 0.55rem;
+    padding: 0.35rem 0.45rem;
   }
   .workbook-date::placeholder { color: #6B4530; font-weight: 600; opacity: 1; }
 
-  .top-margin p { margin: 0; font-size: 0.9rem; flex: 1 1 auto; min-width: 0; }
+  .top-margin p { margin: 0; font-size: 0.9rem; flex: 1 1 12rem; min-width: 0; }
 
   .wb-h1, .wb-h2, .wb-p, .wb-empty { margin: 0; overflow-wrap: anywhere; }
 
@@ -1003,50 +1015,43 @@
     proper: "Example: 'qld' should be written as 'QLD'."
   };
 
-  /* Everyday words and the more precise words Pete listed. The student's
-     word is never replaced. utilize stays spelled the way he wrote it. */
+  /* Tier 1 words and only the Tier 2 words Pete listed for that group.
+     The student's word is never replaced. Spellings stay as he wrote
+     them, including utilize, unfavourable, scrutinise, and analyse. */
+  var BIG_TIER = ["massive", "monolithic", "immense", "substantial", "colossal", "vast"];
+  var SMALL_TIER = ["minute", "compact", "microscopic", "nominal", "diminutive", "negligible"];
+  var GOOD_TIER = ["exceptional", "advantageous", "beneficial", "authoritative", "outstanding", "exemplary"];
+  var BAD_TIER = ["detrimental", "adverse", "severe", "unfavourable", "catastrophic", "deficient"];
+  var NICE_TIER = ["pleasant", "favourable", "hospitable", "cordial", "amenable"];
+  var IMPORTANT_TIER = ["vital", "critical", "essential", "significant", "captivating", "intriguing"];
+  var RESEARCH_TIER = ["scrutinise", "analyse", "examine", "discern", "perceive", "demonstrate", "illustrate", "articulate", "acquire", "procure", "construct", "formulate", "utilize", "harness"];
+  var ENVIRONMENT_TIER = ["evident", "conspicuous", "complex", "intricate", "straightforward", "elementary", "extreme", "torrid", "frigid", "arctic", "saturated", "arid", "parched"];
   var TIER_WORDS = {
-    big: ["enormous", "large"],
-    small: ["tiny", "minute"],
-    good: ["excellent", "pleasant"],
-    bad: ["awful", "dreadful"],
-    said: ["stated", "explained"],
-    happy: ["delighted", "pleased"],
-    sad: ["miserable", "unhappy"],
-    nice: ["pleasant", "kind"],
-    look: ["observe", "examine"],
-    get: ["obtain", "receive"],
-    make: ["create", "construct"],
-    go: ["travel", "proceed"],
-    see: ["notice", "observe"],
-    use: ["utilize"],
-    show: ["demonstrate", "display"],
-    help: ["assist", "support"],
-    start: ["begin", "commence"],
-    find: ["locate", "discover"],
-    think: ["consider", "believe"],
-    know: ["understand", "recognise"],
-    tell: ["inform", "explain"],
-    ask: ["request"],
-    need: ["require"],
-    want: ["desire"],
-    keep: ["retain"],
-    put: ["place"],
-    give: ["provide", "offer"],
-    like: ["enjoy", "prefer"],
-    old: ["ancient", "elderly"],
-    "new": ["recent", "modern"],
-    fast: ["rapid", "swift"],
-    slow: ["gradual"],
-    hard: ["difficult", "challenging"],
-    easy: ["simple"],
-    important: ["significant", "essential"],
-    change: ["alter", "modify"],
-    stop: ["cease", "halt"],
-    try: ["attempt"],
-    lots: ["many", "numerous"],
-    very: ["extremely"],
-    kids: ["children"]
+    big: BIG_TIER,
+    huge: BIG_TIER,
+    small: SMALL_TIER,
+    little: SMALL_TIER,
+    good: GOOD_TIER,
+    great: GOOD_TIER,
+    bad: BAD_TIER,
+    poor: BAD_TIER,
+    nice: NICE_TIER,
+    important: IMPORTANT_TIER,
+    interesting: IMPORTANT_TIER,
+    look: RESEARCH_TIER,
+    see: RESEARCH_TIER,
+    show: RESEARCH_TIER,
+    tell: RESEARCH_TIER,
+    get: RESEARCH_TIER,
+    make: RESEARCH_TIER,
+    use: RESEARCH_TIER,
+    clear: ENVIRONMENT_TIER,
+    hard: ENVIRONMENT_TIER,
+    easy: ENVIRONMENT_TIER,
+    hot: ENVIRONMENT_TIER,
+    cold: ENVIRONMENT_TIER,
+    wet: ENVIRONMENT_TIER,
+    dry: ENVIRONMENT_TIER
   };
 
   function isLetter(ch) { return !!ch && ch.toLowerCase() !== ch.toUpperCase(); }
