@@ -94,6 +94,20 @@
     outline-color: var(--brass-bright);
   }
 
+  /* Font Awesome only paints the icon. If that file is missing, the
+     glyph must not grow over the label or take the click. */
+  button .fa-solid {
+    pointer-events: none;
+    display: inline-block;
+    width: 1.15em;
+    max-width: 1.15em;
+    overflow: hidden;
+    text-align: center;
+    font-style: normal;
+    line-height: 1;
+    vertical-align: -0.1em;
+  }
+
   .skip {
     position: absolute;
     left: 0.5rem;
@@ -262,6 +276,12 @@
   .wb-empty {
     font-size: 4.2mm;
     line-height: 8mm;
+  }
+
+  /* An empty paragraph still takes a line, so the new block is visible
+     on the workbook before the child has typed. */
+  .wb-p {
+    min-height: 8mm;
   }
 
   .wb-blank {
@@ -941,9 +961,12 @@
   }
 
   function setWorkingEnabled(on) {
+    /* The paragraph button stays clickable. Disabling it swallowed the
+       click, including when no student was selected and when the icon
+       font had not loaded. The handler decides what the click does. */
     var controls = [
       els.intake, $("fact-1"), $("fact-2"), $("fact-3"), els["workbook-date"],
-      els["btn-add-h1"], els["btn-add-h2"], els["btn-add-p"], els["btn-generate"],
+      els["btn-add-h1"], els["btn-add-h2"], els["btn-generate"],
       els["btn-rename-student"], els["btn-remove-student"]
     ];
     controls.forEach(function (node) {
@@ -1928,10 +1951,9 @@
   function addBlock(type) {
     var student = requireStudent();
     if (!student) return;
-    if (type === "p" && !factsReady(student)) {
-      showStatus("Add 3 evidence points before you write a paragraph. Use a date, a figure, or a specialised word.");
-      return;
-    }
+    /* A paragraph is added as soon as a student is selected. The three
+       evidence points still hide the source later. They must not make
+       this button look dead. */
     var block = { id: newId("blk"), type: type, text: "" };
     student.blocks.push(block);
     var label = type === "h1" ? "Main title added." : type === "h2" ? "Subheader added." : "Paragraph added.";
