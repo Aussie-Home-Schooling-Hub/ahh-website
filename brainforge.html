@@ -943,6 +943,18 @@
     return false;
   }
 
+  /* A paste matches the intake, or is a piece copied out of it, at any length.
+     A sentence the student wrote themselves is not inside that box, so it stays. */
+  function comesFromIntake(pasted, intake) {
+    var copy = norm(pasted);
+    var original = norm(intake);
+    if (!copy || !original) return false;
+    if (copy === original) return true;
+    if (original.indexOf(copy) >= 0) return true;
+    if (copy.indexOf(original) >= 0) return true;
+    return isDirectCopy(pasted, intake);
+  }
+
   function showPlagiarism() {
     els["plagiarism-alert"].hidden = false;
   }
@@ -1028,9 +1040,12 @@
       field.id = "block-" + block.id;
       field.className = "canvas-field w-full min-h-[44px] rounded-lg border border-walnut/30 bg-transparent p-2 text-base";
       field.setAttribute("data-block-id", block.id);
+      field.setAttribute("data-block-type", block.type);
       field.maxLength = 4000;
       field.spellcheck = true;
       field.value = block.text;
+      /* Headings and paragraphs all get this, including a block added later. */
+      field.addEventListener("paste", onCanvasPaste);
       wrap.appendChild(field);
 
       var row = document.createElement("div");
@@ -2091,18 +2106,31 @@
 
   function onCanvasPaste(event) {
     var field = event.target;
-    if (!field || !field.getAttribute || !field.getAttribute("data-block-id")) return;
+    if (!field || field.nodeName !== "TEXTAREA" || !field.getAttribute) return;
+    var blockId = field.getAttribute("data-block-id");
+    var blockType = field.getAttribute("data-block-type");
+    if (!blockId) return;
+    /* Main titles, subheaders, and paragraphs all refuse intake paste. */
+    if (blockType !== "h1" && blockType !== "h2" && blockType !== "p") return;
     var student = requireStudent();
     if (!student) {
       event.preventDefault();
       return;
     }
     var pasted = "";
-    if (event.clipboardData) pasted = event.clipboardData.getData("text") || "";
-    if (isDirectCopy(pasted, student.intake) || isDirectCopy(predictedValue(field, pasted), student.intake)) {
-      event.preventDefault();
-      showPlagiarism();
+    if (event.clipboardData) {
+      pasted = event.clipboardData.getData("text/plain") || event.clipboardData.getData("text") || "";
     }
+    var fromIntake = comesFromIntake(pasted, student.intake) || comesFromIntake(predictedValue(field, pasted), student.intake);
+    if (!fromIntake) return;
+    event.preventDefault();
+    field.value = "";
+    for (var i = 0; i < student.blocks.length; i++) {
+      if (student.blocks[i].id === blockId) student.blocks[i].text = "";
+    }
+    updateWorkbook(student);
+    scheduleSave();
+    showPlagiarism();
   }
 
   function onCanvasInput(field) {
@@ -2257,7 +2285,6 @@
     els["canvas-list"].addEventListener("input", function (event) {
       if (event.target && event.target.getAttribute("data-block-id")) onCanvasInput(event.target);
     });
-    els["canvas-list"].addEventListener("paste", onCanvasPaste);
     els["canvas-list"].addEventListener("click", function (event) {
       var move = event.target && event.target.getAttribute && event.target.getAttribute("data-move");
       var removeId = event.target && event.target.getAttribute && event.target.getAttribute("data-remove-block");
