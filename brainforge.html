@@ -1,0 +1,1630 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>
+/* Apply the saved colour mode before the page paints.
+   The choice is kept in localStorage and reapplied as CSS variables
+   and the Tailwind dark class. A missing save just leaves the light page. */
+(function () {
+  try {
+    var mode = localStorage.getItem("ahh-brainforge-theme");
+    var root = document.documentElement;
+    if (mode === "dark") {
+      root.classList.add("dark");
+      root.style.setProperty("--bf-theme", "dark");
+      root.style.setProperty("--page-bg", "#2A1B10");
+      root.style.setProperty("--page-text", "#F3E9D2");
+    } else {
+      root.style.setProperty("--bf-theme", "light");
+      root.style.setProperty("--page-bg", "#F3E9D2");
+      root.style.setProperty("--page-text", "#2A1B10");
+    }
+  } catch (e) {
+    /* The main script reports a storage failure once the page can show it. */
+  }
+})();
+</script>
+<title>BrainForge</title>
+<link rel="icon" type="image/png" sizes="32x32" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAABBJJREFUWIW9l9tPVFcUxn/rnDMHGBiZi8wEVG6Kow2mKCGiFSNNrKWpDySNfWprmvapT/1LmjTpU23fmt5i+qAJkmijtTReqlKqBkcuAyoKw8zgCAbOMLP7QLjOGWTGod/T7P2tdb5vzt57rX2EFThW63anTPNLEVqVkiYR/BQASjEhonqV4ppuWV9dDk9NLXKy+OOt3RUdmsgZQaoKIZrVDGosrdRnPaFI15KBtl3+E6LLhc0UXouUSr/XE4p0yZHqco+UFN0TpPL/NKBQY/Mzs/sMKSn+ROC1xE2HTm2Nh9pqHwDh0SjhkThWMpU1R5Aqo7TkYwNF6/JOyA0icLKjkVOdTZimsYqzrHl+Pnub8933USrLAxSt0hYMhAVqchWvqtzCF5+30bCzYt24h4MRvvn2KmNPEzb6jGj5iAOc6mx6pThAw84KTnU22XICNVo+4ocP1nH4YH0O8fW0HNhhy+Vl4NiRnTnnHG8PFs5AVWV5wXLyMuB2lxQsJy8DkcnpnHNGRuOFMzAyGss5Jzxin5OXgXNd90il0huOT6XSXLz8IH8DRrFBIOij1LewjoPDUa7cHN6wge5L/QxneQOG7ewKVO3zU9uyHU1bqNd//3qXIqdJf/IlLXMWriJz3fxobIafzt7OysvRYMC2UusOjeDb9Xh3lOMQxd4yocKEIhRzCBEL/o1Y+BLwwck3bXvBL7/1cq7rbvZekM2Ao8SgsaOBUq8TAY56we3I7FhPxl/y9Xf3MYzcu+EibJcg2F5HqdcJQIVpLw6wLeBkV90WQkMJQgOThAYmAcXhZj/vn96Dz20ST8xx484kf9wYX3kBW0LGJnR6inFXbVkal71il/h9xavGR1oCdL5bQ6W/BNPUCWx1cvJ4Ne2H7K8cGQbmreXXlk6liYWn1oasi0PN9h2y9cBW2/mM/2fNJOn/fQjdoREdec7+Zj/gySo4EZ1dNfaU258KV5ljYwYAJocWyqbL78TcHSCeVHhs9sGjp9MMDK++aLyYTuJ16xmx8eeWrYGshch0OnjjnQZE1+iZmOd6X5RIbJZkMkUkNstftyY48+ND0mvO0K2+qO3z7j2wX0oDpcYRCaxyZWg0djTgKDZQStF3cZj448wrlR2uXH+GYWjs3VWO11NE/LlFaCjBpZ6xzGClxqUt6L8gyImV83UHt7Nt34Kn8M0nPP7n2YbEc4VCdWuSlt61hO5YWMPIUGzTxAEkLb3Susdda6bNO4i4lwgBV6CMF5EZVGqdOvo6UGrK0qz92rX+qXAaPl3NQeLZ9OaJA0rk9LX+qbAOMBqd6d/uc94QoV0Q16apLn+cfvhnaOI8wNKBfRR9OVDvcnyf1nVLhDmlxCVCaUFEFz7Pe5TiB92yPro6GLu7yP0H7m90FlZ4hP0AAAAASUVORK5CYII=">
+<link rel="icon" type="image/svg+xml" sizes="any" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%233E2717'/%3E%3Cpath d='M13 54 Q24 40 36 27' stroke='%237A8B4A' stroke-width='5' stroke-linecap='round' fill='none'/%3E%3Cellipse cx='17' cy='38' rx='9' ry='4' transform='rotate(-40 17 38)' fill='%237A8B4A'/%3E%3Ccircle cx='40' cy='23' r='14' fill='%23E8C877'/%3E%3Ccircle cx='25' cy='42' r='8' fill='%23C9A24B'/%3E%3Ccircle cx='47' cy='45' r='7' fill='%23C9A24B'/%3E%3C/svg%3E">
+<!--
+  BrainForge helps a child in Years 3–6 turn digital research into their own
+  informative writing, and keeps a printable record for the parent.
+  Tailwind CSS and Font Awesome are the only remote assets. Student names,
+  drafts, and reports stay in localStorage on this device.
+  Text a person types is inserted with textContent so it cannot run as HTML.
+-->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+/* Brand colours match the Wattlewood palette. Dark mode is a class on the
+   root so Tailwind variants and the CSS variables below stay in step. */
+tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      colors: {
+        walnut: "#6B4530",
+        "walnut-dark": "#3E2717",
+        "walnut-deep": "#2A1B10",
+        brass: "#C9A24B",
+        "brass-bright": "#E8C877",
+        "brass-dark": "#8F6F2E",
+        parchment: "#F3E9D2",
+        leaf: "#7A8B4A",
+        "leaf-dark": "#586339"
+      },
+      fontFamily: {
+        display: ["Fraunces", "Georgia", "Times New Roman", "serif"],
+        body: ["Source Sans 3", "system-ui", "-apple-system", "Segoe UI", "Roboto", "Arial", "sans-serif"]
+      }
+    }
+  }
+};
+</script>
+<style>
+  /* Palette tokens. Components use these variables so a theme change
+     is one place, including the values the boot script writes. */
+  :root {
+    --walnut: #6B4530;
+    --walnut-dark: #3E2717;
+    --walnut-deep: #2A1B10;
+    --brass: #C9A24B;
+    --brass-bright: #E8C877;
+    --brass-dark: #8F6F2E;
+    --parchment: #F3E9D2;
+    --leaf: #7A8B4A;
+    --leaf-dark: #586339;
+    --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+    --font-body: "Source Sans 3", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    --page-bg: var(--parchment);
+    --page-text: var(--walnut-deep);
+    --card-bg: #fffaf0;
+    --card-text: var(--walnut-deep);
+    --bf-theme: light;
+    color-scheme: light;
+  }
+
+  html.dark {
+    --page-bg: var(--walnut-deep);
+    --page-text: var(--parchment);
+    --card-bg: var(--walnut-dark);
+    --card-text: var(--parchment);
+    --bf-theme: dark;
+    color-scheme: dark;
+  }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--page-bg);
+    color: var(--page-text);
+  }
+
+  h1, h2, h3 {
+    font-family: var(--font-display);
+  }
+
+  /* Focus is a solid ring, not colour alone, and it stays visible on both themes. */
+  :focus-visible {
+    outline: 3px solid var(--walnut-deep);
+    outline-offset: 2px;
+  }
+
+  html.dark :focus-visible {
+    outline-color: var(--brass-bright);
+  }
+
+  .skip {
+    position: absolute;
+    left: 0.5rem;
+    top: 0.5rem;
+    transform: translateY(-150%);
+    background: var(--walnut);
+    color: var(--parchment);
+    padding: 0.6rem 1rem;
+    z-index: 50;
+    border-radius: 0.5rem;
+  }
+
+  .skip:focus {
+    transform: none;
+  }
+
+  /* Australian workbook paper: blue ruling, a sharp red margin, and a
+     highlighted top band the height of a 2 cm margin. */
+  .workbook-page {
+    position: relative;
+    overflow: hidden;
+    background-color: #fffef8;
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent calc(8mm - 1px),
+      rgba(36, 78, 150, 0.45) calc(8mm - 1px),
+      rgba(36, 78, 150, 0.45) 8mm
+    );
+    color: #2A1B10;
+    min-height: 18rem;
+    border: 1px solid rgba(62, 39, 23, 0.25);
+    border-radius: 0.25rem;
+  }
+
+  .margin-line {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 2cm;
+    width: 2px;
+    background: #c41218;
+    z-index: 2;
+  }
+
+  .top-margin {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    align-items: flex-start;
+    min-height: 2cm;
+    padding: 0.35rem 0.6rem 0.35rem calc(2cm + 0.55rem);
+    background: rgba(201, 162, 75, 0.38);
+  }
+
+  .spacing-marker,
+  .workbook-body {
+    position: relative;
+    z-index: 1;
+    padding-left: calc(2cm + 0.55rem);
+    padding-right: 0.7rem;
+  }
+
+  .spacing-marker {
+    margin: 0;
+    padding-top: 0.15rem;
+    padding-bottom: 0.15rem;
+    font-size: 0.85rem;
+    line-height: 1.35;
+  }
+
+  .workbook-body {
+    padding-bottom: 1.25rem;
+    min-height: 8rem;
+  }
+
+  .date-cue {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .top-margin p {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.35;
+  }
+
+  /* The long cue must be allowed to shrink and wrap, or a narrow phone
+     widens the page and the red margin check reads the wrong edge. */
+  .top-margin p:first-child {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .wb-h1,
+  .wb-h2,
+  .wb-p,
+  .wb-empty {
+    margin: 0;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  /* The title is kept on a larger type scale than a subheader.
+     Layout checks compare these computed sizes. */
+  .wb-h1 {
+    font-family: var(--font-display);
+    font-size: 7mm;
+    line-height: 8mm;
+    font-weight: 700;
+  }
+
+  .wb-h2 {
+    font-family: var(--font-display);
+    font-size: 5.2mm;
+    line-height: 8mm;
+    font-weight: 700;
+  }
+
+  .wb-p,
+  .wb-empty {
+    font-size: 4.2mm;
+    line-height: 8mm;
+  }
+
+  .wb-blank {
+    height: 8mm;
+  }
+
+  dialog {
+    border: 0;
+    border-radius: 1rem;
+    padding: 0;
+    max-width: calc(100vw - 1.5rem);
+    width: 32rem;
+    background: var(--card-bg);
+    color: var(--card-text);
+  }
+
+  dialog::backdrop {
+    background: rgba(42, 27, 16, 0.55);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      transition: none !important;
+      animation: none !important;
+    }
+  }
+
+  /* Print keeps a single A4 record. Every control, panel, and sidebar goes. */
+  @page {
+    size: A4;
+    margin: 16mm;
+  }
+
+  @media print {
+    .no-print {
+      display: none !important;
+    }
+
+    html, body {
+      background: #fff !important;
+      color: #000 !important;
+    }
+
+    #evidence-report:not([hidden]) {
+      display: block !important;
+      background: #fff !important;
+      color: #000 !important;
+      box-shadow: none !important;
+      border: 0 !important;
+      margin: 0 !important;
+      max-width: none !important;
+      width: auto !important;
+    }
+  }
+</style>
+</head>
+<body class="font-body bg-parchment text-walnut-deep dark:bg-walnut-deep dark:text-parchment min-h-screen">
+<a class="skip no-print" href="#canvas-panel">Skip to the writing canvas</a>
+
+<header class="no-print border-b border-walnut/15 dark:border-brass/30 bg-[var(--page-bg)]">
+  <div class="mx-auto max-w-7xl px-4 py-4 flex flex-col gap-4">
+    <div class="min-w-0">
+      <h1 class="font-display text-3xl text-walnut dark:text-brass-bright m-0">BrainForge</h1>
+      <p class="mt-1 mb-0 max-w-3xl text-base leading-relaxed">For Years 3–6, ages 8–12. Your child turns research into their own informative writing. You get a record you can show your registering authority.</p>
+    </div>
+
+    <div class="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end">
+      <div class="min-w-0 flex-1 sm:max-w-xs">
+        <label for="student-select" class="block text-sm font-semibold mb-1">Student profile</label>
+        <select id="student-select" class="min-h-[44px] w-full rounded-lg border border-walnut/30 bg-[var(--card-bg)] text-[var(--card-text)] px-3"></select>
+      </div>
+      <button type="button" id="btn-add-student" class="min-h-[44px] rounded-lg bg-walnut text-parchment px-4 font-semibold">+ Add Student</button>
+      <button type="button" id="btn-rename-student" class="min-h-[44px] rounded-lg border border-walnut/40 px-4 font-semibold">Rename</button>
+      <button type="button" id="btn-remove-student" class="min-h-[44px] rounded-lg border border-walnut/40 px-4 font-semibold">Remove student</button>
+      <button type="button" id="btn-theme" class="min-h-[44px] rounded-lg border border-brass-dark px-4 font-semibold" aria-pressed="false">
+        <i class="fa-solid fa-moon" aria-hidden="true" id="theme-icon"></i>
+        <span id="theme-label">Dark mode</span>
+      </button>
+    </div>
+
+    <p id="status" class="m-0 min-h-[1.5rem] font-semibold" role="status" aria-live="polite"></p>
+    <p id="no-student" class="m-0 rounded-lg border border-brass-dark/50 bg-brass/15 px-3 py-2" role="status">No student is selected, so work on this page will not be saved. Add a student or choose one from Student profile. BrainForge will not guess which child the work belongs to.</p>
+
+    <details id="work-log" class="rounded-lg border border-walnut/20 px-3 py-1">
+      <summary class="min-h-[44px] flex items-center cursor-pointer font-semibold">Work log</summary>
+      <ul id="log-list" class="mt-1 mb-3 pl-5"></ul>
+    </details>
+  </div>
+</header>
+
+<main class="mx-auto max-w-7xl px-4 py-4">
+  <div class="no-print grid grid-cols-1 gap-4 lg:grid-cols-3">
+    <section class="min-w-0 rounded-2xl border border-walnut/15 bg-[var(--card-bg)] text-[var(--card-text)] p-4" aria-labelledby="intake-heading">
+      <h2 id="intake-heading" class="font-display text-xl m-0 text-walnut dark:text-brass-bright">Cognitive Retention Engine</h2>
+      <p class="mt-1 mb-3 text-base">Paste the research, then pull out three facts in your own notes.</p>
+
+      <div id="intake-wrap">
+        <label for="intake" class="block font-semibold mb-1">Digital Research Intake</label>
+        <textarea id="intake" class="w-full min-h-[8rem] rounded-xl border border-walnut/30 bg-transparent p-3 text-base" maxlength="20000" spellcheck="true"></textarea>
+      </div>
+
+      <p id="source-hidden-note" class="mt-2 mb-2" hidden>The source is hidden so you write from your three facts.</p>
+
+      <fieldset class="mt-3 border-0 p-0 m-0">
+        <legend class="font-semibold mb-2">Three evidence points</legend>
+        <p class="mt-0 mb-2 text-sm">Use a date, a figure, or a specialised word. All three are needed.</p>
+        <div class="flex flex-col gap-3">
+          <div>
+            <label for="fact-1" class="block text-sm font-semibold mb-1">Evidence point 1</label>
+            <input id="fact-1" data-fact="0" class="fact-input w-full min-h-[44px] rounded-xl border border-walnut/30 bg-transparent px-3 text-base" type="text" maxlength="240" spellcheck="true">
+          </div>
+          <div>
+            <label for="fact-2" class="block text-sm font-semibold mb-1">Evidence point 2</label>
+            <input id="fact-2" data-fact="1" class="fact-input w-full min-h-[44px] rounded-xl border border-walnut/30 bg-transparent px-3 text-base" type="text" maxlength="240" spellcheck="true">
+          </div>
+          <div>
+            <label for="fact-3" class="block text-sm font-semibold mb-1">Evidence point 3</label>
+            <input id="fact-3" data-fact="2" class="fact-input w-full min-h-[44px] rounded-xl border border-walnut/30 bg-transparent px-3 text-base" type="text" maxlength="240" spellcheck="true">
+          </div>
+        </div>
+      </fieldset>
+
+      <p id="forge-prompt" class="mt-4 mb-0 rounded-xl bg-leaf/15 px-3 py-3 font-semibold" hidden>Now, forge a complete sentence combining these 3 pieces of evidence.</p>
+    </section>
+
+    <section id="canvas-panel" class="min-w-0 rounded-2xl border border-walnut/15 bg-[var(--card-bg)] text-[var(--card-text)] p-4" aria-labelledby="canvas-heading">
+      <h2 id="canvas-heading" class="font-display text-xl m-0 text-walnut dark:text-brass-bright">Document Architect Canvas</h2>
+      <p class="mt-1 mb-3 text-base">Add a main title, subheaders, and paragraphs in your own words.</p>
+
+      <div class="flex flex-col gap-2">
+        <button type="button" id="btn-add-h1" class="min-h-[44px] w-full rounded-2xl bg-walnut text-parchment px-3 py-2 text-left font-semibold" aria-describedby="tip-h1" aria-expanded="false">
+          <i class="fa-solid fa-heading" aria-hidden="true"></i> + Add Main Title (H1)
+        </button>
+        <p id="tip-h1" class="tip m-0 rounded-xl bg-brass/20 px-3 py-2 text-sm" role="tooltip" hidden>Australian Curriculum text structures require a clear title so the reader immediately knows the overarching topic.</p>
+
+        <button type="button" id="btn-add-h2" class="min-h-[44px] w-full rounded-2xl bg-walnut-dark text-parchment px-3 py-2 text-left font-semibold" aria-describedby="tip-h2" aria-expanded="false">
+          <i class="fa-solid fa-bars-staggered" aria-hidden="true"></i> + Add Subheader (H2)
+        </button>
+        <p id="tip-h2" class="tip m-0 rounded-xl bg-brass/20 px-3 py-2 text-sm" role="tooltip" hidden>Subheaders act as conceptual signposts, grouping related facts together so your informative text flows logically.</p>
+
+        <button type="button" id="btn-add-p" class="min-h-[44px] w-full rounded-2xl border-2 border-walnut px-3 py-2 text-left font-semibold">
+          <i class="fa-solid fa-align-left" aria-hidden="true"></i> + Add Informative Paragraph
+        </button>
+      </div>
+
+      <p id="plagiarism-alert" class="mt-3 mb-0 rounded-xl border border-walnut px-3 py-3 font-semibold" role="alert" hidden>That's Google's voice! Let's forge it into your own words to show your registering authority real, independent work.</p>
+
+      <p id="hierarchy-alert" class="mt-3 mb-0 rounded-xl border border-brass-dark bg-brass/15 px-3 py-3" role="status" hidden>
+        <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+        A subheader is scaled larger than the title. Keep the main title first and bigger, so the reader knows the topic straight away.
+      </p>
+
+      <div id="canvas-list" class="mt-4 flex flex-col gap-3"></div>
+    </section>
+
+    <section class="min-w-0 rounded-2xl border border-walnut/15 bg-[var(--card-bg)] text-[var(--card-text)] p-4" aria-labelledby="workbook-heading">
+      <h2 id="workbook-heading" class="font-display text-xl m-0 text-walnut dark:text-brass-bright">Australian Workbook Simulator</h2>
+      <p class="mt-1 mb-3 text-base">See how the writing sits on workbook lines.</p>
+
+      <p id="margin-alert" class="mt-0 mb-3 rounded-xl border border-walnut px-3 py-3 font-semibold" role="alert" hidden>
+        <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+        Keep all text to the right of the margin line.
+      </p>
+
+      <div id="workbook-page" class="workbook-page" aria-label="Workbook page preview">
+        <div id="margin-line" class="margin-line" aria-hidden="true"></div>
+        <div class="top-margin">
+          <p class="js-ink" id="top-cue">Leave the top lines blank for structural breathing room.</p>
+          <p class="js-ink date-cue">Date</p>
+        </div>
+        <p class="spacing-marker" id="spacing-cue"><span class="js-ink">Skip 1 blank line after headers/subheaders to structure paragraphs cleanly.</span></p>
+        <div id="workbook-body" class="workbook-body"></div>
+      </div>
+    </section>
+  </div>
+
+  <div class="no-print mt-4">
+    <button type="button" id="btn-generate" class="min-h-[44px] w-full sm:w-auto rounded-lg bg-leaf-dark text-parchment px-4 py-2 font-semibold">
+      <i class="fa-solid fa-print" aria-hidden="true"></i> Generate Evidence &amp; Print
+    </button>
+  </div>
+
+  <section id="evidence-report" class="mt-6 max-w-[210mm] bg-white text-black p-6 sm:p-8 rounded-md shadow-md border border-black/10" hidden aria-labelledby="report-heading">
+    <h2 id="report-heading" class="font-display text-2xl m-0 text-black">Evidence report</h2>
+    <p class="mt-3 mb-1 text-black"><span class="font-semibold">Date: </span><span id="report-date"></span></p>
+    <p class="mt-0 mb-1 text-black"><span class="font-semibold">Student: </span><span id="report-name"></span></p>
+    <p class="mt-0 mb-1 text-black">Years 3–6, ages 8–12</p>
+
+    <div class="mt-4 no-print">
+      <label for="report-subject" class="block font-semibold mb-1 text-black">Subject</label>
+      <select id="report-subject" class="min-h-[44px] w-full max-w-xs rounded-lg border border-black/30 bg-white text-black px-3">
+        <option value="">Select a subject</option>
+        <option value="English">English</option>
+        <option value="Science">Science</option>
+        <option value="Geography">Geography</option>
+        <option value="History">History</option>
+        <option value="Civics">Civics</option>
+      </select>
+    </div>
+    <p class="mt-3 mb-1 text-black"><span class="font-semibold">Subject: </span><span id="report-subject-text"></span></p>
+
+    <h3 class="font-display text-lg mt-5 mb-2 text-black">Learning areas</h3>
+    <p class="mt-0 mb-2 text-sm text-black">Australian Curriculum v9.0, Years 3–6. These are the learning areas this activity is built around.</p>
+    <ul id="report-curriculum" class="mt-0 mb-4 pl-5 text-black"></ul>
+
+    <h3 class="font-display text-lg mt-4 mb-2 text-black">Activity</h3>
+    <p id="activity-statement" class="mt-0 mb-4 leading-relaxed text-black">The student conducted independent inquiry using digital research tools. To fulfill curriculum outcomes for creating informative texts, the student analyzed source data, extracted key evidence to mitigate plagiarism risks, and synthesised findings into an objective text structure. The student successfully applied textual hierarchies—including structural main headings and subordinate subheadings—to organize information logically before transferring the schema into physical media.</p>
+
+    <h3 class="font-display text-lg mt-4 mb-2 text-black">Work sample</h3>
+    <div id="report-work" class="text-black leading-relaxed"></div>
+
+    <p class="mt-6 mb-4 text-sm text-black">This is a record of the work. Your registering authority decides what it accepts.</p>
+    <button type="button" id="btn-print" class="no-print min-h-[44px] rounded-lg bg-walnut text-parchment px-4 font-semibold">
+      <i class="fa-solid fa-print" aria-hidden="true"></i> Print
+    </button>
+  </section>
+</main>
+
+<footer class="no-print mx-auto max-w-7xl px-4 py-6 text-sm">
+  <p class="m-0">Your child’s work stays in this browser. There is no account, and the work is not sent to a server.</p>
+</footer>
+
+<dialog id="dialog-student" class="no-print" aria-labelledby="student-dialog-title">
+  <form id="student-form" method="dialog" class="p-5 flex flex-col gap-3">
+    <h2 id="student-dialog-title" class="font-display text-xl m-0">Add a student</h2>
+    <p id="student-dialog-help" class="m-0 text-sm">First name only. Leave out the surname.</p>
+    <label for="student-name" class="font-semibold">First name</label>
+    <input id="student-name" name="student-name" class="min-h-[44px] rounded-lg border border-walnut/40 bg-transparent px-3 text-base" type="text" maxlength="60" autocomplete="off" required>
+    <p id="student-form-error" class="m-0 font-semibold" role="alert"></p>
+    <div class="flex flex-wrap gap-2">
+      <button type="submit" id="student-save" class="min-h-[44px] rounded-lg bg-walnut text-parchment px-4 font-semibold">Save student</button>
+      <button type="button" id="student-cancel" class="min-h-[44px] rounded-lg border border-walnut/40 px-4 font-semibold">Cancel</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="dialog-delete" class="no-print" aria-labelledby="delete-title">
+  <div class="p-5 flex flex-col gap-3">
+    <h2 id="delete-title" class="font-display text-xl m-0">Remove this student?</h2>
+    <p id="delete-message" class="m-0"></p>
+    <div class="flex flex-wrap gap-2">
+      <button type="button" id="delete-confirm" class="min-h-[44px] rounded-lg bg-walnut text-parchment px-4 font-semibold">Remove</button>
+      <button type="button" id="delete-cancel" class="min-h-[44px] rounded-lg border border-walnut/40 px-4 font-semibold">Cancel</button>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="dialog-check" class="no-print" aria-labelledby="check-title">
+  <form id="check-form" method="dialog" class="p-5 flex flex-col gap-3">
+    <h2 id="check-title" class="font-display text-xl m-0">Before you print</h2>
+    <p class="m-0 text-sm">Tick each check once it is true of the paper workbook.</p>
+    <label class="flex items-start gap-3 min-h-[44px] cursor-pointer">
+      <input id="check-date" class="mt-1 h-5 w-5 shrink-0" type="checkbox">
+      <span>Written the date in the top-right corner of your workbook?</span>
+    </label>
+    <label class="flex items-start gap-3 min-h-[44px] cursor-pointer">
+      <input id="check-ruler" class="mt-1 h-5 w-5 shrink-0" type="checkbox">
+      <span>Used a ruler to underline your subheaders on paper?</span>
+    </label>
+    <label class="flex items-start gap-3 min-h-[44px] cursor-pointer">
+      <input id="check-gap" class="mt-1 h-5 w-5 shrink-0" type="checkbox">
+      <span>Left a physical blank line between paragraphs?</span>
+    </label>
+    <p id="check-hint" class="m-0 text-sm">Tick all three checks before the report is created.</p>
+    <div class="flex flex-wrap gap-2">
+      <button type="submit" id="btn-create-report" class="min-h-[44px] rounded-lg bg-leaf-dark text-parchment px-4 font-semibold" disabled>Create the evidence report</button>
+      <button type="button" id="check-cancel" class="min-h-[44px] rounded-lg border border-walnut/40 px-4 font-semibold">Back</button>
+    </div>
+  </form>
+</dialog>
+
+<noscript>
+  <p class="px-4">BrainForge needs JavaScript to keep each student’s work on this device.</p>
+</noscript>
+
+<script>
+(function () {
+  "use strict";
+
+  /* One storage key for every student. The id on each student is stable,
+     so a renamed child keeps their drafts and the log stays with them.
+     A second key remembers only the colour mode. */
+  var STORAGE_KEY = "ahh-brainforge-state";
+  var THEME_KEY = "ahh-brainforge-theme";
+
+  var SUBJECTS = ["English", "Science", "Geography", "History", "Civics"];
+
+  /* Labels use Australian Curriculum v9.0 learning-area names for Years 3–6.
+     Informative writing is always English. The chosen subject adds the
+     inquiry area. Civics maps to Civics and Citizenship, which starts in Year 3.
+     Codes are not shown. */
+  var CURRICULUM = {
+    English: ["English > Language", "English > Literacy"],
+    Science: ["English > Language", "English > Literacy", "Science > Science inquiry"],
+    Geography: ["English > Language", "English > Literacy", "HASS > Geography"],
+    History: ["English > Language", "English > Literacy", "HASS > History"],
+    Civics: ["English > Language", "English > Literacy", "HASS > Civics and Citizenship"]
+  };
+
+  var BLOCK_LABELS = { h1: "Main title", h2: "Subheader", p: "Paragraph" };
+
+  var state = { activeStudentId: null, students: [] };
+  var storageUnreadable = false;
+  var saveTimer = 0;
+  var nameMode = "add";
+  var pendingRemoveId = "";
+  var pinnedTip = "";
+  var lastFocus = null;
+
+  var els = {};
+
+  function $(id) {
+    return document.getElementById(id);
+  }
+
+  function cacheEls() {
+    [
+      "student-select", "btn-add-student", "btn-rename-student", "btn-remove-student",
+      "btn-theme", "theme-icon", "theme-label", "status", "no-student", "work-log", "log-list",
+      "intake-wrap", "intake", "source-hidden-note", "forge-prompt",
+      "btn-add-h1", "btn-add-h2", "btn-add-p", "tip-h1", "tip-h2",
+      "plagiarism-alert", "hierarchy-alert", "canvas-list", "margin-alert",
+      "workbook-page", "workbook-body", "btn-generate", "evidence-report",
+      "report-date", "report-name", "report-subject", "report-subject-text",
+      "report-curriculum", "report-work", "btn-print",
+      "dialog-student", "student-form", "student-dialog-title", "student-name",
+      "student-form-error", "student-save", "student-cancel",
+      "dialog-delete", "delete-message", "delete-confirm", "delete-cancel",
+      "dialog-check", "check-date", "check-ruler", "check-gap", "check-hint",
+      "btn-create-report", "check-cancel"
+    ].forEach(function (id) {
+      els[id] = $(id);
+    });
+  }
+
+  function newId(prefix) {
+    return prefix + "_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 8);
+  }
+
+  function emptyStudent(name) {
+    return {
+      id: newId("stu"),
+      name: name,
+      createdAt: new Date().toISOString(),
+      intake: "",
+      facts: ["", "", ""],
+      blocks: [],
+      subject: "",
+      checks: { date: false, ruler: false, gap: false },
+      reportAt: "",
+      log: []
+    };
+  }
+
+  function activeStudent() {
+    if (!state.activeStudentId) return null;
+    for (var i = 0; i < state.students.length; i++) {
+      if (state.students[i].id === state.activeStudentId) return state.students[i];
+    }
+    return null;
+  }
+
+  function findStudent(id) {
+    for (var i = 0; i < state.students.length; i++) {
+      if (state.students[i].id === id) return state.students[i];
+    }
+    return null;
+  }
+
+  /* "Saved" is written only after the browser returns the same text we stored. */
+  function showSaved() {
+    els.status.textContent = "Saved";
+  }
+
+  function showStatus(message) {
+    els.status.textContent = message;
+  }
+
+  function persistState(announce) {
+    if (storageUnreadable) {
+      showStatus("BrainForge could not read the work already stored in this browser, so it will not overwrite it.");
+      return false;
+    }
+    try {
+      var payload = JSON.stringify(state);
+      localStorage.setItem(STORAGE_KEY, payload);
+      var readBack = localStorage.getItem(STORAGE_KEY);
+      if (readBack !== payload) {
+        throw new Error("Save read-back did not match.");
+      }
+      if (announce !== false) showSaved();
+      return true;
+    } catch (err) {
+      console.error("BrainForge could not save.", err);
+      showStatus("Could not save. The work is still on this screen, but it is not stored on this device. Free some space in the browser, or check that site storage is allowed, then try again.");
+      return false;
+    }
+  }
+
+  function scheduleSave() {
+    window.clearTimeout(saveTimer);
+    saveTimer = window.setTimeout(function () {
+      persistState(true);
+    }, 350);
+  }
+
+  function flushSave() {
+    window.clearTimeout(saveTimer);
+    return persistState(true);
+  }
+
+  function applyTheme(mode, persist) {
+    var dark = mode === "dark";
+    var root = document.documentElement;
+    root.classList.toggle("dark", dark);
+    root.style.setProperty("--bf-theme", dark ? "dark" : "light");
+    root.style.setProperty("--page-bg", dark ? "#2A1B10" : "#F3E9D2");
+    root.style.setProperty("--page-text", dark ? "#F3E9D2" : "#2A1B10");
+    root.style.setProperty("--card-bg", dark ? "#3E2717" : "#fffaf0");
+    root.style.setProperty("--card-text", dark ? "#F3E9D2" : "#2A1B10");
+    els["btn-theme"].setAttribute("aria-pressed", dark ? "true" : "false");
+    els["theme-label"].textContent = dark ? "Light mode" : "Dark mode";
+    els["theme-icon"].className = dark ? "fa-solid fa-sun" : "fa-solid fa-moon";
+    if (!persist) return;
+    try {
+      var stored = dark ? "dark" : "light";
+      localStorage.setItem(THEME_KEY, stored);
+      if (localStorage.getItem(THEME_KEY) !== stored) {
+        throw new Error("Theme read-back did not match.");
+      }
+      showSaved();
+    } catch (err) {
+      console.error("BrainForge could not save the colour mode.", err);
+      showStatus("Could not save the colour mode on this device. The page may look different next time you open it.");
+    }
+  }
+
+  function loadTheme() {
+    var mode = "light";
+    try {
+      var stored = localStorage.getItem(THEME_KEY);
+      if (stored === "dark" || stored === "light") mode = stored;
+    } catch (err) {
+      console.error("BrainForge could not read the colour mode.", err);
+      storageUnreadable = true;
+    }
+    applyTheme(mode, false);
+  }
+
+  function normaliseFacts(value) {
+    var facts = ["", "", ""];
+    if (!Array.isArray(value)) return facts;
+    for (var i = 0; i < 3; i++) {
+      facts[i] = typeof value[i] === "string" ? value[i].slice(0, 240) : "";
+    }
+    return facts;
+  }
+
+  function normaliseBlocks(value) {
+    if (!Array.isArray(value)) return [];
+    var blocks = [];
+    value.forEach(function (block) {
+      if (!block || (block.type !== "h1" && block.type !== "h2" && block.type !== "p")) return;
+      if (typeof block.id !== "string" || !block.id) return;
+      blocks.push({
+        id: block.id,
+        type: block.type,
+        text: typeof block.text === "string" ? block.text.slice(0, 4000) : ""
+      });
+    });
+    return blocks;
+  }
+
+  function normaliseLog(value) {
+    if (!Array.isArray(value)) return [];
+    var log = [];
+    value.forEach(function (entry) {
+      if (!entry || typeof entry.text !== "string" || typeof entry.id !== "string") return;
+      log.push({
+        id: entry.id,
+        kind: typeof entry.kind === "string" ? entry.kind : "note",
+        day: typeof entry.day === "string" ? entry.day : "",
+        at: typeof entry.at === "string" ? entry.at : "",
+        text: entry.text.slice(0, 200)
+      });
+    });
+    return log.slice(-40);
+  }
+
+  function loadState() {
+    var raw = null;
+    try {
+      raw = localStorage.getItem(STORAGE_KEY);
+    } catch (err) {
+      console.error("BrainForge could not read saved work.", err);
+      storageUnreadable = true;
+      showStatus("BrainForge could not read saved work in this browser. Nothing was overwritten.");
+      state = { activeStudentId: null, students: [] };
+      return;
+    }
+    if (!raw) {
+      state = { activeStudentId: null, students: [] };
+      return;
+    }
+    try {
+      var data = JSON.parse(raw);
+      if (!data || !Array.isArray(data.students)) throw new Error("Saved work has an unexpected shape.");
+      var students = [];
+      data.students.forEach(function (item) {
+        if (!item || typeof item.id !== "string" || !item.id) return;
+        var subject = SUBJECTS.indexOf(item.subject) >= 0 ? item.subject : "";
+        students.push({
+          id: item.id,
+          name: typeof item.name === "string" ? item.name.slice(0, 60) : "",
+          createdAt: typeof item.createdAt === "string" ? item.createdAt : "",
+          intake: typeof item.intake === "string" ? item.intake.slice(0, 20000) : "",
+          facts: normaliseFacts(item.facts),
+          blocks: normaliseBlocks(item.blocks),
+          subject: subject,
+          checks: {
+            date: !!(item.checks && item.checks.date),
+            ruler: !!(item.checks && item.checks.ruler),
+            gap: !!(item.checks && item.checks.gap)
+          },
+          reportAt: typeof item.reportAt === "string" ? item.reportAt : "",
+          log: normaliseLog(item.log)
+        });
+      });
+      var active = null;
+      if (typeof data.activeStudentId === "string") {
+        for (var i = 0; i < students.length; i++) {
+          if (students[i].id === data.activeStudentId) active = data.activeStudentId;
+        }
+      }
+      state = { activeStudentId: active, students: students };
+      /* A stored id that matches nobody is dropped. We do not pick another child. */
+      if (data.activeStudentId && !active) persistState(false);
+    } catch (err) {
+      console.error("BrainForge could not read saved work.", err);
+      storageUnreadable = true;
+      state = { activeStudentId: null, students: [] };
+      showStatus("BrainForge found saved work but could not read it. Nothing was overwritten.");
+    }
+  }
+
+  function formatWhen(iso) {
+    var date = new Date(iso);
+    if (isNaN(date.getTime())) return "";
+    return new Intl.DateTimeFormat("en-AU", {
+      day: "numeric",
+      month: "long",
+      year: "numeric"
+    }).format(date);
+  }
+
+  function todayKey() {
+    return new Date().toISOString().slice(0, 10);
+  }
+
+  function addLog(student, kind, text) {
+    var day = todayKey();
+    if (kind === "report") {
+      for (var i = 0; i < student.log.length; i++) {
+        if (student.log[i].kind === "report" && student.log[i].day === day) {
+          student.log[i].at = new Date().toISOString();
+          student.log[i].text = text;
+          return;
+        }
+      }
+    }
+    student.log.push({
+      id: newId("log"),
+      kind: kind,
+      day: day,
+      at: new Date().toISOString(),
+      text: text
+    });
+    if (student.log.length > 40) student.log.splice(0, student.log.length - 40);
+  }
+
+  function factsReady(student) {
+    if (!student) return false;
+    return student.facts.every(function (fact) { return fact.trim().length > 0; });
+  }
+
+  /* Compare folded text so a paste of the research, with only spacing changed,
+     still counts as a direct copy. Short shared words are allowed. A long
+     extract, or the whole intake, is blocked. */
+  function norm(value) {
+    return String(value || "")
+      .replace(/\u00a0/g, " ")
+      .replace(/[“”]/g, "\"")
+      .replace(/[‘’]/g, "'")
+      .replace(/\s+/g, " ")
+      .trim()
+      .toLowerCase();
+  }
+
+  function isDirectCopy(candidate, source) {
+    var copy = norm(candidate);
+    var original = norm(source);
+    if (!copy || !original) return false;
+    if (copy === original) return true;
+    if (original.indexOf(copy) >= 0 && copy.length >= 40) return true;
+    if (copy.indexOf(original) >= 0 && original.length >= 40) return true;
+    var width = 48;
+    if (original.length < width || copy.length < width) return false;
+    for (var i = 0; i <= original.length - width; i += 24) {
+      if (copy.indexOf(original.slice(i, i + width)) >= 0) return true;
+    }
+    return false;
+  }
+
+  function showPlagiarism() {
+    els["plagiarism-alert"].hidden = false;
+  }
+
+  function hidePlagiarism() {
+    els["plagiarism-alert"].hidden = true;
+  }
+
+  /* No child is guessed. Typing, adding a block, or opening the report
+     stops here when the profile dropdown has nobody selected. */
+  function requireStudent() {
+    var student = activeStudent();
+    if (student) return student;
+    showStatus("No student is selected, so this work was not saved. Add a student or choose one from Student profile. BrainForge will not guess which child the work belongs to.");
+    return null;
+  }
+
+  function setWorkingEnabled(on) {
+    var controls = [
+      els.intake, $("fact-1"), $("fact-2"), $("fact-3"),
+      els["btn-add-h1"], els["btn-add-h2"], els["btn-add-p"], els["btn-generate"],
+      els["btn-rename-student"], els["btn-remove-student"]
+    ];
+    controls.forEach(function (node) {
+      if (node) node.disabled = !on;
+    });
+    els["no-student"].hidden = on;
+    els["work-log"].hidden = !on;
+  }
+
+  function renderStudentSelect() {
+    var select = els["student-select"];
+    while (select.firstChild) select.removeChild(select.firstChild);
+    var none = document.createElement("option");
+    none.value = "";
+    none.textContent = "No student selected";
+    select.appendChild(none);
+    state.students.forEach(function (student) {
+      var option = document.createElement("option");
+      option.value = student.id;
+      option.textContent = student.name || "Student";
+      select.appendChild(option);
+    });
+    select.value = activeStudent() ? state.activeStudentId : "";
+  }
+
+  function renderLog(student) {
+    var list = els["log-list"];
+    while (list.firstChild) list.removeChild(list.firstChild);
+    if (!student || !student.log.length) {
+      var empty = document.createElement("li");
+      empty.textContent = "Nothing has been logged for this student yet.";
+      list.appendChild(empty);
+      return;
+    }
+    var entries = student.log.slice().reverse();
+    entries.forEach(function (entry) {
+      var item = document.createElement("li");
+      var when = formatWhen(entry.at);
+      item.textContent = when ? when + ": " + entry.text : entry.text;
+      list.appendChild(item);
+    });
+  }
+
+  function renderCanvas(student) {
+    var list = els["canvas-list"];
+    while (list.firstChild) list.removeChild(list.firstChild);
+    if (!student) return;
+    student.blocks.forEach(function (block, index) {
+      var wrap = document.createElement("div");
+      wrap.className = "rounded-xl border border-walnut/20 p-3";
+
+      var label = document.createElement("label");
+      label.className = "block font-semibold mb-1";
+      label.setAttribute("for", "block-" + block.id);
+      label.textContent = BLOCK_LABELS[block.type] || "Writing";
+      wrap.appendChild(label);
+
+      var field = document.createElement("textarea");
+      field.id = "block-" + block.id;
+      field.className = "canvas-field w-full min-h-[44px] rounded-lg border border-walnut/30 bg-transparent p-2 text-base";
+      field.setAttribute("data-block-id", block.id);
+      field.maxLength = 4000;
+      field.spellcheck = true;
+      field.value = block.text;
+      wrap.appendChild(field);
+
+      var row = document.createElement("div");
+      row.className = "mt-2 flex flex-wrap gap-2";
+
+      var up = document.createElement("button");
+      up.type = "button";
+      up.className = "min-h-[44px] rounded-lg border border-walnut/30 px-3";
+      up.setAttribute("data-move", "-1");
+      up.setAttribute("data-block-id", block.id);
+      up.textContent = "Move up";
+      up.disabled = index === 0;
+
+      var down = document.createElement("button");
+      down.type = "button";
+      down.className = "min-h-[44px] rounded-lg border border-walnut/30 px-3";
+      down.setAttribute("data-move", "1");
+      down.setAttribute("data-block-id", block.id);
+      down.textContent = "Move down";
+      down.disabled = index === student.blocks.length - 1;
+
+      var remove = document.createElement("button");
+      remove.type = "button";
+      remove.className = "min-h-[44px] rounded-lg border border-walnut/30 px-3";
+      remove.setAttribute("data-remove-block", block.id);
+      remove.textContent = "Remove";
+
+      row.appendChild(up);
+      row.appendChild(down);
+      row.appendChild(remove);
+      wrap.appendChild(row);
+      list.appendChild(wrap);
+    });
+  }
+
+  function renderFacts(student) {
+    var facts = student ? student.facts : ["", "", ""];
+    for (var i = 0; i < 3; i++) {
+      var input = $("fact-" + (i + 1));
+      if (document.activeElement !== input) input.value = facts[i];
+    }
+    var ready = factsReady(student);
+    els["intake-wrap"].hidden = !!(student && ready);
+    els["source-hidden-note"].hidden = !(student && ready);
+    els["forge-prompt"].hidden = !(student && ready);
+  }
+
+  function updateWorkbook(student) {
+    var body = els["workbook-body"];
+    while (body.firstChild) body.removeChild(body.firstChild);
+    if (!student || !student.blocks.length) {
+      var empty = document.createElement("p");
+      empty.className = "wb-empty js-ink";
+      empty.textContent = "Your writing will show on these lines.";
+      body.appendChild(empty);
+    } else {
+      student.blocks.forEach(function (block) {
+        var line = document.createElement("p");
+        var kind = block.type === "h1" ? "wb-h1" : block.type === "h2" ? "wb-h2" : "wb-p";
+        line.className = "js-ink " + kind;
+        line.textContent = block.text;
+        body.appendChild(line);
+        if ((block.type === "h1" || block.type === "h2") && block.text.trim()) {
+          var gap = document.createElement("div");
+          gap.className = "wb-blank";
+          gap.setAttribute("aria-hidden", "true");
+          body.appendChild(gap);
+        }
+      });
+    }
+    window.requestAnimationFrame(function () {
+      runLayoutChecks(student);
+    });
+  }
+
+  /* A subheader is out of scale when it sits above the title, or when its
+     computed type size is larger than the title on the workbook page. */
+  function subheaderScaledLarger(student) {
+    if (!student) return false;
+    var seenTitle = false;
+    var promoted = false;
+    student.blocks.forEach(function (block) {
+      if (block.type === "h1" && block.text.trim()) seenTitle = true;
+      if (block.type === "h2" && block.text.trim() && !seenTitle) promoted = true;
+    });
+    if (promoted) return true;
+    var title = els["workbook-body"].querySelector(".wb-h1");
+    var subs = els["workbook-body"].querySelectorAll(".wb-h2");
+    if (!title || !subs.length) return false;
+    var titleSize = parseFloat(window.getComputedStyle(title).fontSize) || 0;
+    for (var i = 0; i < subs.length; i++) {
+      var subSize = parseFloat(window.getComputedStyle(subs[i]).fontSize) || 0;
+      if (subSize > titleSize) return true;
+    }
+    return false;
+  }
+
+  function textCrossesMargin() {
+    var line = $("margin-line");
+    if (!line) return false;
+    var limit = line.getBoundingClientRect().right - 0.5;
+    var nodes = els["workbook-page"].querySelectorAll(".js-ink");
+    for (var i = 0; i < nodes.length; i++) {
+      var rect = nodes[i].getBoundingClientRect();
+      if (rect.width < 1 || rect.height < 1) continue;
+      if (rect.left < limit) return true;
+    }
+    return false;
+  }
+
+  function runLayoutChecks(student) {
+    var current = student || activeStudent();
+    els["hierarchy-alert"].hidden = !subheaderScaledLarger(current);
+    els["margin-alert"].hidden = !textCrossesMargin();
+  }
+
+  function renderReport(student) {
+    var report = els["evidence-report"];
+    if (!student || !student.reportAt) {
+      report.hidden = true;
+      return;
+    }
+    report.hidden = false;
+    els["report-date"].textContent = formatWhen(student.reportAt);
+    els["report-name"].textContent = student.name;
+    els["report-subject"].value = student.subject || "";
+    els["report-subject-text"].textContent = student.subject || "Subject not chosen";
+    renderCurriculum(student.subject);
+    renderWorkSample(student);
+  }
+
+  function renderCurriculum(subject) {
+    var list = els["report-curriculum"];
+    while (list.firstChild) list.removeChild(list.firstChild);
+    var lines = CURRICULUM[subject] || [];
+    if (!lines.length) {
+      var none = document.createElement("li");
+      none.textContent = "Choose a subject to list the learning areas.";
+      list.appendChild(none);
+      return;
+    }
+    lines.forEach(function (line) {
+      var item = document.createElement("li");
+      item.textContent = line;
+      list.appendChild(item);
+    });
+  }
+
+  function renderWorkSample(student) {
+    var host = els["report-work"];
+    while (host.firstChild) host.removeChild(host.firstChild);
+    var any = false;
+    student.blocks.forEach(function (block) {
+      if (!block.text.trim()) return;
+      any = true;
+      var heading = document.createElement("p");
+      heading.className = "mb-0 mt-3 font-semibold";
+      heading.textContent = BLOCK_LABELS[block.type] || "Writing";
+      var body = document.createElement("p");
+      body.className = "mt-0 mb-2 whitespace-pre-wrap break-words";
+      body.textContent = block.text;
+      host.appendChild(heading);
+      host.appendChild(body);
+    });
+    if (!any) {
+      var empty = document.createElement("p");
+      empty.textContent = "No writing has been entered yet.";
+      host.appendChild(empty);
+    }
+  }
+
+  function renderAll() {
+    var student = activeStudent();
+    renderStudentSelect();
+    setWorkingEnabled(!!student);
+    if (!student) {
+      els.intake.value = "";
+      renderFacts(null);
+      renderCanvas(null);
+      renderLog(null);
+      updateWorkbook(null);
+      renderReport(null);
+      hidePlagiarism();
+      return;
+    }
+    if (document.activeElement !== els.intake) els.intake.value = student.intake;
+    renderFacts(student);
+    renderCanvas(student);
+    renderLog(student);
+    updateWorkbook(student);
+    renderReport(student);
+    syncChecks(student);
+  }
+
+  function syncChecks(student) {
+    els["check-date"].checked = !!(student && student.checks.date);
+    els["check-ruler"].checked = !!(student && student.checks.ruler);
+    els["check-gap"].checked = !!(student && student.checks.gap);
+    var ready = !!(student && student.checks.date && student.checks.ruler && student.checks.gap);
+    els["btn-create-report"].disabled = !ready;
+  }
+
+  function showTip(which, pin) {
+    if (pin) pinnedTip = which;
+    els["tip-h1"].hidden = which !== "h1";
+    els["tip-h2"].hidden = which !== "h2";
+    els["btn-add-h1"].setAttribute("aria-expanded", which === "h1" ? "true" : "false");
+    els["btn-add-h2"].setAttribute("aria-expanded", which === "h2" ? "true" : "false");
+  }
+
+  function hideTip(which) {
+    if (pinnedTip) return;
+    if (which === "h1") els["tip-h1"].hidden = true;
+    if (which === "h2") els["tip-h2"].hidden = true;
+    if (els["tip-h1"].hidden) els["btn-add-h1"].setAttribute("aria-expanded", "false");
+    if (els["tip-h2"].hidden) els["btn-add-h2"].setAttribute("aria-expanded", "false");
+  }
+
+  function clearTips() {
+    pinnedTip = "";
+    els["tip-h1"].hidden = true;
+    els["tip-h2"].hidden = true;
+    els["btn-add-h1"].setAttribute("aria-expanded", "false");
+    els["btn-add-h2"].setAttribute("aria-expanded", "false");
+  }
+
+  function onSelectStudent() {
+    var nextId = els["student-select"].value;
+    if (!nextId) {
+      state.activeStudentId = null;
+      hidePlagiarism();
+      renderAll();
+      persistState(true);
+      return;
+    }
+    if (!findStudent(nextId)) {
+      state.activeStudentId = null;
+      showStatus("That student is not on this device, so no work was saved against them.");
+      renderAll();
+      return;
+    }
+    state.activeStudentId = nextId;
+    hidePlagiarism();
+    renderAll();
+    persistState(true);
+  }
+
+  function openNameDialog(mode) {
+    nameMode = mode;
+    els["student-form-error"].textContent = "";
+    if (mode === "rename") {
+      var student = requireStudent();
+      if (!student) return;
+      els["student-dialog-title"].textContent = "Rename student";
+      els["student-save"].textContent = "Save name";
+      els["student-name"].value = student.name;
+    } else {
+      els["student-dialog-title"].textContent = "Add a student";
+      els["student-save"].textContent = "Save student";
+      els["student-name"].value = "";
+    }
+    lastFocus = document.activeElement;
+    els["dialog-student"].showModal();
+    els["student-name"].focus();
+  }
+
+  function closeNameDialog() {
+    els["dialog-student"].close();
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+
+  function saveName(event) {
+    event.preventDefault();
+    var name = els["student-name"].value.trim();
+    if (!name) {
+      els["student-form-error"].textContent = "Enter a first name.";
+      return;
+    }
+    if (name.length > 60) {
+      els["student-form-error"].textContent = "Use 60 characters or fewer.";
+      return;
+    }
+    if (nameMode === "rename") {
+      var current = requireStudent();
+      if (!current) return;
+      var previous = current.name;
+      current.name = name;
+      addLog(current, "name", "First name updated.");
+      if (!persistState(true)) {
+        current.name = previous;
+        current.log.pop();
+        return;
+      }
+      closeNameDialog();
+      renderAll();
+      return;
+    }
+    var student = emptyStudent(name);
+    addLog(student, "create", "Student profile created.");
+    var previousId = state.activeStudentId;
+    state.students.push(student);
+    state.activeStudentId = student.id;
+    if (!persistState(true)) {
+      state.students.pop();
+      state.activeStudentId = previousId;
+      return;
+    }
+    closeNameDialog();
+    hidePlagiarism();
+    renderAll();
+  }
+
+  function openDelete() {
+    var student = requireStudent();
+    if (!student) return;
+    pendingRemoveId = student.id;
+    els["delete-message"].textContent = "Remove " + student.name + " and all of their work from this browser? This cannot be undone.";
+    lastFocus = document.activeElement;
+    els["dialog-delete"].showModal();
+    els["delete-cancel"].focus();
+  }
+
+  function confirmDelete() {
+    var index = -1;
+    for (var i = 0; i < state.students.length; i++) {
+      if (state.students[i].id === pendingRemoveId) index = i;
+    }
+    if (index < 0) {
+      els["dialog-delete"].close();
+      return;
+    }
+    var removed = state.students.splice(index, 1)[0];
+    var previousId = state.activeStudentId;
+    if (state.activeStudentId === removed.id) state.activeStudentId = null;
+    if (!persistState(true)) {
+      state.students.splice(index, 0, removed);
+      state.activeStudentId = previousId;
+      return;
+    }
+    pendingRemoveId = "";
+    els["dialog-delete"].close();
+    hidePlagiarism();
+    renderAll();
+  }
+
+  function addBlock(type) {
+    var student = requireStudent();
+    if (!student) return;
+    if (type === "p" && !factsReady(student)) {
+      showStatus("Add 3 evidence points before you write a paragraph. Use a date, a figure, or a specialised word.");
+      return;
+    }
+    var block = { id: newId("blk"), type: type, text: "" };
+    student.blocks.push(block);
+    var label = type === "h1" ? "Main title added." : type === "h2" ? "Subheader added." : "Paragraph added.";
+    addLog(student, "block", label);
+    if (!persistState(true)) {
+      student.blocks.pop();
+      student.log.pop();
+      return;
+    }
+    renderCanvas(student);
+    updateWorkbook(student);
+    var field = $("block-" + block.id);
+    if (field) field.focus();
+  }
+
+  function moveBlock(id, direction) {
+    var student = requireStudent();
+    if (!student) return;
+    var index = -1;
+    for (var i = 0; i < student.blocks.length; i++) {
+      if (student.blocks[i].id === id) index = i;
+    }
+    var next = index + direction;
+    if (index < 0 || next < 0 || next >= student.blocks.length) return;
+    var item = student.blocks[index];
+    student.blocks.splice(index, 1);
+    student.blocks.splice(next, 0, item);
+    if (!persistState(true)) {
+      student.blocks.splice(next, 1);
+      student.blocks.splice(index, 0, item);
+      return;
+    }
+    renderCanvas(student);
+    updateWorkbook(student);
+  }
+
+  function removeBlock(id) {
+    var student = requireStudent();
+    if (!student) return;
+    var block = null;
+    for (var i = 0; i < student.blocks.length; i++) {
+      if (student.blocks[i].id === id) block = student.blocks[i];
+    }
+    if (!block) return;
+    var message = "Remove this " + (BLOCK_LABELS[block.type] || "part").toLowerCase() + "? This cannot be undone.";
+    pendingRemoveId = "";
+    lastFocus = document.activeElement;
+    els["delete-message"].textContent = message;
+    els["dialog-delete"].showModal();
+    els["delete-cancel"].focus();
+    els["delete-confirm"].onclick = function () {
+      var fresh = requireStudent();
+      if (!fresh) return;
+      var index = -1;
+      for (var n = 0; n < fresh.blocks.length; n++) {
+        if (fresh.blocks[n].id === id) index = n;
+      }
+      if (index < 0) {
+        els["dialog-delete"].close();
+        return;
+      }
+      var removed = fresh.blocks.splice(index, 1)[0];
+      addLog(fresh, "remove", "A part of the writing was removed.");
+      if (!persistState(true)) {
+        fresh.blocks.splice(index, 0, removed);
+        fresh.log.pop();
+        return;
+      }
+      els["dialog-delete"].close();
+      bindDeleteStudent();
+      renderCanvas(fresh);
+      updateWorkbook(fresh);
+      renderLog(fresh);
+      if (fresh.reportAt) renderWorkSample(fresh);
+    };
+  }
+
+  function bindDeleteStudent() {
+    els["delete-confirm"].onclick = confirmDelete;
+  }
+
+  function onIntakeInput() {
+    var student = requireStudent();
+    if (!student) {
+      els.intake.value = "";
+      return;
+    }
+    student.intake = els.intake.value;
+    scheduleSave();
+  }
+
+  function onFactInput(input) {
+    var student = requireStudent();
+    if (!student) {
+      input.value = "";
+      return;
+    }
+    var index = Number(input.getAttribute("data-fact"));
+    var wasReady = factsReady(student);
+    student.facts[index] = input.value;
+    var ready = factsReady(student);
+    if (!wasReady && ready) addLog(student, "facts", "Three evidence points recorded.");
+    renderFacts(student);
+    scheduleSave();
+    renderLog(student);
+  }
+
+  function predictedValue(field, pasted) {
+    var start = typeof field.selectionStart === "number" ? field.selectionStart : field.value.length;
+    var end = typeof field.selectionEnd === "number" ? field.selectionEnd : start;
+    return field.value.slice(0, start) + pasted + field.value.slice(end);
+  }
+
+  function onCanvasPaste(event) {
+    var field = event.target;
+    if (!field || !field.getAttribute || !field.getAttribute("data-block-id")) return;
+    var student = requireStudent();
+    if (!student) {
+      event.preventDefault();
+      return;
+    }
+    var pasted = "";
+    if (event.clipboardData) pasted = event.clipboardData.getData("text") || "";
+    if (isDirectCopy(pasted, student.intake) || isDirectCopy(predictedValue(field, pasted), student.intake)) {
+      event.preventDefault();
+      showPlagiarism();
+    }
+  }
+
+  function onCanvasInput(field) {
+    var student = requireStudent();
+    if (!student) {
+      field.value = "";
+      return;
+    }
+    var id = field.getAttribute("data-block-id");
+    var block = null;
+    for (var i = 0; i < student.blocks.length; i++) {
+      if (student.blocks[i].id === id) block = student.blocks[i];
+    }
+    if (!block) return;
+    if (isDirectCopy(field.value, student.intake)) {
+      field.value = block.text;
+      showPlagiarism();
+      updateWorkbook(student);
+      return;
+    }
+    hidePlagiarism();
+    block.text = field.value;
+    updateWorkbook(student);
+    if (student.reportAt) renderWorkSample(student);
+    scheduleSave();
+  }
+
+  function openChecklist() {
+    var student = requireStudent();
+    if (!student) return;
+    syncChecks(student);
+    lastFocus = document.activeElement;
+    els["dialog-check"].showModal();
+    els["check-date"].focus();
+  }
+
+  function onCheckChange() {
+    var student = requireStudent();
+    if (!student) return;
+    student.checks.date = els["check-date"].checked;
+    student.checks.ruler = els["check-ruler"].checked;
+    student.checks.gap = els["check-gap"].checked;
+    syncChecks(student);
+    scheduleSave();
+  }
+
+  function createReport(event) {
+    event.preventDefault();
+    var student = requireStudent();
+    if (!student) return;
+    if (!student.checks.date || !student.checks.ruler || !student.checks.gap) {
+      showStatus("Tick all three checks before the report is created. Nothing was saved as a report.");
+      return;
+    }
+    var previous = student.reportAt;
+    var logSnapshot = student.log.map(function (entry) {
+      return {
+        id: entry.id,
+        kind: entry.kind,
+        day: entry.day,
+        at: entry.at,
+        text: entry.text
+      };
+    });
+    student.reportAt = new Date().toISOString();
+    addLog(student, "report", "Evidence report prepared.");
+    if (!persistState(true)) {
+      student.reportAt = previous;
+      student.log = logSnapshot;
+      return;
+    }
+    els["dialog-check"].close();
+    renderReport(student);
+    renderLog(student);
+    els["evidence-report"].scrollIntoView({ block: "start" });
+    try {
+      window.print();
+    } catch (err) {
+      console.error("Print did not open.", err);
+    }
+  }
+
+  function onSubjectChange() {
+    var student = requireStudent();
+    if (!student) {
+      els["report-subject"].value = "";
+      return;
+    }
+    var value = els["report-subject"].value;
+    if (value && SUBJECTS.indexOf(value) < 0) value = "";
+    student.subject = value;
+    els["report-subject-text"].textContent = value || "Subject not chosen";
+    renderCurriculum(value);
+    scheduleSave();
+  }
+
+  function bindTips() {
+    els["btn-add-h1"].addEventListener("mouseenter", function () { showTip("h1", false); });
+    els["btn-add-h1"].addEventListener("focus", function () { showTip("h1", false); });
+    els["btn-add-h1"].addEventListener("mouseleave", function () { hideTip("h1"); });
+    els["btn-add-h1"].addEventListener("blur", function () { hideTip("h1"); });
+    els["btn-add-h2"].addEventListener("mouseenter", function () { showTip("h2", false); });
+    els["btn-add-h2"].addEventListener("focus", function () { showTip("h2", false); });
+    els["btn-add-h2"].addEventListener("mouseleave", function () { hideTip("h2"); });
+    els["btn-add-h2"].addEventListener("blur", function () { hideTip("h2"); });
+  }
+
+  function bindEvents() {
+    els["student-select"].addEventListener("change", onSelectStudent);
+    els["btn-add-student"].addEventListener("click", function () { openNameDialog("add"); });
+    els["btn-rename-student"].addEventListener("click", function () { openNameDialog("rename"); });
+    els["btn-remove-student"].addEventListener("click", openDelete);
+    els["student-cancel"].addEventListener("click", closeNameDialog);
+    els["student-form"].addEventListener("submit", saveName);
+    els["delete-cancel"].addEventListener("click", function () {
+      els["dialog-delete"].close();
+      if (lastFocus && lastFocus.focus) lastFocus.focus();
+    });
+    /* Escape closes the dialog without a button click. Put the confirm
+       action back to removing a student, which is the usual use of this dialog. */
+    els["dialog-delete"].addEventListener("close", bindDeleteStudent);
+    bindDeleteStudent();
+
+    els["btn-theme"].addEventListener("click", function () {
+      var dark = document.documentElement.classList.contains("dark");
+      applyTheme(dark ? "light" : "dark", true);
+    });
+
+    els.intake.addEventListener("input", onIntakeInput);
+    document.querySelectorAll(".fact-input").forEach(function (input) {
+      input.addEventListener("input", function () { onFactInput(input); });
+    });
+
+    els["btn-add-h1"].addEventListener("click", function () {
+      showTip("h1", true);
+      addBlock("h1");
+    });
+    els["btn-add-h2"].addEventListener("click", function () {
+      showTip("h2", true);
+      addBlock("h2");
+    });
+    els["btn-add-p"].addEventListener("click", function () {
+      clearTips();
+      addBlock("p");
+    });
+    bindTips();
+
+    els["canvas-list"].addEventListener("input", function (event) {
+      if (event.target && event.target.getAttribute("data-block-id")) onCanvasInput(event.target);
+    });
+    els["canvas-list"].addEventListener("paste", onCanvasPaste);
+    els["canvas-list"].addEventListener("click", function (event) {
+      var move = event.target && event.target.getAttribute && event.target.getAttribute("data-move");
+      var removeId = event.target && event.target.getAttribute && event.target.getAttribute("data-remove-block");
+      var id = event.target && event.target.getAttribute && event.target.getAttribute("data-block-id");
+      if (move && id) moveBlock(id, Number(move));
+      if (removeId) removeBlock(removeId);
+    });
+
+    els["btn-generate"].addEventListener("click", openChecklist);
+    els["check-date"].addEventListener("change", onCheckChange);
+    els["check-ruler"].addEventListener("change", onCheckChange);
+    els["check-gap"].addEventListener("change", onCheckChange);
+    els["check-form"].addEventListener("submit", createReport);
+    els["check-cancel"].addEventListener("click", function () {
+      els["dialog-check"].close();
+      if (lastFocus && lastFocus.focus) lastFocus.focus();
+    });
+    els["report-subject"].addEventListener("change", onSubjectChange);
+    els["btn-print"].addEventListener("click", function () {
+      try { window.print(); }
+      catch (err) { console.error("Print did not open.", err); }
+    });
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape") clearTips();
+    });
+
+    /* A layout change can push ink over the red margin, so recheck then. */
+    if (window.ResizeObserver) {
+      var observer = new ResizeObserver(function () {
+        runLayoutChecks(activeStudent());
+      });
+      observer.observe(els["workbook-page"]);
+    } else {
+      window.addEventListener("resize", function () { runLayoutChecks(activeStudent()); });
+    }
+
+    window.addEventListener("pagehide", function () {
+      if (saveTimer) {
+        window.clearTimeout(saveTimer);
+        persistState(false);
+      }
+    });
+  }
+
+  cacheEls();
+  loadTheme();
+  loadState();
+  if (storageUnreadable) {
+    showStatus("BrainForge could not read saved work in this browser. Nothing new will be stored over it.");
+  }
+  bindEvents();
+  renderAll();
+})();
+</script>
+</body>
+</html>
