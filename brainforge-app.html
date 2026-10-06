@@ -1,0 +1,2389 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>
+/* Apply the saved colour mode before the page paints.
+   The choice is kept in localStorage and reapplied as CSS variables
+   and the Tailwind dark class. A missing save just leaves the light page. */
+(function () {
+  try {
+    var mode = localStorage.getItem("ahh-brainforge-theme");
+    var root = document.documentElement;
+    if (mode === "dark") {
+      root.classList.add("dark");
+      root.style.setProperty("--bf-theme", "dark");
+      root.style.setProperty("--page-bg", "#2A1B10");
+      root.style.setProperty("--page-text", "#F3E9D2");
+    } else {
+      root.style.setProperty("--bf-theme", "light");
+      root.style.setProperty("--page-bg", "#F3E9D2");
+      root.style.setProperty("--page-text", "#2A1B10");
+    }
+  } catch (e) {
+    /* The main script reports a storage failure once the page can show it. */
+  }
+})();
+</script>
+<title>BrainForge</title>
+<link rel="icon" type="image/png" sizes="32x32" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAABBJJREFUWIW9l9tPVFcUxn/rnDMHGBiZi8wEVG6Kow2mKCGiFSNNrKWpDySNfWprmvapT/1LmjTpU23fmt5i+qAJkmijtTReqlKqBkcuAyoKw8zgCAbOMLP7QLjOGWTGod/T7P2tdb5vzt57rX2EFThW63anTPNLEVqVkiYR/BQASjEhonqV4ppuWV9dDk9NLXKy+OOt3RUdmsgZQaoKIZrVDGosrdRnPaFI15KBtl3+E6LLhc0UXouUSr/XE4p0yZHqco+UFN0TpPL/NKBQY/Mzs/sMKSn+ROC1xE2HTm2Nh9pqHwDh0SjhkThWMpU1R5Aqo7TkYwNF6/JOyA0icLKjkVOdTZimsYqzrHl+Pnub8933USrLAxSt0hYMhAVqchWvqtzCF5+30bCzYt24h4MRvvn2KmNPEzb6jGj5iAOc6mx6pThAw84KTnU22XICNVo+4ocP1nH4YH0O8fW0HNhhy+Vl4NiRnTnnHG8PFs5AVWV5wXLyMuB2lxQsJy8DkcnpnHNGRuOFMzAyGss5Jzxin5OXgXNd90il0huOT6XSXLz8IH8DRrFBIOij1LewjoPDUa7cHN6wge5L/QxneQOG7ewKVO3zU9uyHU1bqNd//3qXIqdJf/IlLXMWriJz3fxobIafzt7OysvRYMC2UusOjeDb9Xh3lOMQxd4yocKEIhRzCBEL/o1Y+BLwwck3bXvBL7/1cq7rbvZekM2Ao8SgsaOBUq8TAY56we3I7FhPxl/y9Xf3MYzcu+EibJcg2F5HqdcJQIVpLw6wLeBkV90WQkMJQgOThAYmAcXhZj/vn96Dz20ST8xx484kf9wYX3kBW0LGJnR6inFXbVkal71il/h9xavGR1oCdL5bQ6W/BNPUCWx1cvJ4Ne2H7K8cGQbmreXXlk6liYWn1oasi0PN9h2y9cBW2/mM/2fNJOn/fQjdoREdec7+Zj/gySo4EZ1dNfaU258KV5ljYwYAJocWyqbL78TcHSCeVHhs9sGjp9MMDK++aLyYTuJ16xmx8eeWrYGshch0OnjjnQZE1+iZmOd6X5RIbJZkMkUkNstftyY48+ND0mvO0K2+qO3z7j2wX0oDpcYRCaxyZWg0djTgKDZQStF3cZj448wrlR2uXH+GYWjs3VWO11NE/LlFaCjBpZ6xzGClxqUt6L8gyImV83UHt7Nt34Kn8M0nPP7n2YbEc4VCdWuSlt61hO5YWMPIUGzTxAEkLb3Susdda6bNO4i4lwgBV6CMF5EZVGqdOvo6UGrK0qz92rX+qXAaPl3NQeLZ9OaJA0rk9LX+qbAOMBqd6d/uc94QoV0Q16apLn+cfvhnaOI8wNKBfRR9OVDvcnyf1nVLhDmlxCVCaUFEFz7Pe5TiB92yPro6GLu7yP0H7m90FlZ4hP0AAAAASUVORK5CYII=">
+<link rel="icon" type="image/svg+xml" sizes="any" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%233E2717'/%3E%3Cpath d='M13 54 Q24 40 36 27' stroke='%237A8B4A' stroke-width='5' stroke-linecap='round' fill='none'/%3E%3Cellipse cx='17' cy='38' rx='9' ry='4' transform='rotate(-40 17 38)' fill='%237A8B4A'/%3E%3Ccircle cx='40' cy='23' r='14' fill='%23E8C877'/%3E%3Ccircle cx='25' cy='42' r='8' fill='%23C9A24B'/%3E%3Ccircle cx='47' cy='45' r='7' fill='%23C9A24B'/%3E%3C/svg%3E">
+<!--
+  BrainForge helps a child in Years 3–6 turn digital research into their own
+  informative writing, and keeps a printable record for the parent.
+  The page layout is in this file, so it still looks right when opened from
+  disk. Font Awesome is optional and only draws icons. Student names,
+  drafts, and reports stay in localStorage on this device.
+  Text a person types is inserted with textContent so it cannot run as HTML.
+-->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style id="bf-layout">
+/* Layout rules live in this file. The page does not need the Tailwind CDN. */
+*,:after,:before{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/*! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com*/*,:after,:before{box-sizing:border-box;border:0 solid #e5e7eb}:after,:before{--tw-content:""}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;-o-tab-size:4;tab-size:4;font-family:ui-sans-serif,system-ui,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0}fieldset,legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::-moz-placeholder,textarea::-moz-placeholder{opacity:1;color:#9ca3af}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.visible{visibility:visible}.absolute{position:absolute}.relative{position:relative}.m-0{margin:0}.mx-auto{margin-left:auto;margin-right:auto}.mb-0{margin-bottom:0}.mb-1{margin-bottom:.25rem}.mb-2{margin-bottom:.5rem}.mb-3{margin-bottom:.75rem}.mb-4{margin-bottom:1rem}.mt-0{margin-top:0}.mt-1{margin-top:.25rem}.mt-2{margin-top:.5rem}.mt-3{margin-top:.75rem}.mt-4{margin-top:1rem}.mt-5{margin-top:1.25rem}.mt-6{margin-top:1.5rem}.\!block{display:block!important}.block{display:block}.flex{display:flex}.grid{display:grid}.hidden{display:none}.h-5{height:1.25rem}.min-h-\[1\.5rem\]{min-height:1.5rem}.min-h-\[44px\]{min-height:44px}.min-h-\[8rem\]{min-height:8rem}.min-h-screen{min-height:100vh}.w-5{width:1.25rem}.w-full{width:100%}.min-w-0{min-width:0}.max-w-3xl{max-width:48rem}.max-w-7xl{max-width:80rem}.max-w-\[210mm\]{max-width:210mm}.flex-1{flex:1 1 0%}.shrink{flex-shrink:1}.shrink-0{flex-shrink:0}.transform{transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.cursor-pointer{cursor:pointer}.resize{resize:both}.grid-cols-1{grid-template-columns:repeat(1,minmax(0,1fr))}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-start{align-items:flex-start}.items-center{align-items:center}.gap-2{gap:.5rem}.gap-3{gap:.75rem}.gap-4{gap:1rem}.rounded-2xl{border-radius:1rem}.rounded-lg{border-radius:.5rem}.rounded-md{border-radius:.375rem}.rounded-xl{border-radius:.75rem}.border{border-width:1px}.border-0{border-width:0}.border-2{border-width:2px}.border-b{border-bottom-width:1px}.border-black\/10{border-color:rgba(0,0,0,.1)}.border-brass-dark{--tw-border-opacity:1;border-color:rgb(143 111 46/var(--tw-border-opacity,1))}.border-brass-dark\/50{border-color:rgba(143,111,46,.5)}.border-walnut{--tw-border-opacity:1;border-color:rgb(107 69 48/var(--tw-border-opacity,1))}.border-walnut\/15{border-color:rgba(107,69,48,.15)}.border-walnut\/20{border-color:rgba(107,69,48,.2)}.border-walnut\/30{border-color:rgba(107,69,48,.3)}.border-walnut\/40{border-color:rgba(107,69,48,.4)}.bg-\[var\(--card-bg\)\]{background-color:var(--card-bg)}.bg-\[var\(--page-bg\)\]{background-color:var(--page-bg)}.bg-brass\/15{background-color:rgba(201,162,75,.15)}.bg-brass\/20{background-color:rgba(201,162,75,.2)}.bg-leaf-dark{--tw-bg-opacity:1;background-color:rgb(88 99 57/var(--tw-bg-opacity,1))}.bg-leaf\/15{background-color:rgba(122,139,74,.15)}.bg-parchment{--tw-bg-opacity:1;background-color:rgb(243 233 210/var(--tw-bg-opacity,1))}.bg-transparent{background-color:transparent}.bg-walnut{--tw-bg-opacity:1;background-color:rgb(107 69 48/var(--tw-bg-opacity,1))}.bg-walnut-dark{--tw-bg-opacity:1;background-color:rgb(62 39 23/var(--tw-bg-opacity,1))}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255/var(--tw-bg-opacity,1))}.p-0{padding:0}.p-2{padding:.5rem}.p-3{padding:.75rem}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.px-3{padding-left:.75rem;padding-right:.75rem}.px-4{padding-left:1rem;padding-right:1rem}.py-1{padding-top:.25rem;padding-bottom:.25rem}.py-2{padding-top:.5rem;padding-bottom:.5rem}.py-3{padding-top:.75rem;padding-bottom:.75rem}.py-4{padding-top:1rem;padding-bottom:1rem}.py-6{padding-top:1.5rem;padding-bottom:1.5rem}.pl-5{padding-left:1.25rem}.text-left{text-align:left}.font-body{font-family:Source Sans 3,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}.font-display{font-family:Fraunces,Georgia,Times New Roman,serif}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-base{font-size:1rem;line-height:1.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.font-semibold{font-weight:600}.lowercase{text-transform:lowercase}.leading-relaxed{line-height:1.625}.text-\[var\(--card-text\)\]{color:var(--card-text)}.text-black{--tw-text-opacity:1;color:rgb(0 0 0/var(--tw-text-opacity,1))}.text-parchment{--tw-text-opacity:1;color:rgb(243 233 210/var(--tw-text-opacity,1))}.text-walnut{--tw-text-opacity:1;color:rgb(107 69 48/var(--tw-text-opacity,1))}.text-walnut-deep{--tw-text-opacity:1;color:rgb(42 27 16/var(--tw-text-opacity,1))}.underline{text-decoration-line:underline}.shadow-md{--tw-shadow:0 4px 6px -1px rgba(0,0,0,.1),0 2px 4px -2px rgba(0,0,0,.1);--tw-shadow-colored:0 4px 6px -1px var(--tw-shadow-color),0 2px 4px -2px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)}.outline{outline-style:solid}.ring{--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow,0 0 #0000)}.blur{--tw-blur:blur(8px)}.blur,.filter{filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}.transition{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,-webkit-backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter,-webkit-backdrop-filter;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.dark\:border-brass\/30:is(.dark *){border-color:rgba(201,162,75,.3)}.dark\:bg-walnut-deep:is(.dark *){--tw-bg-opacity:1;background-color:rgb(42 27 16/var(--tw-bg-opacity,1))}.dark\:text-brass-bright:is(.dark *){--tw-text-opacity:1;color:rgb(232 200 119/var(--tw-text-opacity,1))}.dark\:text-parchment:is(.dark *){--tw-text-opacity:1;color:rgb(243 233 210/var(--tw-text-opacity,1))}@media (min-width:640px){.sm\:w-auto{width:auto}.sm\:max-w-xs{max-width:20rem}.sm\:flex-row{flex-direction:row}.sm\:flex-wrap{flex-wrap:wrap}.sm\:items-end{align-items:flex-end}.sm\:p-8{padding:2rem}}@media (min-width:1024px){.lg\:grid-cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}}
+</style>
+<style>
+  /* Palette tokens. Components use these variables so a theme change
+     is one place, including the values the boot script writes. */
+  :root {
+    --walnut: #6B4530;
+    --walnut-dark: #3E2717;
+    --walnut-deep: #2A1B10;
+    --brass: #C9A24B;
+    --brass-bright: #E8C877;
+    --brass-dark: #8F6F2E;
+    --parchment: #F3E9D2;
+    --leaf: #7A8B4A;
+    --leaf-dark: #586339;
+    --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+    --font-body: "Source Sans 3", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    --page-bg: var(--parchment);
+    --page-text: var(--walnut-deep);
+    --card-bg: #fffaf0;
+    --card-text: var(--walnut-deep);
+    --bf-theme: light;
+    color-scheme: light;
+  }
+
+  html.dark {
+    --page-bg: var(--walnut-deep);
+    --page-text: var(--parchment);
+    --card-bg: var(--walnut-dark);
+    --card-text: var(--parchment);
+    --bf-theme: dark;
+    color-scheme: dark;
+  }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--page-bg);
+    color: var(--page-text);
+  }
+
+  h1, h2, h3 {
+    font-family: var(--font-display);
+  }
+
+  /* Focus is a solid ring, not colour alone, and it stays visible on both themes. */
+  :focus-visible {
+    outline: 3px solid var(--walnut-deep);
+    outline-offset: 2px;
+  }
+
+  html.dark :focus-visible {
+    outline-color: var(--brass-bright);
+  }
+
+  /* Font Awesome only paints the icon. If that file is missing, the
+     glyph must not grow over the label or take the click. */
+  button .fa-solid {
+    pointer-events: none;
+    display: inline-block;
+    width: 1.15em;
+    max-width: 1.15em;
+    overflow: hidden;
+    text-align: center;
+    font-style: normal;
+    line-height: 1;
+    vertical-align: -0.1em;
+  }
+
+  .skip {
+    position: absolute;
+    left: 0.5rem;
+    top: 0.5rem;
+    transform: translateY(-150%);
+    background: var(--walnut);
+    color: var(--parchment);
+    padding: 0.6rem 1rem;
+    z-index: 50;
+    border-radius: 0.5rem;
+  }
+
+  .skip:focus {
+    transform: none;
+  }
+
+  /* Australian workbook paper: blue ruling, a sharp red margin, and a
+     highlighted top band the height of a 2 cm margin. */
+  .workbook-page {
+    position: relative;
+    overflow: hidden;
+    background-color: #fffef8;
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent calc(8mm - 1px),
+      rgba(36, 78, 150, 0.45) calc(8mm - 1px),
+      rgba(36, 78, 150, 0.45) 8mm
+    );
+    color: #2A1B10;
+    min-height: 18rem;
+    border: 1px solid rgba(62, 39, 23, 0.25);
+    border-radius: 0.25rem;
+  }
+
+  .margin-line {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 2cm;
+    width: 2px;
+    background: #c41218;
+    z-index: 2;
+  }
+
+  .top-margin {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    align-items: flex-start;
+    min-height: 2cm;
+    padding: 0.35rem 0.6rem 0.35rem calc(2cm + 0.55rem);
+    background: rgba(201, 162, 75, 0.38);
+  }
+
+  .spacing-marker,
+  .workbook-body {
+    position: relative;
+    z-index: 1;
+    padding-left: calc(2cm + 0.55rem);
+    padding-right: 0.7rem;
+  }
+
+  .spacing-marker {
+    margin: 0;
+    padding-top: 0.15rem;
+    padding-bottom: 0.15rem;
+    font-size: 0.85rem;
+    line-height: 1.35;
+  }
+
+  .workbook-body {
+    padding-bottom: 1.25rem;
+    min-height: 8rem;
+  }
+
+  /* The top-right of the page is a real box the child can click.
+     It starts empty. The hint is only a placeholder, so it is not the
+     saved date and it is not copied onto the report or the printout. */
+  .date-cue {
+    position: relative;
+    z-index: 3;
+    display: block;
+    flex: 0 0 auto;
+    width: 12rem;
+    max-width: 100%;
+    margin: 0;
+  }
+
+  .workbook-date {
+    box-sizing: border-box;
+    display: block;
+    width: 100%;
+    min-height: 44px;
+    border: 2px solid #2A1B10;
+    border-radius: 0.4rem;
+    background: #fff;
+    color: #2A1B10;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.2;
+    text-align: left;
+    padding: 0.4rem 0.55rem;
+  }
+
+  .workbook-date::placeholder {
+    color: #6B4530;
+    font-weight: 600;
+    opacity: 1;
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .top-margin p {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.35;
+  }
+
+  /* The long cue must be allowed to shrink and wrap, or a narrow phone
+     widens the page and the red margin check reads the wrong edge. */
+  .top-margin p:first-child {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .wb-h1,
+  .wb-h2,
+  .wb-p,
+  .wb-empty {
+    margin: 0;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  /* The title is kept on a larger type scale than a subheader.
+     Layout checks compare these computed sizes. */
+  .wb-h1 {
+    font-family: var(--font-display);
+    font-size: 7mm;
+    line-height: 8mm;
+    font-weight: 700;
+  }
+
+  .wb-h2 {
+    font-family: var(--font-display);
+    font-size: 5.2mm;
+    line-height: 8mm;
+    font-weight: 700;
+  }
+
+  .wb-p,
+  .wb-empty {
+    font-size: 4.2mm;
+    line-height: 8mm;
+  }
+
+  /* An empty paragraph still takes a line, so the new block is visible
+     on the workbook before the child has typed. */
+  .wb-p {
+    min-height: 8mm;
+  }
+
+  .wb-blank {
+    height: 8mm;
+  }
+
+  /* On-screen guide only. It is not part of the student's writing,
+     so it is not ink for the margin check and it does not print. */
+  .grammar-badge {
+    display: block;
+    max-width: 100%;
+    margin: 0 0 1mm;
+    padding: 0.15rem 0.4rem;
+    background: #E8C877;
+    color: #2A1B10;
+    border: 1px solid #8F6F2E;
+    border-radius: 0.35rem;
+    font-family: var(--font-body);
+    font-size: 3.4mm;
+    font-weight: 700;
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+  }
+
+  dialog {
+    border: 0;
+    border-radius: 1rem;
+    padding: 0;
+    max-width: calc(100vw - 1.5rem);
+    width: 32rem;
+    background: var(--card-bg);
+    color: var(--card-text);
+  }
+
+  dialog::backdrop {
+    background: rgba(42, 27, 16, 0.55);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      transition: none !important;
+      animation: none !important;
+    }
+  }
+
+  /* The work sample is the child's writing, in their order, with no labels.
+     A title is a centred bold heading. A subheader is a smaller bold heading. */
+  #report-work .sample-title {
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    line-height: 1.25;
+    font-weight: 700;
+    text-align: center;
+    margin: 0.75rem 0 0.35rem;
+    color: #000;
+    overflow-wrap: anywhere;
+  }
+
+  #report-work .sample-sub {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    line-height: 1.3;
+    font-weight: 700;
+    text-align: start;
+    margin: 0.9rem 0 0.25rem;
+    color: #000;
+    overflow-wrap: anywhere;
+  }
+
+  #report-work .sample-paragraph {
+    margin: 0.25rem 0 0.75rem;
+    text-align: start;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    color: #000;
+  }
+
+  #report-work .report-workbook-date {
+    margin: 0 0 0.75rem;
+    min-height: 1.25rem;
+    text-align: right;
+    font-weight: 700;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    color: #000;
+  }
+
+  /* Print keeps a single A4 record. Every control, panel, and sidebar goes. */
+  @page {
+    size: A4;
+    margin: 16mm;
+  }
+
+  @media print {
+    .no-print,
+    .no-print *,
+    .grammar-badge {
+      display: none !important;
+    }
+
+    html, body {
+      background: #fff !important;
+      color: #000 !important;
+    }
+
+    #evidence-report:not([hidden]) {
+      display: block !important;
+      background: #fff !important;
+      color: #000 !important;
+      box-shadow: none !important;
+      border: 0 !important;
+      margin: 0 !important;
+      max-width: none !important;
+      width: auto !important;
+    }
+  }
+</style>
+</head>
+<body class="font-body bg-parchment text-walnut-deep dark:bg-walnut-deep dark:text-parchment min-h-screen">
+<a class="skip no-print" href="#canvas-panel">Skip to the writing canvas</a>
+
+<header class="no-print border-b border-walnut/15 dark:border-brass/30 bg-[var(--page-bg)]">
+  <div class="mx-auto max-w-7xl px-4 py-4 flex flex-col gap-4">
+    <div class="min-w-0">
+      <h1 class="font-display text-3xl text-walnut dark:text-brass-bright m-0">BrainForge</h1>
+      <p class="mt-1 mb-0 max-w-3xl text-base leading-relaxed">For Years 3–6, ages 8–12. Your child turns research into their own informative writing. You get a record you can show your registering authority.</p>
+    </div>
+
+    <div class="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end">
+      <div class="min-w-0 flex-1 sm:max-w-xs">
+        <label for="student-select" class="block text-sm font-semibold mb-1">Student profile</label>
+        <select id="student-select" class="min-h-[44px] w-full rounded-lg border border-walnut/30 bg-[var(--card-bg)] text-[var(--card-text)] px-3"></select>
+      </div>
+      <button type="button" id="btn-add-student" class="min-h-[44px] rounded-lg bg-walnut text-parchment px-4 font-semibold">+ Add Student</button>
+      <button type="button" id="btn-rename-student" class="min-h-[44px] rounded-lg border border-walnut/40 px-4 font-semibold">Rename</button>
+      <button type="button" id="btn-remove-student" class="min-h-[44px] rounded-lg border border-walnut/40 px-4 font-semibold">Remove student</button>
+      <button type="button" id="btn-theme" class="min-h-[44px] rounded-lg border border-brass-dark px-4 font-semibold" aria-pressed="false">
+        <i class="fa-solid fa-moon" aria-hidden="true" id="theme-icon"></i>
+        <span id="theme-label">Dark mode</span>
+      </button>
+    </div>
+
+    <p id="status" class="m-0 min-h-[1.5rem] font-semibold" role="status" aria-live="polite"></p>
+    <p id="no-student" class="m-0 rounded-lg border border-brass-dark/50 bg-brass/15 px-3 py-2" role="status">No student is selected, so work on this page will not be saved. Add a student or choose one from Student profile. BrainForge will not guess which child the work belongs to.</p>
+
+    <details id="work-log" class="rounded-lg border border-walnut/20 px-3 py-1">
+      <summary class="min-h-[44px] flex items-center cursor-pointer font-semibold">Work log</summary>
+      <ul id="log-list" class="mt-1 mb-3 pl-5"></ul>
+    </details>
+  </div>
+</header>
+
+<main class="mx-auto max-w-7xl px-4 py-4">
+  <div class="no-print grid grid-cols-1 gap-4 lg:grid-cols-3">
+    <section class="min-w-0 rounded-2xl border border-walnut/15 bg-[var(--card-bg)] text-[var(--card-text)] p-4" aria-labelledby="intake-heading">
+      <h2 id="intake-heading" class="font-display text-xl m-0 text-walnut dark:text-brass-bright">Cognitive Retention Engine</h2>
+      <p class="mt-1 mb-3 text-base">Paste the research, then pull out three facts in your own notes.</p>
+
+      <div id="intake-wrap">
+        <label for="intake" class="block font-semibold mb-1">Digital Research Intake</label>
+        <textarea id="intake" class="w-full min-h-[8rem] rounded-xl border border-walnut/30 bg-transparent p-3 text-base" maxlength="20000" spellcheck="true"></textarea>
+      </div>
+
+      <p id="source-hidden-note" class="mt-2 mb-2" hidden>The source is hidden so you write from your three facts.</p>
+
+      <fieldset class="mt-3 border-0 p-0 m-0">
+        <legend class="font-semibold mb-2">Three evidence points</legend>
+        <p class="mt-0 mb-2 text-sm">Use a date, a figure, or a specialised word. All three are needed.</p>
+        <div class="flex flex-col gap-3">
+          <div>
+            <label for="fact-1" class="block text-sm font-semibold mb-1">Evidence point 1</label>
+            <input id="fact-1" data-fact="0" class="fact-input w-full min-h-[44px] rounded-xl border border-walnut/30 bg-transparent px-3 text-base" type="text" maxlength="240" spellcheck="true">
+          </div>
+          <div>
+            <label for="fact-2" class="block text-sm font-semibold mb-1">Evidence point 2</label>
+            <input id="fact-2" data-fact="1" class="fact-input w-full min-h-[44px] rounded-xl border border-walnut/30 bg-transparent px-3 text-base" type="text" maxlength="240" spellcheck="true">
+          </div>
+          <div>
+            <label for="fact-3" class="block text-sm font-semibold mb-1">Evidence point 3</label>
+            <input id="fact-3" data-fact="2" class="fact-input w-full min-h-[44px] rounded-xl border border-walnut/30 bg-transparent px-3 text-base" type="text" maxlength="240" spellcheck="true">
+          </div>
+        </div>
+      </fieldset>
+
+      <p id="forge-prompt" class="mt-4 mb-0 rounded-xl bg-leaf/15 px-3 py-3 font-semibold" hidden>Now, forge a complete sentence combining these 3 pieces of evidence.</p>
+    </section>
+
+    <section id="canvas-panel" class="min-w-0 rounded-2xl border border-walnut/15 bg-[var(--card-bg)] text-[var(--card-text)] p-4" aria-labelledby="canvas-heading">
+      <h2 id="canvas-heading" class="font-display text-xl m-0 text-walnut dark:text-brass-bright">Document Architect Canvas</h2>
+      <p class="mt-1 mb-3 text-base">Add a main title, subheaders, and paragraphs in your own words.</p>
+
+      <div class="flex flex-col gap-2">
+        <button type="button" id="btn-add-h1" class="min-h-[44px] w-full rounded-2xl bg-walnut text-parchment px-3 py-2 text-left font-semibold" aria-describedby="tip-h1" aria-expanded="false">
+          <i class="fa-solid fa-heading" aria-hidden="true"></i> + Add Main Title (H1)
+        </button>
+        <p id="tip-h1" class="tip m-0 rounded-xl bg-brass/20 px-3 py-2 text-sm" role="tooltip" hidden>Australian Curriculum text structures require a clear title so the reader immediately knows the overarching topic.</p>
+
+        <button type="button" id="btn-add-h2" class="min-h-[44px] w-full rounded-2xl bg-walnut-dark text-parchment px-3 py-2 text-left font-semibold" aria-describedby="tip-h2" aria-expanded="false">
+          <i class="fa-solid fa-bars-staggered" aria-hidden="true"></i> + Add Subheader (H2)
+        </button>
+        <p id="tip-h2" class="tip m-0 rounded-xl bg-brass/20 px-3 py-2 text-sm" role="tooltip" hidden>Subheaders act as conceptual signposts, grouping related facts together so your informative text flows logically.</p>
+
+        <button type="button" id="btn-add-p" class="min-h-[44px] w-full rounded-2xl border-2 border-walnut px-3 py-2 text-left font-semibold">
+          <i class="fa-solid fa-align-left" aria-hidden="true"></i> + Add Informative Paragraph
+        </button>
+      </div>
+
+      <p id="plagiarism-alert" class="mt-3 mb-0 rounded-xl border border-walnut px-3 py-3 font-semibold" role="alert" hidden>That's Google's voice! Let's forge it into your own words to show your registering authority real, independent work.</p>
+
+      <p id="hierarchy-alert" class="mt-3 mb-0 rounded-xl border border-brass-dark bg-brass/15 px-3 py-3" role="status" hidden>
+        <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+        A subheader is scaled larger than the title. Keep the main title first and bigger, so the reader knows the topic straight away.
+      </p>
+
+      <div id="canvas-list" class="mt-4 flex flex-col gap-3"></div>
+    </section>
+
+    <section class="min-w-0 rounded-2xl border border-walnut/15 bg-[var(--card-bg)] text-[var(--card-text)] p-4" aria-labelledby="workbook-heading">
+      <h2 id="workbook-heading" class="font-display text-xl m-0 text-walnut dark:text-brass-bright">Australian Workbook Simulator</h2>
+      <p class="mt-1 mb-3 text-base">See how the writing sits on workbook lines.</p>
+      <p id="grammar-online-note" class="no-print mt-0 mb-3 text-sm">Grammar check sends this writing to an online checker. BrainForge does not keep a copy.</p>
+
+      <p id="margin-alert" class="mt-0 mb-3 rounded-xl border border-walnut px-3 py-3 font-semibold" role="alert" hidden>
+        <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+        Keep all text to the right of the margin line.
+      </p>
+
+      <div id="workbook-page" class="workbook-page" aria-label="Workbook page preview">
+        <div id="margin-line" class="margin-line" aria-hidden="true"></div>
+        <div class="top-margin">
+          <p class="js-ink" id="top-cue">Leave the top lines blank for structural breathing room.</p>
+          <label class="date-cue">
+            <span class="visually-hidden">Write the date</span>
+            <input id="workbook-date" class="workbook-date" type="text" maxlength="120" autocomplete="off" spellcheck="false" autocapitalize="off" placeholder="Write the date" aria-label="Write the date">
+          </label>
+        </div>
+        <p class="spacing-marker" id="spacing-cue"><span class="js-ink">Skip 1 blank line after headers/subheaders to structure paragraphs cleanly.</span></p>
+        <div id="workbook-body" class="workbook-body"></div>
+      </div>
+    </section>
+  </div>
+
+  <div class="no-print mt-4">
+    <button type="button" id="btn-generate" class="min-h-[44px] w-full sm:w-auto rounded-lg bg-leaf-dark text-parchment px-4 py-2 font-semibold">
+      <i class="fa-solid fa-print" aria-hidden="true"></i> Generate Evidence &amp; Print
+    </button>
+  </div>
+
+  <section id="evidence-report" class="mt-6 max-w-[210mm] bg-white text-black p-6 sm:p-8 rounded-md shadow-md border border-black/10" hidden aria-labelledby="report-heading">
+    <h2 id="report-heading" class="font-display text-2xl m-0 text-black">Evidence report</h2>
+    <p class="mt-3 mb-1 text-black"><span class="font-semibold">Date: </span><span id="report-date"></span></p>
+    <p class="mt-0 mb-1 text-black"><span class="font-semibold">Student: </span><span id="report-name"></span></p>
+    <p class="mt-0 mb-1 text-black">Years 3–6, ages 8–12</p>
+
+    <p class="mt-3 mb-1 text-black"><span class="font-semibold">Subject: </span>English</p>
+
+    <h3 class="font-display text-lg mt-5 mb-2 text-black">Learning areas</h3>
+    <p class="mt-0 mb-2 text-sm text-black">Australian Curriculum v9.0, Years 3–6. These are the learning areas this activity is built around.</p>
+    <ul id="report-curriculum" class="mt-0 mb-4 pl-5 text-black">
+      <li>English &gt; Language</li>
+      <li>English &gt; Literacy</li>
+    </ul>
+
+    <h3 class="font-display text-lg mt-4 mb-2 text-black">Activity</h3>
+    <p id="activity-statement" class="mt-0 mb-4 leading-relaxed text-black">The student conducted independent inquiry using digital research tools. To fulfill curriculum outcomes for creating informative texts, the student analyzed source data, extracted key evidence to mitigate plagiarism risks, and synthesised findings into an objective text structure. The student successfully applied textual hierarchies—including structural main headings and subordinate subheadings—to organize information logically before transferring the schema into physical media.</p>
+
+    <h3 class="font-display text-lg mt-4 mb-2 text-black">Work sample</h3>
+    <div id="report-work" class="text-black leading-relaxed"></div>
+
+    <p class="mt-6 mb-4 text-sm text-black">This is a record of the work. Your registering authority decides what it accepts.</p>
+    <button type="button" id="btn-print" class="no-print min-h-[44px] rounded-lg bg-walnut text-parchment px-4 font-semibold">🖨️ Print Official Report</button>
+  </section>
+</main>
+
+<footer class="no-print mx-auto max-w-7xl px-4 py-6 text-sm">
+  <p class="m-0">Your child’s work stays in this browser. There is no account, and the work is not sent to a server.</p>
+</footer>
+
+<dialog id="dialog-student" class="no-print" aria-labelledby="student-dialog-title">
+  <form id="student-form" method="dialog" class="p-5 flex flex-col gap-3">
+    <h2 id="student-dialog-title" class="font-display text-xl m-0">Add a student</h2>
+    <p id="student-dialog-help" class="m-0 text-sm">First name only. Leave out the surname.</p>
+    <label for="student-name" class="font-semibold">First name</label>
+    <input id="student-name" name="student-name" class="min-h-[44px] rounded-lg border border-walnut/40 bg-transparent px-3 text-base" type="text" maxlength="60" autocomplete="off" required>
+    <p id="student-form-error" class="m-0 font-semibold" role="alert"></p>
+    <div class="flex flex-wrap gap-2">
+      <button type="submit" id="student-save" class="min-h-[44px] rounded-lg bg-walnut text-parchment px-4 font-semibold">Save student</button>
+      <button type="button" id="student-cancel" class="min-h-[44px] rounded-lg border border-walnut/40 px-4 font-semibold">Cancel</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="dialog-delete" class="no-print" aria-labelledby="delete-title">
+  <div class="p-5 flex flex-col gap-3">
+    <h2 id="delete-title" class="font-display text-xl m-0">Remove this student?</h2>
+    <p id="delete-message" class="m-0"></p>
+    <div class="flex flex-wrap gap-2">
+      <button type="button" id="delete-confirm" class="min-h-[44px] rounded-lg bg-walnut text-parchment px-4 font-semibold">Remove</button>
+      <button type="button" id="delete-cancel" class="min-h-[44px] rounded-lg border border-walnut/40 px-4 font-semibold">Cancel</button>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="dialog-check" class="no-print" aria-labelledby="check-title">
+  <form id="check-form" method="dialog" class="p-5 flex flex-col gap-3">
+    <h2 id="check-title" class="font-display text-xl m-0">Before you print</h2>
+    <p class="m-0 text-sm">Tick each check once it is true of the paper workbook.</p>
+    <label class="flex items-start gap-3 min-h-[44px] cursor-pointer">
+      <input id="check-date" class="mt-1 h-5 w-5 shrink-0" type="checkbox">
+      <span>Written the date in the top-right corner of your workbook?</span>
+    </label>
+    <label class="flex items-start gap-3 min-h-[44px] cursor-pointer">
+      <input id="check-ruler" class="mt-1 h-5 w-5 shrink-0" type="checkbox">
+      <span>Used a ruler to underline your subheaders on paper?</span>
+    </label>
+    <label class="flex items-start gap-3 min-h-[44px] cursor-pointer">
+      <input id="check-gap" class="mt-1 h-5 w-5 shrink-0" type="checkbox">
+      <span>Left a physical blank line between paragraphs?</span>
+    </label>
+    <p id="check-hint" class="m-0 text-sm">Tick all three checks before the report is created.</p>
+    <div class="flex flex-wrap gap-2">
+      <button type="submit" id="btn-create-report" class="min-h-[44px] rounded-lg bg-leaf-dark text-parchment px-4 font-semibold" disabled>Create the evidence report</button>
+      <button type="button" id="check-cancel" class="min-h-[44px] rounded-lg border border-walnut/40 px-4 font-semibold">Back</button>
+    </div>
+  </form>
+</dialog>
+
+<noscript>
+  <p class="px-4">BrainForge needs JavaScript to keep each student’s work on this device.</p>
+</noscript>
+
+<script>
+(function () {
+  "use strict";
+
+  /* One storage key for every student. The id on each student is stable,
+     so a renamed child keeps their drafts and the log stays with them.
+     A second key remembers only the colour mode. */
+  var STORAGE_KEY = "ahh-brainforge-state";
+  var THEME_KEY = "ahh-brainforge-theme";
+
+  /* BrainForge records English only. There is no subject choice. */
+  var SUBJECT = "English";
+
+  var BLOCK_LABELS = { h1: "Main title", h2: "Subheader", p: "Paragraph" };
+
+  var state = { activeStudentId: null, students: [] };
+  var storageUnreadable = false;
+  var saveTimer = 0;
+  var nameMode = "add";
+  var pendingRemoveId = "";
+  var pinnedTip = "";
+  var lastFocus = null;
+
+  var els = {};
+
+  function $(id) {
+    return document.getElementById(id);
+  }
+
+  function cacheEls() {
+    [
+      "student-select", "btn-add-student", "btn-rename-student", "btn-remove-student",
+      "btn-theme", "theme-icon", "theme-label", "status", "no-student", "work-log", "log-list",
+      "intake-wrap", "intake", "source-hidden-note", "forge-prompt",
+      "btn-add-h1", "btn-add-h2", "btn-add-p", "tip-h1", "tip-h2",
+      "plagiarism-alert", "hierarchy-alert", "canvas-list", "margin-alert",
+      "workbook-page", "workbook-body", "workbook-date", "btn-generate", "evidence-report",
+      "report-date", "report-name", "report-work", "btn-print",
+      "dialog-student", "student-form", "student-dialog-title", "student-name",
+      "student-form-error", "student-save", "student-cancel",
+      "dialog-delete", "delete-message", "delete-confirm", "delete-cancel",
+      "dialog-check", "check-form", "check-date", "check-ruler", "check-gap", "check-hint",
+      "btn-create-report", "check-cancel"
+    ].forEach(function (id) {
+      els[id] = $(id);
+    });
+  }
+
+  function newId(prefix) {
+    return prefix + "_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 8);
+  }
+
+  function emptyStudent(name) {
+    return {
+      id: newId("stu"),
+      name: name,
+      createdAt: new Date().toISOString(),
+      intake: "",
+      facts: ["", "", ""],
+      blocks: [],
+      workbookDate: "",
+      subject: SUBJECT,
+      checks: { date: false, ruler: false, gap: false },
+      reportAt: "",
+      log: []
+    };
+  }
+
+  function activeStudent() {
+    if (!state.activeStudentId) return null;
+    for (var i = 0; i < state.students.length; i++) {
+      if (state.students[i].id === state.activeStudentId) return state.students[i];
+    }
+    return null;
+  }
+
+  function findStudent(id) {
+    for (var i = 0; i < state.students.length; i++) {
+      if (state.students[i].id === id) return state.students[i];
+    }
+    return null;
+  }
+
+  /* "Saved" is written only after the browser returns the same text we stored. */
+  function showSaved() {
+    els.status.textContent = "Saved";
+  }
+
+  function showStatus(message) {
+    els.status.textContent = message;
+  }
+
+  function persistState(announce) {
+    if (storageUnreadable) {
+      showStatus("BrainForge could not read the work already stored in this browser, so it will not overwrite it.");
+      return false;
+    }
+    try {
+      var payload = JSON.stringify(state);
+      localStorage.setItem(STORAGE_KEY, payload);
+      var readBack = localStorage.getItem(STORAGE_KEY);
+      if (readBack !== payload) {
+        throw new Error("Save read-back did not match.");
+      }
+      if (announce !== false) showSaved();
+      return true;
+    } catch (err) {
+      console.error("BrainForge could not save.", err);
+      showStatus("Could not save. The work is still on this screen, but it is not stored on this device. Free some space in the browser, or check that site storage is allowed, then try again.");
+      return false;
+    }
+  }
+
+  function scheduleSave() {
+    window.clearTimeout(saveTimer);
+    saveTimer = window.setTimeout(function () {
+      persistState(true);
+    }, 350);
+  }
+
+  function flushSave() {
+    window.clearTimeout(saveTimer);
+    return persistState(true);
+  }
+
+  function applyTheme(mode, persist) {
+    var dark = mode === "dark";
+    var root = document.documentElement;
+    root.classList.toggle("dark", dark);
+    root.style.setProperty("--bf-theme", dark ? "dark" : "light");
+    root.style.setProperty("--page-bg", dark ? "#2A1B10" : "#F3E9D2");
+    root.style.setProperty("--page-text", dark ? "#F3E9D2" : "#2A1B10");
+    root.style.setProperty("--card-bg", dark ? "#3E2717" : "#fffaf0");
+    root.style.setProperty("--card-text", dark ? "#F3E9D2" : "#2A1B10");
+    els["btn-theme"].setAttribute("aria-pressed", dark ? "true" : "false");
+    els["theme-label"].textContent = dark ? "Light mode" : "Dark mode";
+    els["theme-icon"].className = dark ? "fa-solid fa-sun" : "fa-solid fa-moon";
+    if (!persist) return;
+    try {
+      var stored = dark ? "dark" : "light";
+      localStorage.setItem(THEME_KEY, stored);
+      if (localStorage.getItem(THEME_KEY) !== stored) {
+        throw new Error("Theme read-back did not match.");
+      }
+      showSaved();
+    } catch (err) {
+      console.error("BrainForge could not save the colour mode.", err);
+      showStatus("Could not save the colour mode on this device. The page may look different next time you open it.");
+    }
+  }
+
+  function loadTheme() {
+    var mode = "light";
+    try {
+      var stored = localStorage.getItem(THEME_KEY);
+      if (stored === "dark" || stored === "light") mode = stored;
+    } catch (err) {
+      /* A missing colour choice is not saved work. Leave the light page. */
+      console.error("BrainForge could not read the colour mode.", err);
+    }
+    applyTheme(mode, false);
+  }
+
+  function normaliseFacts(value) {
+    var facts = ["", "", ""];
+    if (!Array.isArray(value)) return facts;
+    for (var i = 0; i < 3; i++) {
+      facts[i] = typeof value[i] === "string" ? value[i].slice(0, 240) : "";
+    }
+    return facts;
+  }
+
+  function normaliseBlocks(value) {
+    if (!Array.isArray(value)) return [];
+    var blocks = [];
+    value.forEach(function (block) {
+      if (!block || (block.type !== "h1" && block.type !== "h2" && block.type !== "p")) return;
+      if (typeof block.id !== "string" || !block.id) return;
+      blocks.push({
+        id: block.id,
+        type: block.type,
+        text: typeof block.text === "string" ? block.text.slice(0, 4000) : ""
+      });
+    });
+    return blocks;
+  }
+
+  function normaliseLog(value) {
+    if (!Array.isArray(value)) return [];
+    var log = [];
+    value.forEach(function (entry) {
+      if (!entry || typeof entry.text !== "string" || typeof entry.id !== "string") return;
+      log.push({
+        id: entry.id,
+        kind: typeof entry.kind === "string" ? entry.kind : "note",
+        day: typeof entry.day === "string" ? entry.day : "",
+        at: typeof entry.at === "string" ? entry.at : "",
+        text: entry.text.slice(0, 200)
+      });
+    });
+    return log.slice(-40);
+  }
+
+  function loadState() {
+    var raw = null;
+    try {
+      raw = localStorage.getItem(STORAGE_KEY);
+    } catch (err) {
+      /* Nothing was read, so there is no saved work to protect.
+         A later save is still allowed. */
+      console.error("BrainForge could not read saved work.", err);
+      state = { activeStudentId: null, students: [] };
+      return;
+    }
+    if (raw == null || String(raw).trim() === "") {
+      state = { activeStudentId: null, students: [] };
+      return;
+    }
+    try {
+      var data = JSON.parse(raw);
+      if (!data || !Array.isArray(data.students)) throw new Error("Saved work has an unexpected shape.");
+      var students = [];
+      var subjectChanged = false;
+      data.students.forEach(function (item) {
+        if (!item || typeof item.id !== "string" || !item.id) return;
+        if (item.subject !== SUBJECT) subjectChanged = true;
+        students.push({
+          id: item.id,
+          name: typeof item.name === "string" ? item.name.slice(0, 60) : "",
+          createdAt: typeof item.createdAt === "string" ? item.createdAt : "",
+          intake: typeof item.intake === "string" ? item.intake.slice(0, 20000) : "",
+          facts: normaliseFacts(item.facts),
+          blocks: normaliseBlocks(item.blocks),
+          workbookDate: typeof item.workbookDate === "string" ? item.workbookDate.slice(0, 120) : "",
+          subject: SUBJECT,
+          checks: {
+            date: !!(item.checks && item.checks.date),
+            ruler: !!(item.checks && item.checks.ruler),
+            gap: !!(item.checks && item.checks.gap)
+          },
+          reportAt: typeof item.reportAt === "string" ? item.reportAt : "",
+          log: normaliseLog(item.log)
+        });
+      });
+      var active = null;
+      if (typeof data.activeStudentId === "string") {
+        for (var i = 0; i < students.length; i++) {
+          if (students[i].id === data.activeStudentId) active = data.activeStudentId;
+        }
+      }
+      state = { activeStudentId: active, students: students };
+      /* A stored id that matches nobody is dropped. We do not pick another child.
+         A subject other than English is rewritten, because this activity is English only. */
+      if ((data.activeStudentId && !active) || subjectChanged) persistState(false);
+    } catch (err) {
+      console.error("BrainForge could not read saved work.", err);
+      storageUnreadable = true;
+      state = { activeStudentId: null, students: [] };
+      showStatus("BrainForge could not read saved work in this browser. Nothing new will be stored over it.");
+    }
+  }
+
+  function formatWhen(iso) {
+    var date = new Date(iso);
+    if (isNaN(date.getTime())) return "";
+    return new Intl.DateTimeFormat("en-AU", {
+      day: "numeric",
+      month: "long",
+      year: "numeric"
+    }).format(date);
+  }
+
+  function todayKey() {
+    return new Date().toISOString().slice(0, 10);
+  }
+
+  function addLog(student, kind, text) {
+    var day = todayKey();
+    if (kind === "report") {
+      for (var i = 0; i < student.log.length; i++) {
+        if (student.log[i].kind === "report" && student.log[i].day === day) {
+          student.log[i].at = new Date().toISOString();
+          student.log[i].text = text;
+          return;
+        }
+      }
+    }
+    student.log.push({
+      id: newId("log"),
+      kind: kind,
+      day: day,
+      at: new Date().toISOString(),
+      text: text
+    });
+    if (student.log.length > 40) student.log.splice(0, student.log.length - 40);
+  }
+
+  function factsReady(student) {
+    if (!student) return false;
+    return student.facts.every(function (fact) { return fact.trim().length > 0; });
+  }
+
+  /* Compare folded text so a paste of the research, with only spacing changed,
+     still counts as a direct copy. Short shared words are allowed. A long
+     extract, or the whole intake, is blocked. */
+  function norm(value) {
+    return String(value || "")
+      .replace(/\u00a0/g, " ")
+      .replace(/[“”]/g, "\"")
+      .replace(/[‘’]/g, "'")
+      .replace(/\s+/g, " ")
+      .trim()
+      .toLowerCase();
+  }
+
+  function isDirectCopy(candidate, source) {
+    var copy = norm(candidate);
+    var original = norm(source);
+    if (!copy || !original) return false;
+    if (copy === original) return true;
+    if (original.indexOf(copy) >= 0 && copy.length >= 40) return true;
+    if (copy.indexOf(original) >= 0 && original.length >= 40) return true;
+    var width = 48;
+    if (original.length < width || copy.length < width) return false;
+    for (var i = 0; i <= original.length - width; i += 24) {
+      if (copy.indexOf(original.slice(i, i + width)) >= 0) return true;
+    }
+    return false;
+  }
+
+  /* A paste matches the intake, or is a piece copied out of it, at any length.
+     A sentence the student wrote themselves is not inside that box, so it stays. */
+  function comesFromIntake(pasted, intake) {
+    var copy = norm(pasted);
+    var original = norm(intake);
+    if (!copy || !original) return false;
+    if (copy === original) return true;
+    if (original.indexOf(copy) >= 0) return true;
+    if (copy.indexOf(original) >= 0) return true;
+    return isDirectCopy(pasted, intake);
+  }
+
+  function showPlagiarism() {
+    els["plagiarism-alert"].hidden = false;
+  }
+
+  function hidePlagiarism() {
+    els["plagiarism-alert"].hidden = true;
+  }
+
+  /* No child is guessed. Typing, adding a block, or opening the report
+     stops here when the profile dropdown has nobody selected. */
+  function requireStudent() {
+    var student = activeStudent();
+    if (student) return student;
+    showStatus("No student is selected, so this work was not saved. Add a student or choose one from Student profile. BrainForge will not guess which child the work belongs to.");
+    return null;
+  }
+
+  function setWorkingEnabled(on) {
+    /* The paragraph button stays clickable. Disabling it swallowed the
+       click, including when no student was selected and when the icon
+       font had not loaded. The handler decides what the click does. */
+    var controls = [
+      els.intake, $("fact-1"), $("fact-2"), $("fact-3"), els["workbook-date"],
+      els["btn-add-h1"], els["btn-add-h2"], els["btn-generate"],
+      els["btn-rename-student"], els["btn-remove-student"]
+    ];
+    controls.forEach(function (node) {
+      if (node) node.disabled = !on;
+    });
+    els["no-student"].hidden = on;
+    els["work-log"].hidden = !on;
+  }
+
+  function renderStudentSelect() {
+    var select = els["student-select"];
+    while (select.firstChild) select.removeChild(select.firstChild);
+    var none = document.createElement("option");
+    none.value = "";
+    none.textContent = "No student selected";
+    select.appendChild(none);
+    state.students.forEach(function (student) {
+      var option = document.createElement("option");
+      option.value = student.id;
+      option.textContent = student.name || "Student";
+      select.appendChild(option);
+    });
+    select.value = activeStudent() ? state.activeStudentId : "";
+  }
+
+  function renderLog(student) {
+    var list = els["log-list"];
+    while (list.firstChild) list.removeChild(list.firstChild);
+    if (!student || !student.log.length) {
+      var empty = document.createElement("li");
+      empty.textContent = "Nothing has been logged for this student yet.";
+      list.appendChild(empty);
+      return;
+    }
+    var entries = student.log.slice().reverse();
+    entries.forEach(function (entry) {
+      var item = document.createElement("li");
+      var when = formatWhen(entry.at);
+      item.textContent = when ? when + ": " + entry.text : entry.text;
+      list.appendChild(item);
+    });
+  }
+
+  function renderCanvas(student) {
+    var list = els["canvas-list"];
+    while (list.firstChild) list.removeChild(list.firstChild);
+    if (!student) return;
+    student.blocks.forEach(function (block, index) {
+      var wrap = document.createElement("div");
+      wrap.className = "rounded-xl border border-walnut/20 p-3";
+
+      var label = document.createElement("label");
+      label.className = "block font-semibold mb-1";
+      label.setAttribute("for", "block-" + block.id);
+      label.textContent = BLOCK_LABELS[block.type] || "Writing";
+      wrap.appendChild(label);
+
+      var field = document.createElement("textarea");
+      field.id = "block-" + block.id;
+      field.className = "canvas-field w-full min-h-[44px] rounded-lg border border-walnut/30 bg-transparent p-2 text-base";
+      field.setAttribute("data-block-id", block.id);
+      field.setAttribute("data-block-type", block.type);
+      field.maxLength = 4000;
+      field.spellcheck = true;
+      field.value = block.text;
+      wrap.appendChild(field);
+      /* Only this writing field. Intake, evidence, the date, and the
+         student name never get this listener. A later block gets it too.
+         A failure here must not stop the field from appearing. */
+      try {
+        field.addEventListener("paste", onCanvasPaste);
+      } catch (err) {
+        console.error("BrainForge could not watch this writing field for pasted research.", err);
+      }
+
+      var row = document.createElement("div");
+      row.className = "mt-2 flex flex-wrap gap-2";
+
+      var up = document.createElement("button");
+      up.type = "button";
+      up.className = "min-h-[44px] rounded-lg border border-walnut/30 px-3";
+      up.setAttribute("data-move", "-1");
+      up.setAttribute("data-block-id", block.id);
+      up.textContent = "Move up";
+      up.disabled = index === 0;
+
+      var down = document.createElement("button");
+      down.type = "button";
+      down.className = "min-h-[44px] rounded-lg border border-walnut/30 px-3";
+      down.setAttribute("data-move", "1");
+      down.setAttribute("data-block-id", block.id);
+      down.textContent = "Move down";
+      down.disabled = index === student.blocks.length - 1;
+
+      var remove = document.createElement("button");
+      remove.type = "button";
+      remove.className = "min-h-[44px] rounded-lg border border-walnut/30 px-3";
+      remove.setAttribute("data-remove-block", block.id);
+      remove.textContent = "Remove";
+
+      row.appendChild(up);
+      row.appendChild(down);
+      row.appendChild(remove);
+      wrap.appendChild(row);
+      list.appendChild(wrap);
+    });
+  }
+
+  function renderFacts(student, force) {
+    var facts = student ? student.facts : ["", "", ""];
+    for (var i = 0; i < 3; i++) {
+      var input = $("fact-" + (i + 1));
+      /* While a fact is being typed, leave that field alone. A student
+         switch must still replace every field, or the previous child's
+         fact stays on screen. */
+      if (force || document.activeElement !== input) input.value = facts[i];
+    }
+    var ready = factsReady(student);
+    els["intake-wrap"].hidden = !!(student && ready);
+    els["source-hidden-note"].hidden = !(student && ready);
+    els["forge-prompt"].hidden = !(student && ready);
+  }
+
+  function updateWorkbook(student) {
+    var body = els["workbook-body"];
+    while (body.firstChild) body.removeChild(body.firstChild);
+    if (!student || !student.blocks.length) {
+      var empty = document.createElement("p");
+      empty.className = "wb-empty js-ink";
+      empty.textContent = "Your writing will show on these lines.";
+      body.appendChild(empty);
+    } else {
+      student.blocks.forEach(function (block) {
+        /* One badge per issue, above that block. The typed text is not changed. */
+        blockIssues(block, student.name).forEach(function (issue) {
+          var badge = document.createElement("p");
+          badge.className = "grammar-badge no-print";
+          badge.setAttribute("role", "status");
+          badge.setAttribute("data-grammar", issue);
+          badge.textContent = GRAMMAR_BADGE_TEXT[issue];
+          body.appendChild(badge);
+        });
+        var line = document.createElement("p");
+        var kind = block.type === "h1" ? "wb-h1" : block.type === "h2" ? "wb-h2" : "wb-p";
+        line.className = "js-ink " + kind;
+        line.textContent = block.text;
+        body.appendChild(line);
+        if ((block.type === "h1" || block.type === "h2") && block.text.trim()) {
+          var gap = document.createElement("div");
+          gap.className = "wb-blank";
+          gap.setAttribute("aria-hidden", "true");
+          body.appendChild(gap);
+        }
+      });
+    }
+    window.requestAnimationFrame(function () {
+      runLayoutChecks(student);
+    });
+  }
+
+  /* Fixed list only. A match has to be the whole lowercase word or phrase.
+     wa, sa, and nt are included as whole words, so an ordinary word that is
+     exactly one of those three is flagged too. act is not on this list. */
+  var PROPER_PHRASES = [
+    "australian capital territory",
+    "great barrier reef",
+    "great dividing range",
+    "northern territory",
+    "western australia",
+    "south australia",
+    "new south wales",
+    "murray river",
+    "lake eyre",
+    "queensland",
+    "tasmania",
+    "victoria",
+    "australia",
+    "canberra",
+    "melbourne",
+    "brisbane",
+    "adelaide",
+    "sydney",
+    "hobart",
+    "darwin",
+    "perth",
+    "uluru",
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+    "sunday",
+    "january",
+    "february",
+    "march",
+    "april",
+    "may",
+    "june",
+    "july",
+    "august",
+    "september",
+    "october",
+    "november",
+    "december",
+    "qld",
+    "nsw",
+    "vic",
+    "tas",
+    "wa",
+    "sa",
+    "nt"
+  ];
+
+  var GRAMMAR_BADGE_TEXT = {
+    sentence: "💡 Grammar Check: A new sentence starts with a capital letter.",
+    proper: "💡 Grammar Check: Proper nouns, names, and places require a Capital Letter regardless of where they sit in a sentence.",
+    pronoun: "💡 Grammar Check: The word I is always a capital letter.",
+    name: "💡 Grammar Check: A name starts with a capital letter.",
+    midcap: "💡 Grammar Check: This word does not need a capital letter in the middle of a sentence.",
+    ending: "💡 Grammar Check: A sentence needs a full stop, question mark, or exclamation mark at the end.",
+    space: "💡 Grammar Check: Leave a space after a full stop before the next word.",
+    spell: "💡 Grammar Check: Check the spelling of this word.",
+    sense: "💡 Grammar Check: Check that this part makes sense.",
+    punct: "💡 Grammar Check: Check the punctuation in this sentence.",
+    simple: "💡 Grammar Check: See if a simpler word would do."
+  };
+
+  function isLetter(ch) {
+    return !!ch && ch.toLowerCase() !== ch.toUpperCase();
+  }
+
+  function isLowercaseLetter(ch) {
+    return isLetter(ch) && ch === ch.toLowerCase();
+  }
+
+  function isDigit(ch) {
+    return ch >= "0" && ch <= "9";
+  }
+
+  function isSpace(ch) {
+    return ch === " " || ch === "\n" || ch === "\r" || ch === "\t" || ch === "\f" || ch === "\u00a0";
+  }
+
+  function isWordStart(text, index) {
+    return isLetter(text.charAt(index)) && (index === 0 || !isLetter(text.charAt(index - 1)));
+  }
+
+  function previousWord(text, index) {
+    var j = index - 1;
+    while (j >= 0 && isSpace(text.charAt(j))) j--;
+    var end = j + 1;
+    while (j >= 0 && isLetter(text.charAt(j))) j--;
+    if (end === j + 1) return "";
+    return text.slice(j + 1, end).toLowerCase();
+  }
+
+  /* act is the territory after in, from, or across. act now, the act, and
+     the other ordinary uses are not the territory. */
+  function isTerritoryAct(text, index) {
+    if (text.substr(index, 3) !== "act") return false;
+    if (isLetter(text.charAt(index + 3))) return false;
+    var prev = previousWord(text, index);
+    return prev === "in" || prev === "from" || prev === "across";
+  }
+
+  function matchLowerPhrase(text, index) {
+    for (var p = 0; p < PROPER_PHRASES.length; p++) {
+      var phrase = PROPER_PHRASES[p];
+      if (text.substr(index, phrase.length) !== phrase) continue;
+      if (isLetter(text.charAt(index + phrase.length))) continue;
+      return phrase;
+    }
+    return "";
+  }
+
+  function findProperSpans(text) {
+    var spans = [];
+    var i = 0;
+    while (i < text.length) {
+      if (!isWordStart(text, i)) {
+        i++;
+        continue;
+      }
+      var phrase = matchLowerPhrase(text, i);
+      if (phrase) {
+        spans.push({ start: i, end: i + phrase.length });
+        i += phrase.length;
+        continue;
+      }
+      if (isTerritoryAct(text, i)) {
+        spans.push({ start: i, end: i + 3 });
+        i += 3;
+        continue;
+      }
+      i++;
+    }
+    return spans;
+  }
+
+  function findPronounSpans(text) {
+    var spans = [];
+    var i = 0;
+    while (i < text.length) {
+      if (!isWordStart(text, i) || text.charAt(i) !== "i") {
+        i++;
+        continue;
+      }
+      var mark = text.charAt(i + 1);
+      /* i'm is one word. i'll and i've are not the word i, so they are left alone. */
+      if (mark === "'" || mark === "\u2019") {
+        if (text.charAt(i + 2) === "m" && !isLetter(text.charAt(i + 3))) {
+          spans.push({ start: i, end: i + 3 });
+          i += 3;
+          continue;
+        }
+        i++;
+        continue;
+      }
+      if (!isLetter(mark)) spans.push({ start: i, end: i + 1 });
+      i++;
+    }
+    return spans;
+  }
+
+  function spanCovers(spans, index) {
+    for (var i = 0; i < spans.length; i++) {
+      if (index >= spans[i].start && index < spans[i].end) return true;
+    }
+    return false;
+  }
+
+  function firstLetterIndex(text) {
+    for (var i = 0; i < text.length; i++) {
+      if (isLetter(text.charAt(i))) return i;
+    }
+    return -1;
+  }
+
+  function isSentenceGap(ch) {
+    return isSpace(ch) || ch === "\"" || ch === "'" || ch === "\u201c" || ch === "\u201d" || ch === "\u2018" || ch === "\u2019" || ch === "(" || ch === "[" || ch === "{";
+  }
+
+  function sentenceStartIndexes(text) {
+    var indexes = [];
+    var first = firstLetterIndex(text);
+    if (first >= 0 && isLowercaseLetter(text.charAt(first))) indexes.push(first);
+    for (var i = 0; i < text.length; i++) {
+      var ch = text.charAt(i);
+      if (ch !== "." && ch !== "!" && ch !== "?") continue;
+      if (ch === "." && isDigit(text.charAt(i - 1)) && isDigit(text.charAt(i + 1))) continue;
+      var j = i + 1;
+      while (j < text.length && isSentenceGap(text.charAt(j))) j++;
+      if (j < text.length && isLowercaseLetter(text.charAt(j))) indexes.push(j);
+    }
+    return indexes;
+  }
+
+  function needsEnding(text) {
+    var trimmed = text.replace(/\s+$/, "");
+    if (!trimmed) return false;
+    var last = trimmed.charAt(trimmed.length - 1);
+    return last !== "." && last !== "!" && last !== "?";
+  }
+
+  function missingSpaceAfterStop(text) {
+    for (var i = 0; i < text.length; i++) {
+      var ch = text.charAt(i);
+      if (ch !== "." && ch !== "!" && ch !== "?") continue;
+      if (ch === "." && isDigit(text.charAt(i - 1)) && isDigit(text.charAt(i + 1))) continue;
+      if (isLetter(text.charAt(i + 1))) return true;
+    }
+    return false;
+  }
+
+  /* Profile words only. A personal name that is not this student's, and not
+     already on the place, day, or month list, is not known. */
+  function profileNameWords(fullName) {
+    return String(fullName || "").split(/\s+/).filter(function (word) {
+      var i;
+      for (i = 0; i < word.length; i++) {
+        if (isLetter(word.charAt(i))) return true;
+      }
+      return false;
+    });
+  }
+
+  function readWord(text, index) {
+    var end = index + 1;
+    while (end < text.length) {
+      var ch = text.charAt(end);
+      if (isLetter(ch)) {
+        end++;
+        continue;
+      }
+      if ((ch === "'" || ch === "\u2019" || ch === "-") && isLetter(text.charAt(end + 1))) {
+        end++;
+        continue;
+      }
+      break;
+    }
+    return end;
+  }
+
+  function isUppercaseLetter(ch) {
+    return isLetter(ch) && ch !== ch.toLowerCase();
+  }
+
+  /* A lowercase whole word from the selected student's name. */
+  function findNameSpans(text, words) {
+    var spans = [];
+    var i = 0;
+    while (i < text.length) {
+      if (!isWordStart(text, i)) {
+        i++;
+        continue;
+      }
+      var end = readWord(text, i);
+      var slice = text.slice(i, end);
+      if (isLowercaseLetter(slice.charAt(0))) {
+        var lower = slice.toLowerCase();
+        for (var n = 0; n < words.length; n++) {
+          if (words[n].toLowerCase() === lower) {
+            spans.push({ start: i, end: end });
+            break;
+          }
+        }
+      }
+      i = end;
+    }
+    return spans;
+  }
+
+  function matchLoosePhrase(text, index) {
+    for (var p = 0; p < PROPER_PHRASES.length; p++) {
+      var phrase = PROPER_PHRASES[p];
+      if (text.substr(index, phrase.length).toLowerCase() !== phrase) continue;
+      if (isLetter(text.charAt(index + phrase.length))) continue;
+      return phrase;
+    }
+    return "";
+  }
+
+  /* Same territory test as the lowercase flag, but any capitalisation. */
+  function isTerritoryActLoose(text, index) {
+    if (text.substr(index, 3).toLowerCase() !== "act") return false;
+    if (isLetter(text.charAt(index + 3))) return false;
+    var prev = previousWord(text, index);
+    return prev === "in" || prev === "from" || prev === "across";
+  }
+
+  function findLooseProperSpans(text) {
+    var spans = [];
+    var i = 0;
+    while (i < text.length) {
+      if (!isWordStart(text, i)) {
+        i++;
+        continue;
+      }
+      var phrase = matchLoosePhrase(text, i);
+      if (phrase) {
+        spans.push({ start: i, end: i + phrase.length });
+        i += phrase.length;
+        continue;
+      }
+      if (isTerritoryActLoose(text, i)) {
+        spans.push({ start: i, end: i + 3 });
+        i += 3;
+        continue;
+      }
+      i++;
+    }
+    return spans;
+  }
+
+  function sentenceFirstWordIndexes(text) {
+    var indexes = [];
+    var first = firstLetterIndex(text);
+    if (first >= 0) indexes.push(first);
+    for (var i = 0; i < text.length; i++) {
+      var ch = text.charAt(i);
+      if (ch !== "." && ch !== "!" && ch !== "?") continue;
+      if (ch === "." && isDigit(text.charAt(i - 1)) && isDigit(text.charAt(i + 1))) continue;
+      var j = i + 1;
+      while (j < text.length && isSentenceGap(text.charAt(j))) j++;
+      if (j < text.length && isLetter(text.charAt(j))) indexes.push(j);
+    }
+    return indexes;
+  }
+
+  function isAllowedMidCapital(word, index, words, loose) {
+    if (word === "I") return true;
+    if (word.length === 3 && word.charAt(0) === "I" && (word.charAt(1) === "'" || word.charAt(1) === "\u2019") && word.charAt(2).toLowerCase() === "m") return true;
+    if (spanCovers(loose, index)) return true;
+    var lower = word.toLowerCase();
+    for (var n = 0; n < words.length; n++) {
+      if (words[n].toLowerCase() === lower) return true;
+    }
+    return false;
+  }
+
+  /* Titles, subheaders, and paragraphs. The first word may keep its capital. */
+  function hasMidSentenceCapital(text, words) {
+    var loose = findLooseProperSpans(text);
+    var firsts = sentenceFirstWordIndexes(text);
+    var i = 0;
+    while (i < text.length) {
+      if (!isWordStart(text, i)) {
+        i++;
+        continue;
+      }
+      var end = readWord(text, i);
+      var word = text.slice(i, end);
+      var isFirst = false;
+      for (var f = 0; f < firsts.length; f++) {
+        if (firsts[f] === i) isFirst = true;
+      }
+      if (!isFirst && isUppercaseLetter(word.charAt(0)) && !isAllowedMidCapital(word, i, words, loose)) return true;
+      i = end;
+    }
+    return false;
+  }
+
+  function dropCovered(spans, cover) {
+    return spans.filter(function (span) {
+      return !spanCovers(cover, span.start);
+    });
+  }
+
+  /* The sentence-start badge is skipped when that same word is already
+     covered by a more specific badge. */
+  function grammarIssues(block, fullName) {
+    var text = block.text || "";
+    if (!text) return [];
+    var words = profileNameWords(fullName);
+    var isParagraph = block.type === "p";
+    var names = findNameSpans(text, words);
+    var proper = dropCovered(findProperSpans(text), names);
+    var pronoun = isParagraph ? findPronounSpans(text) : [];
+    var starts = sentenceStartIndexes(text).filter(function (index) {
+      return !spanCovers(proper, index) && !spanCovers(pronoun, index) && !spanCovers(names, index);
+    });
+    var issues = [];
+    if (starts.length) issues.push("sentence");
+    if (names.length) issues.push("name");
+    if (proper.length) issues.push("proper");
+    if (pronoun.length) issues.push("pronoun");
+    if (hasMidSentenceCapital(text, words)) issues.push("midcap");
+    /* A heading does not need a full stop. */
+    if (isParagraph && needsEnding(text)) issues.push("ending");
+    if (isParagraph && missingSpaceAfterStop(text)) issues.push("space");
+    return issues;
+  }
+
+  /* Online results live here only, for the badges on screen. They are not
+     written into the saved student record. */
+  var onlineByBlock = {};
+  var onlineTimers = {};
+  var onlineAbort = {};
+  var onlineToken = {};
+
+  function forgetOnlineCheck(id) {
+    window.clearTimeout(onlineTimers[id]);
+    delete onlineTimers[id];
+    if (onlineAbort[id]) onlineAbort[id].abort();
+    delete onlineAbort[id];
+    delete onlineByBlock[id];
+    delete onlineToken[id];
+  }
+
+  /* A full stop, question mark, or exclamation mark at the end, and a
+     space after any earlier one. */
+  function punctuationSound(text) {
+    return !needsEnding(text) && !missingSpaceAfterStop(text);
+  }
+
+  function blockIssues(block, fullName) {
+    var issues = grammarIssues(block, fullName);
+    var saved = onlineByBlock[block.id];
+    if (!saved || saved.text !== block.text) return issues;
+    var heading = block.type === "h1" || block.type === "h2";
+    var text = block.text || "";
+    var sound = punctuationSound(text);
+    saved.issues.forEach(function (issue) {
+      /* The vague punctuation badge does not name a Years 3–6 mistake.
+         Headings are not sentences. A paragraph that already ends properly
+         keeps its punctuation even when the online checker disagrees. */
+      if (issue === "punct") return;
+      if (heading && (issue === "ending" || issue === "space")) return;
+      if (!heading && sound && (issue === "ending" || issue === "space")) return;
+      if (issues.indexOf(issue) < 0 && GRAMMAR_BADGE_TEXT[issue]) issues.push(issue);
+    });
+    return issues;
+  }
+
+  /* Ordinary "act" is not a place. A sentence-start match may still show. */
+  function ordinaryActSuppressed(text, match) {
+    var offset = match.offset || 0;
+    var length = match.length || 0;
+    if (text.substr(offset, length).toLowerCase() !== "act") return false;
+    if (offset > 0 && isLetter(text.charAt(offset - 1))) return false;
+    if (isLetter(text.charAt(offset + length))) return false;
+    if (isTerritoryActLoose(text, offset)) return false;
+    var ruleId = match.rule && match.rule.id;
+    return ruleId !== "UPPERCASE_SENTENCE_START";
+  }
+
+  function classifyOnlineMatch(text, match) {
+    var rule = match.rule || {};
+    var id = String(rule.id || "");
+    var cat = String((rule.category && rule.category.id) || "");
+    var upper = (id + " " + cat).toUpperCase();
+    if (id === "UPPERCASE_SENTENCE_START") return "sentence";
+    if (id === "I_LOWERCASE") return "pronoun";
+    if (id === "SENTENCE_WHITESPACE") return "space";
+    if (/CASING|CAPITAL/.test(upper)) return "midcap";
+    if (/PERIOD|SENTENCE_END/.test(upper)) return "ending";
+    if (cat === "TYPOS" || /MORFOLOGIK|SPELL/.test(upper)) return "spell";
+    /* Commas and other marks are not named in Years 3–6 words. Missing
+       end marks and missing spaces already have their own badges. */
+    if (cat === "PUNCTUATION" || cat === "TYPOGRAPHY") return "";
+    if (cat === "STYLE" || cat === "REDUNDANCY") return "simple";
+    return "sense";
+  }
+
+  function mapOnlineMatches(text, fullName, matches, blockType) {
+    var issues = [];
+    var names = findNameSpans(text, profileNameWords(fullName));
+    var heading = blockType === "h1" || blockType === "h2";
+    var sound = punctuationSound(text);
+    (matches || []).forEach(function (match) {
+      if (!match || typeof match.offset !== "number") return;
+      if (spanCovers(names, match.offset)) return;
+      if (ordinaryActSuppressed(text, match)) return;
+      var key = classifyOnlineMatch(text, match);
+      if (!key || issues.indexOf(key) >= 0) return;
+      /* Ignore an online punctuation match on a heading, and on a
+         paragraph whose own stops are already in the right places. */
+      if ((heading || sound) && (key === "ending" || key === "space" || key === "punct")) return;
+      if (key === "punct") return;
+      issues.push(key);
+    });
+    return issues;
+  }
+
+  function sendOnlineCheck(id, text) {
+    var token = (onlineToken[id] || 0) + 1;
+    onlineToken[id] = token;
+    if (onlineAbort[id]) onlineAbort[id].abort();
+    var controller = typeof AbortController === "function" ? new AbortController() : null;
+    onlineAbort[id] = controller;
+    var slow = window.setTimeout(function () {
+      if (controller) controller.abort();
+    }, 8000);
+    /* The writing goes in the body, not the URL. */
+    var body = "language=en-AU&text=" + encodeURIComponent(text);
+    fetch("https://api.languagetool.org/v2/check", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: body,
+      signal: controller ? controller.signal : undefined
+    }).then(function (res) {
+      if (!res.ok) throw new Error("LanguageTool");
+      return res.json();
+    }).then(function (data) {
+      if (onlineToken[id] !== token) return;
+      var student = activeStudent();
+      if (!student) return;
+      var block = null;
+      for (var i = 0; i < student.blocks.length; i++) {
+        if (student.blocks[i].id === id) block = student.blocks[i];
+      }
+      if (!block || block.text !== text) return;
+      onlineByBlock[id] = {
+        text: text,
+        issues: mapOnlineMatches(text, student.name, data && data.matches, block.type)
+      };
+      updateWorkbook(student);
+    }).catch(function () {
+      /* A failed or slow check leaves the local badges in place. */
+    }).then(function () {
+      window.clearTimeout(slow);
+    });
+  }
+
+  /* Titles, subheaders, and paragraphs all use this pause. A failed
+     request leaves the local badges on screen. */
+  function scheduleOnlineCheck(block) {
+    var id = block.id;
+    window.clearTimeout(onlineTimers[id]);
+    var text = block.text || "";
+    if (onlineByBlock[id] && onlineByBlock[id].text !== text) delete onlineByBlock[id];
+    if (!String(text).trim()) {
+      forgetOnlineCheck(id);
+      return;
+    }
+    onlineTimers[id] = window.setTimeout(function () {
+      sendOnlineCheck(id, text);
+    }, 600);
+  }
+
+  /* A subheader is out of scale when it sits above the title, or when its
+     computed type size is larger than the title on the workbook page. */
+  function subheaderScaledLarger(student) {
+    if (!student) return false;
+    var seenTitle = false;
+    var promoted = false;
+    student.blocks.forEach(function (block) {
+      if (block.type === "h1" && block.text.trim()) seenTitle = true;
+      if (block.type === "h2" && block.text.trim() && !seenTitle) promoted = true;
+    });
+    if (promoted) return true;
+    var title = els["workbook-body"].querySelector(".wb-h1");
+    var subs = els["workbook-body"].querySelectorAll(".wb-h2");
+    if (!title || !subs.length) return false;
+    var titleSize = parseFloat(window.getComputedStyle(title).fontSize) || 0;
+    for (var i = 0; i < subs.length; i++) {
+      var subSize = parseFloat(window.getComputedStyle(subs[i]).fontSize) || 0;
+      if (subSize > titleSize) return true;
+    }
+    return false;
+  }
+
+  function textCrossesMargin() {
+    var line = $("margin-line");
+    if (!line) return false;
+    var limit = line.getBoundingClientRect().right - 0.5;
+    var nodes = els["workbook-page"].querySelectorAll(".js-ink");
+    for (var i = 0; i < nodes.length; i++) {
+      var rect = nodes[i].getBoundingClientRect();
+      if (rect.width < 1 || rect.height < 1) continue;
+      if (rect.left < limit) return true;
+    }
+    return false;
+  }
+
+  function runLayoutChecks(student) {
+    var current = student || activeStudent();
+    els["hierarchy-alert"].hidden = !subheaderScaledLarger(current);
+    els["margin-alert"].hidden = !textCrossesMargin();
+  }
+
+  function renderReport(student) {
+    var report = els["evidence-report"];
+    if (!student || !student.reportAt) {
+      report.hidden = true;
+      return;
+    }
+    report.hidden = false;
+    els["report-date"].textContent = formatWhen(student.reportAt);
+    els["report-name"].textContent = student.name;
+    renderWorkSample(student);
+  }
+
+  /* The preview follows the block list exactly. It does not sort headings
+     or fix spelling. Every title and subheader is shown, not only the first. */
+  function renderWorkSample(student) {
+    var host = els["report-work"];
+    while (host.firstChild) host.removeChild(host.firstChild);
+    var dateLine = document.createElement("p");
+    dateLine.id = "report-workbook-date";
+    dateLine.className = "report-workbook-date";
+    dateLine.textContent = student.workbookDate || "";
+    host.appendChild(dateLine);
+    student.blocks.forEach(function (block) {
+      var node;
+      if (block.type === "h1") {
+        node = document.createElement("h1");
+        node.className = "sample-title";
+      } else if (block.type === "h2") {
+        node = document.createElement("h2");
+        node.className = "sample-sub";
+      } else {
+        node = document.createElement("p");
+        node.className = "sample-paragraph";
+      }
+      node.textContent = block.text;
+      host.appendChild(node);
+    });
+  }
+
+  function firstBlockText(student, type) {
+    for (var i = 0; i < student.blocks.length; i++) {
+      if (student.blocks[i].type === type) return student.blocks[i].text;
+    }
+    return "";
+  }
+
+  function paragraphTexts(student) {
+    var list = [];
+    student.blocks.forEach(function (block) {
+      if (block.type === "p") list.push(block.text);
+    });
+    return list;
+  }
+
+  /* Colons cannot be used in a Windows file name. The same replacement
+     covers the other characters a file name cannot contain. */
+  function evidenceFileName(studentName, isoDate) {
+    var clean = function (value) {
+      return String(value).replace(/[\\/:*?"<>|\u0000-\u001f]/g, "-");
+    };
+    return "brainforge-evidence-" + clean(studentName) + "-" + clean(isoDate) + ".json";
+  }
+
+  function evidenceRecord(student, isoDate) {
+    return {
+      studentName: student.name,
+      date: isoDate,
+      subject: SUBJECT,
+      curriculumVersion: "v9.0",
+      activityType: "Digital Research & Informative Text Structuring",
+      extractedFacts: student.facts.slice(),
+      workSample: {
+        title: firstBlockText(student, "h1"),
+        subheader: firstBlockText(student, "h2"),
+        paragraphs: paragraphTexts(student)
+      },
+      bureaucraticStatement: $("activity-statement").textContent
+    };
+  }
+
+  function downloadEvidence(student, isoDate) {
+    var record = evidenceRecord(student, isoDate);
+    var blob = new Blob([JSON.stringify(record, null, 2)], { type: "application/json" });
+    var url = URL.createObjectURL(blob);
+    var link = document.createElement("a");
+    link.href = url;
+    link.download = evidenceFileName(student.name, isoDate);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }
+
+  function renderAll() {
+    var student = activeStudent();
+    renderStudentSelect();
+    setWorkingEnabled(!!student);
+    if (!student) {
+      els.intake.value = "";
+      els["workbook-date"].value = "";
+      renderFacts(null, true);
+      renderCanvas(null);
+      renderLog(null);
+      updateWorkbook(null);
+      renderReport(null);
+      hidePlagiarism();
+      return;
+    }
+    els.intake.value = student.intake;
+    els["workbook-date"].value = student.workbookDate;
+    renderFacts(student, true);
+    renderCanvas(student);
+    renderLog(student);
+    updateWorkbook(student);
+    renderReport(student);
+    syncChecks(student);
+  }
+
+  function syncChecks(student) {
+    els["check-date"].checked = !!(student && student.checks.date);
+    els["check-ruler"].checked = !!(student && student.checks.ruler);
+    els["check-gap"].checked = !!(student && student.checks.gap);
+    var ready = !!(student && student.checks.date && student.checks.ruler && student.checks.gap);
+    els["btn-create-report"].disabled = !ready;
+  }
+
+  function showTip(which, pin) {
+    if (pin) pinnedTip = which;
+    els["tip-h1"].hidden = which !== "h1";
+    els["tip-h2"].hidden = which !== "h2";
+    els["btn-add-h1"].setAttribute("aria-expanded", which === "h1" ? "true" : "false");
+    els["btn-add-h2"].setAttribute("aria-expanded", which === "h2" ? "true" : "false");
+  }
+
+  function hideTip(which) {
+    if (pinnedTip) return;
+    if (which === "h1") els["tip-h1"].hidden = true;
+    if (which === "h2") els["tip-h2"].hidden = true;
+    if (els["tip-h1"].hidden) els["btn-add-h1"].setAttribute("aria-expanded", "false");
+    if (els["tip-h2"].hidden) els["btn-add-h2"].setAttribute("aria-expanded", "false");
+  }
+
+  function clearTips() {
+    pinnedTip = "";
+    els["tip-h1"].hidden = true;
+    els["tip-h2"].hidden = true;
+    els["btn-add-h1"].setAttribute("aria-expanded", "false");
+    els["btn-add-h2"].setAttribute("aria-expanded", "false");
+  }
+
+  function onSelectStudent() {
+    var nextId = els["student-select"].value;
+    if (!nextId) {
+      state.activeStudentId = null;
+      hidePlagiarism();
+      renderAll();
+      persistState(true);
+      return;
+    }
+    if (!findStudent(nextId)) {
+      state.activeStudentId = null;
+      showStatus("That student is not on this device, so no work was saved against them.");
+      renderAll();
+      return;
+    }
+    state.activeStudentId = nextId;
+    hidePlagiarism();
+    renderAll();
+    persistState(true);
+  }
+
+  function openNameDialog(mode) {
+    nameMode = mode;
+    els["student-form-error"].textContent = "";
+    if (mode === "rename") {
+      var student = requireStudent();
+      if (!student) return;
+      els["student-dialog-title"].textContent = "Rename student";
+      els["student-save"].textContent = "Save name";
+      els["student-name"].value = student.name;
+    } else {
+      els["student-dialog-title"].textContent = "Add a student";
+      els["student-save"].textContent = "Save student";
+      els["student-name"].value = "";
+    }
+    lastFocus = document.activeElement;
+    els["dialog-student"].showModal();
+    els["student-name"].focus();
+  }
+
+  function closeNameDialog() {
+    els["dialog-student"].close();
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+
+  function saveName(event) {
+    event.preventDefault();
+    var name = els["student-name"].value.trim();
+    if (!name) {
+      els["student-form-error"].textContent = "Enter a first name.";
+      return;
+    }
+    if (name.length > 60) {
+      els["student-form-error"].textContent = "Use 60 characters or fewer.";
+      return;
+    }
+    if (nameMode === "rename") {
+      var current = requireStudent();
+      if (!current) return;
+      var previous = current.name;
+      current.name = name;
+      addLog(current, "name", "First name updated.");
+      if (!persistState(true)) {
+        current.name = previous;
+        current.log.pop();
+        return;
+      }
+      closeNameDialog();
+      renderAll();
+      return;
+    }
+    var student = emptyStudent(name);
+    addLog(student, "create", "Student profile created.");
+    var previousId = state.activeStudentId;
+    state.students.push(student);
+    state.activeStudentId = student.id;
+    if (!persistState(true)) {
+      state.students.pop();
+      state.activeStudentId = previousId;
+      return;
+    }
+    closeNameDialog();
+    hidePlagiarism();
+    renderAll();
+  }
+
+  function openDelete() {
+    var student = requireStudent();
+    if (!student) return;
+    pendingRemoveId = student.id;
+    els["delete-message"].textContent = "Remove " + student.name + " and all of their work from this browser? This cannot be undone.";
+    lastFocus = document.activeElement;
+    els["dialog-delete"].showModal();
+    els["delete-cancel"].focus();
+  }
+
+  function confirmDelete() {
+    var index = -1;
+    for (var i = 0; i < state.students.length; i++) {
+      if (state.students[i].id === pendingRemoveId) index = i;
+    }
+    if (index < 0) {
+      els["dialog-delete"].close();
+      return;
+    }
+    var removed = state.students.splice(index, 1)[0];
+    var previousId = state.activeStudentId;
+    if (state.activeStudentId === removed.id) state.activeStudentId = null;
+    if (!persistState(true)) {
+      state.students.splice(index, 0, removed);
+      state.activeStudentId = previousId;
+      return;
+    }
+    pendingRemoveId = "";
+    els["dialog-delete"].close();
+    hidePlagiarism();
+    renderAll();
+  }
+
+  function addBlock(type) {
+    var student = requireStudent();
+    if (!student) return;
+    /* A paragraph is added as soon as a student is selected. The three
+       evidence points still hide the source later. They must not make
+       this button look dead. */
+    var block = { id: newId("blk"), type: type, text: "" };
+    student.blocks.push(block);
+    var label = type === "h1" ? "Main title added." : type === "h2" ? "Subheader added." : "Paragraph added.";
+    addLog(student, "block", label);
+    if (!persistState(true)) {
+      student.blocks.pop();
+      student.log.pop();
+      return;
+    }
+    renderCanvas(student);
+    updateWorkbook(student);
+    var field = $("block-" + block.id);
+    if (field) field.focus();
+  }
+
+  function moveBlock(id, direction) {
+    var student = requireStudent();
+    if (!student) return;
+    var index = -1;
+    for (var i = 0; i < student.blocks.length; i++) {
+      if (student.blocks[i].id === id) index = i;
+    }
+    var next = index + direction;
+    if (index < 0 || next < 0 || next >= student.blocks.length) return;
+    var item = student.blocks[index];
+    student.blocks.splice(index, 1);
+    student.blocks.splice(next, 0, item);
+    if (!persistState(true)) {
+      student.blocks.splice(next, 1);
+      student.blocks.splice(index, 0, item);
+      return;
+    }
+    renderCanvas(student);
+    updateWorkbook(student);
+  }
+
+  function removeBlock(id) {
+    var student = requireStudent();
+    if (!student) return;
+    var block = null;
+    for (var i = 0; i < student.blocks.length; i++) {
+      if (student.blocks[i].id === id) block = student.blocks[i];
+    }
+    if (!block) return;
+    var message = "Remove this " + (BLOCK_LABELS[block.type] || "part").toLowerCase() + "? This cannot be undone.";
+    pendingRemoveId = "";
+    lastFocus = document.activeElement;
+    els["delete-message"].textContent = message;
+    els["dialog-delete"].showModal();
+    els["delete-cancel"].focus();
+    els["delete-confirm"].onclick = function () {
+      var fresh = requireStudent();
+      if (!fresh) return;
+      var index = -1;
+      for (var n = 0; n < fresh.blocks.length; n++) {
+        if (fresh.blocks[n].id === id) index = n;
+      }
+      if (index < 0) {
+        els["dialog-delete"].close();
+        return;
+      }
+      var removed = fresh.blocks.splice(index, 1)[0];
+      addLog(fresh, "remove", "A part of the writing was removed.");
+      if (!persistState(true)) {
+        fresh.blocks.splice(index, 0, removed);
+        fresh.log.pop();
+        return;
+      }
+      forgetOnlineCheck(id);
+      els["dialog-delete"].close();
+      bindDeleteStudent();
+      renderCanvas(fresh);
+      updateWorkbook(fresh);
+      renderLog(fresh);
+      if (fresh.reportAt) renderWorkSample(fresh);
+    };
+  }
+
+  function bindDeleteStudent() {
+    els["delete-confirm"].onclick = confirmDelete;
+  }
+
+  function onIntakeInput() {
+    var student = requireStudent();
+    if (!student) {
+      els.intake.value = "";
+      return;
+    }
+    student.intake = els.intake.value;
+    scheduleSave();
+  }
+
+  function onFactInput(input) {
+    var student = requireStudent();
+    if (!student) {
+      input.value = "";
+      return;
+    }
+    var index = Number(input.getAttribute("data-fact"));
+    var wasReady = factsReady(student);
+    student.facts[index] = input.value;
+    var ready = factsReady(student);
+    if (!wasReady && ready) addLog(student, "facts", "Three evidence points recorded.");
+    renderFacts(student);
+    scheduleSave();
+    renderLog(student);
+  }
+
+  function predictedValue(field, pasted) {
+    var start = 0;
+    var end = 0;
+    try {
+      start = typeof field.selectionStart === "number" ? field.selectionStart : field.value.length;
+      end = typeof field.selectionEnd === "number" ? field.selectionEnd : start;
+    } catch (err) {
+      start = field.value.length;
+      end = start;
+    }
+    return field.value.slice(0, start) + pasted + field.value.slice(end);
+  }
+
+  /* Edge throws if the type is not on the clipboard. One throw used to
+     leave this handler, so the rest of that paste never ran. Try each
+     type, and keep going when a type is refused. */
+  function readClipboardText(event) {
+    var data = event && event.clipboardData;
+    if (!data || typeof data.getData !== "function") return "";
+    var types = ["text/plain", "text", "Text"];
+    for (var i = 0; i < types.length; i++) {
+      try {
+        var value = data.getData(types[i]);
+        if (value) return value;
+      } catch (err) {
+        /* This type is not available. The next one may be. */
+      }
+    }
+    return "";
+  }
+
+  function onCanvasPaste(event) {
+    try {
+      blockIntakePaste(event);
+    } catch (err) {
+      /* A throw here used to stop the rest of the page script. */
+      console.error("BrainForge could not check that paste.", err);
+    }
+  }
+
+  function blockIntakePaste(event) {
+    var field = event.target;
+    if (!field || !field.getAttribute) return;
+    var fieldId = field.id || "";
+    /* These boxes are where research, evidence, the date, and the name
+       are entered. Never block a paste that lands in one of them. */
+    if (fieldId === "intake" || fieldId === "workbook-date" || fieldId === "student-name") return;
+    if (field.classList && field.classList.contains("fact-input")) return;
+    if (field.nodeName !== "TEXTAREA") return;
+    var blockId = field.getAttribute("data-block-id");
+    var blockType = field.getAttribute("data-block-type");
+    if (!blockId) return;
+    /* Main titles, subheaders, and paragraphs all refuse intake paste. */
+    if (blockType !== "h1" && blockType !== "h2" && blockType !== "p") return;
+    var student = requireStudent();
+    if (!student) {
+      event.preventDefault();
+      return;
+    }
+    var pasted = readClipboardText(event);
+    var fromIntake = comesFromIntake(pasted, student.intake) || comesFromIntake(predictedValue(field, pasted), student.intake);
+    if (!fromIntake) return;
+    event.preventDefault();
+    field.value = "";
+    for (var n = 0; n < student.blocks.length; n++) {
+      if (student.blocks[n].id === blockId) student.blocks[n].text = "";
+    }
+    updateWorkbook(student);
+    scheduleSave();
+    showPlagiarism();
+  }
+
+  function onCanvasInput(field) {
+    var student = requireStudent();
+    if (!student) {
+      field.value = "";
+      return;
+    }
+    var id = field.getAttribute("data-block-id");
+    var block = null;
+    for (var i = 0; i < student.blocks.length; i++) {
+      if (student.blocks[i].id === id) block = student.blocks[i];
+    }
+    if (!block) return;
+    if (isDirectCopy(field.value, student.intake)) {
+      field.value = block.text;
+      showPlagiarism();
+      updateWorkbook(student);
+      return;
+    }
+    hidePlagiarism();
+    block.text = field.value;
+    updateWorkbook(student);
+    scheduleOnlineCheck(block);
+    if (student.reportAt) renderWorkSample(student);
+    scheduleSave();
+  }
+
+  function openChecklist() {
+    var student = requireStudent();
+    if (!student) return;
+    syncChecks(student);
+    lastFocus = document.activeElement;
+    els["dialog-check"].showModal();
+    els["check-date"].focus();
+  }
+
+  function onCheckChange() {
+    var student = requireStudent();
+    if (!student) return;
+    student.checks.date = els["check-date"].checked;
+    student.checks.ruler = els["check-ruler"].checked;
+    student.checks.gap = els["check-gap"].checked;
+    syncChecks(student);
+    scheduleSave();
+  }
+
+  function createReport(event) {
+    event.preventDefault();
+    var student = requireStudent();
+    if (!student) return;
+    if (!student.checks.date || !student.checks.ruler || !student.checks.gap) {
+      showStatus("Tick all three checks before the report is created. Nothing was saved as a report.");
+      return;
+    }
+    var previous = student.reportAt;
+    var previousSubject = student.subject;
+    var logSnapshot = student.log.map(function (entry) {
+      return {
+        id: entry.id,
+        kind: entry.kind,
+        day: entry.day,
+        at: entry.at,
+        text: entry.text
+      };
+    });
+    student.reportAt = new Date().toISOString();
+    student.subject = SUBJECT;
+    addLog(student, "report", "Evidence report prepared.");
+    if (!persistState(true)) {
+      student.reportAt = previous;
+      student.subject = previousSubject;
+      student.log = logSnapshot;
+      return;
+    }
+    els["dialog-check"].close();
+    renderReport(student);
+    renderLog(student);
+    els["evidence-report"].scrollIntoView({ block: "start" });
+    try {
+      downloadEvidence(student, student.reportAt);
+    } catch (err) {
+      console.error("BrainForge could not download the evidence file.", err);
+      showStatus("The report is on this page, but the evidence file did not download. Try creating the report again.");
+    }
+  }
+
+  function onWorkbookDateInput() {
+    var student = requireStudent();
+    if (!student) {
+      els["workbook-date"].value = "";
+      return;
+    }
+    student.workbookDate = els["workbook-date"].value;
+    var shown = $("report-workbook-date");
+    if (shown) shown.textContent = student.workbookDate;
+    scheduleSave();
+  }
+
+  function bindTips() {
+    els["btn-add-h1"].addEventListener("mouseenter", function () { showTip("h1", false); });
+    els["btn-add-h1"].addEventListener("focus", function () { showTip("h1", false); });
+    els["btn-add-h1"].addEventListener("mouseleave", function () { hideTip("h1"); });
+    els["btn-add-h1"].addEventListener("blur", function () { hideTip("h1"); });
+    els["btn-add-h2"].addEventListener("mouseenter", function () { showTip("h2", false); });
+    els["btn-add-h2"].addEventListener("focus", function () { showTip("h2", false); });
+    els["btn-add-h2"].addEventListener("mouseleave", function () { hideTip("h2"); });
+    els["btn-add-h2"].addEventListener("blur", function () { hideTip("h2"); });
+  }
+
+  function bindEvents() {
+    els["student-select"].addEventListener("change", onSelectStudent);
+    els["btn-add-student"].addEventListener("click", function () { openNameDialog("add"); });
+    els["btn-rename-student"].addEventListener("click", function () { openNameDialog("rename"); });
+    els["btn-remove-student"].addEventListener("click", openDelete);
+    els["student-cancel"].addEventListener("click", closeNameDialog);
+    els["student-form"].addEventListener("submit", saveName);
+    els["delete-cancel"].addEventListener("click", function () {
+      els["dialog-delete"].close();
+      if (lastFocus && lastFocus.focus) lastFocus.focus();
+    });
+    /* Escape closes the dialog without a button click. Put the confirm
+       action back to removing a student, which is the usual use of this dialog. */
+    els["dialog-delete"].addEventListener("close", bindDeleteStudent);
+    bindDeleteStudent();
+
+    els["btn-theme"].addEventListener("click", function () {
+      var dark = document.documentElement.classList.contains("dark");
+      applyTheme(dark ? "light" : "dark", true);
+    });
+
+    els.intake.addEventListener("input", onIntakeInput);
+    els["workbook-date"].addEventListener("input", onWorkbookDateInput);
+    document.querySelectorAll(".fact-input").forEach(function (input) {
+      input.addEventListener("input", function () { onFactInput(input); });
+    });
+
+    els["btn-add-h1"].addEventListener("click", function () {
+      try { showTip("h1", true); }
+      catch (err) { console.error("BrainForge could not show the title note.", err); }
+      addBlock("h1");
+    });
+    els["btn-add-h2"].addEventListener("click", function () {
+      try { showTip("h2", true); }
+      catch (err) { console.error("BrainForge could not show the subheader note.", err); }
+      addBlock("h2");
+    });
+    els["btn-add-p"].addEventListener("click", function () {
+      try { clearTips(); }
+      catch (err) { console.error("BrainForge could not clear the notes.", err); }
+      addBlock("p");
+    });
+    bindTips();
+
+    els["canvas-list"].addEventListener("input", function (event) {
+      if (event.target && event.target.getAttribute("data-block-id")) onCanvasInput(event.target);
+    });
+    els["canvas-list"].addEventListener("click", function (event) {
+      var move = event.target && event.target.getAttribute && event.target.getAttribute("data-move");
+      var removeId = event.target && event.target.getAttribute && event.target.getAttribute("data-remove-block");
+      var id = event.target && event.target.getAttribute && event.target.getAttribute("data-block-id");
+      if (move && id) moveBlock(id, Number(move));
+      if (removeId) removeBlock(removeId);
+    });
+
+    els["btn-generate"].addEventListener("click", openChecklist);
+    els["check-date"].addEventListener("change", onCheckChange);
+    els["check-ruler"].addEventListener("change", onCheckChange);
+    els["check-gap"].addEventListener("change", onCheckChange);
+    els["check-form"].addEventListener("submit", createReport);
+    els["check-cancel"].addEventListener("click", function () {
+      els["dialog-check"].close();
+      if (lastFocus && lastFocus.focus) lastFocus.focus();
+    });
+    els["btn-print"].addEventListener("click", function () {
+      try { window.print(); }
+      catch (err) { console.error("Print did not open.", err); }
+    });
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape") clearTips();
+    });
+
+    /* A layout change can push ink over the red margin, so recheck then. */
+    if (window.ResizeObserver) {
+      var observer = new ResizeObserver(function () {
+        runLayoutChecks(activeStudent());
+      });
+      observer.observe(els["workbook-page"]);
+    } else {
+      window.addEventListener("resize", function () { runLayoutChecks(activeStudent()); });
+    }
+
+    window.addEventListener("pagehide", function () {
+      if (saveTimer) {
+        window.clearTimeout(saveTimer);
+        persistState(false);
+      }
+    });
+  }
+
+  cacheEls();
+  loadTheme();
+  loadState();
+  if (storageUnreadable) {
+    showStatus("BrainForge could not read saved work in this browser. Nothing new will be stored over it.");
+  }
+  bindEvents();
+  renderAll();
+})();
+</script>
+</body>
+</html>
