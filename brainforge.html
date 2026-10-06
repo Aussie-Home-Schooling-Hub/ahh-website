@@ -504,6 +504,7 @@ tailwind.config = {
     <section class="min-w-0 rounded-2xl border border-walnut/15 bg-[var(--card-bg)] text-[var(--card-text)] p-4" aria-labelledby="workbook-heading">
       <h2 id="workbook-heading" class="font-display text-xl m-0 text-walnut dark:text-brass-bright">Australian Workbook Simulator</h2>
       <p class="mt-1 mb-3 text-base">See how the writing sits on workbook lines.</p>
+      <p id="grammar-online-note" class="no-print mt-0 mb-3 text-sm">Grammar check sends this writing to an online checker. BrainForge does not keep a copy.</p>
 
       <p id="margin-alert" class="mt-0 mb-3 rounded-xl border border-walnut px-3 py-3 font-semibold" role="alert" hidden>
         <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
@@ -1090,7 +1091,7 @@ tailwind.config = {
     } else {
       student.blocks.forEach(function (block) {
         /* One badge per issue, above that block. The typed text is not changed. */
-        grammarIssues(block).forEach(function (issue) {
+        blockIssues(block, student.name).forEach(function (issue) {
           var badge = document.createElement("p");
           badge.className = "grammar-badge no-print";
           badge.setAttribute("role", "status");
@@ -1174,8 +1175,14 @@ tailwind.config = {
     sentence: "💡 Grammar Check: A new sentence starts with a capital letter.",
     proper: "💡 Grammar Check: Proper nouns, names, and places require a Capital Letter regardless of where they sit in a sentence.",
     pronoun: "💡 Grammar Check: The word I is always a capital letter.",
+    name: "💡 Grammar Check: A name starts with a capital letter.",
+    midcap: "💡 Grammar Check: This word does not need a capital letter in the middle of a sentence.",
     ending: "💡 Grammar Check: A sentence needs a full stop, question mark, or exclamation mark at the end.",
-    space: "💡 Grammar Check: Leave a space after a full stop before the next word."
+    space: "💡 Grammar Check: Leave a space after a full stop before the next word.",
+    spell: "💡 Grammar Check: Check the spelling of this word.",
+    sense: "💡 Grammar Check: Check that this part makes sense.",
+    punct: "💡 Grammar Check: Check the punctuation in this sentence.",
+    simple: "💡 Grammar Check: See if a simpler word would do."
   };
 
   function isLetter(ch) {
@@ -1325,24 +1332,304 @@ tailwind.config = {
     return false;
   }
 
+  /* Profile words only. A personal name that is not this student's, and not
+     already on the place, day, or month list, is not known. */
+  function profileNameWords(fullName) {
+    return String(fullName || "").split(/\s+/).filter(function (word) {
+      var i;
+      for (i = 0; i < word.length; i++) {
+        if (isLetter(word.charAt(i))) return true;
+      }
+      return false;
+    });
+  }
+
+  function readWord(text, index) {
+    var end = index + 1;
+    while (end < text.length) {
+      var ch = text.charAt(end);
+      if (isLetter(ch)) {
+        end++;
+        continue;
+      }
+      if ((ch === "'" || ch === "\u2019" || ch === "-") && isLetter(text.charAt(end + 1))) {
+        end++;
+        continue;
+      }
+      break;
+    }
+    return end;
+  }
+
+  function isUppercaseLetter(ch) {
+    return isLetter(ch) && ch !== ch.toLowerCase();
+  }
+
+  /* A lowercase whole word from the selected student's name. */
+  function findNameSpans(text, words) {
+    var spans = [];
+    var i = 0;
+    while (i < text.length) {
+      if (!isWordStart(text, i)) {
+        i++;
+        continue;
+      }
+      var end = readWord(text, i);
+      var slice = text.slice(i, end);
+      if (isLowercaseLetter(slice.charAt(0))) {
+        var lower = slice.toLowerCase();
+        for (var n = 0; n < words.length; n++) {
+          if (words[n].toLowerCase() === lower) {
+            spans.push({ start: i, end: end });
+            break;
+          }
+        }
+      }
+      i = end;
+    }
+    return spans;
+  }
+
+  function matchLoosePhrase(text, index) {
+    for (var p = 0; p < PROPER_PHRASES.length; p++) {
+      var phrase = PROPER_PHRASES[p];
+      if (text.substr(index, phrase.length).toLowerCase() !== phrase) continue;
+      if (isLetter(text.charAt(index + phrase.length))) continue;
+      return phrase;
+    }
+    return "";
+  }
+
+  /* Same territory test as the lowercase flag, but any capitalisation. */
+  function isTerritoryActLoose(text, index) {
+    if (text.substr(index, 3).toLowerCase() !== "act") return false;
+    if (isLetter(text.charAt(index + 3))) return false;
+    var prev = previousWord(text, index);
+    return prev === "in" || prev === "from" || prev === "across";
+  }
+
+  function findLooseProperSpans(text) {
+    var spans = [];
+    var i = 0;
+    while (i < text.length) {
+      if (!isWordStart(text, i)) {
+        i++;
+        continue;
+      }
+      var phrase = matchLoosePhrase(text, i);
+      if (phrase) {
+        spans.push({ start: i, end: i + phrase.length });
+        i += phrase.length;
+        continue;
+      }
+      if (isTerritoryActLoose(text, i)) {
+        spans.push({ start: i, end: i + 3 });
+        i += 3;
+        continue;
+      }
+      i++;
+    }
+    return spans;
+  }
+
+  function sentenceFirstWordIndexes(text) {
+    var indexes = [];
+    var first = firstLetterIndex(text);
+    if (first >= 0) indexes.push(first);
+    for (var i = 0; i < text.length; i++) {
+      var ch = text.charAt(i);
+      if (ch !== "." && ch !== "!" && ch !== "?") continue;
+      if (ch === "." && isDigit(text.charAt(i - 1)) && isDigit(text.charAt(i + 1))) continue;
+      var j = i + 1;
+      while (j < text.length && isSentenceGap(text.charAt(j))) j++;
+      if (j < text.length && isLetter(text.charAt(j))) indexes.push(j);
+    }
+    return indexes;
+  }
+
+  function isAllowedMidCapital(word, index, words, loose) {
+    if (word === "I") return true;
+    if (word.length === 3 && word.charAt(0) === "I" && (word.charAt(1) === "'" || word.charAt(1) === "\u2019") && word.charAt(2).toLowerCase() === "m") return true;
+    if (spanCovers(loose, index)) return true;
+    var lower = word.toLowerCase();
+    for (var n = 0; n < words.length; n++) {
+      if (words[n].toLowerCase() === lower) return true;
+    }
+    return false;
+  }
+
+  /* Paragraphs only. The first word of a sentence may keep its capital. */
+  function hasMidSentenceCapital(text, words) {
+    var loose = findLooseProperSpans(text);
+    var firsts = sentenceFirstWordIndexes(text);
+    var i = 0;
+    while (i < text.length) {
+      if (!isWordStart(text, i)) {
+        i++;
+        continue;
+      }
+      var end = readWord(text, i);
+      var word = text.slice(i, end);
+      var isFirst = false;
+      for (var f = 0; f < firsts.length; f++) {
+        if (firsts[f] === i) isFirst = true;
+      }
+      if (!isFirst && isUppercaseLetter(word.charAt(0)) && !isAllowedMidCapital(word, i, words, loose)) return true;
+      i = end;
+    }
+    return false;
+  }
+
+  function dropCovered(spans, cover) {
+    return spans.filter(function (span) {
+      return !spanCovers(cover, span.start);
+    });
+  }
+
   /* The sentence-start badge is skipped when that same word is already
-     covered by the proper-noun badge or the pronoun badge. */
-  function grammarIssues(block) {
+     covered by a more specific badge. */
+  function grammarIssues(block, fullName) {
     var text = block.text || "";
     if (!text) return [];
+    var words = profileNameWords(fullName);
     var isParagraph = block.type === "p";
-    var proper = findProperSpans(text);
+    var names = findNameSpans(text, words);
+    var proper = dropCovered(findProperSpans(text), names);
     var pronoun = isParagraph ? findPronounSpans(text) : [];
     var starts = sentenceStartIndexes(text).filter(function (index) {
-      return !spanCovers(proper, index) && !spanCovers(pronoun, index);
+      return !spanCovers(proper, index) && !spanCovers(pronoun, index) && !spanCovers(names, index);
     });
     var issues = [];
     if (starts.length) issues.push("sentence");
+    if (names.length) issues.push("name");
     if (proper.length) issues.push("proper");
     if (pronoun.length) issues.push("pronoun");
+    if (isParagraph && hasMidSentenceCapital(text, words)) issues.push("midcap");
     if (isParagraph && needsEnding(text)) issues.push("ending");
     if (isParagraph && missingSpaceAfterStop(text)) issues.push("space");
     return issues;
+  }
+
+  /* Online results live here only, for the badges on screen. They are not
+     written into the saved student record. */
+  var onlineByBlock = {};
+  var onlineTimers = {};
+  var onlineAbort = {};
+  var onlineToken = {};
+
+  function forgetOnlineCheck(id) {
+    window.clearTimeout(onlineTimers[id]);
+    delete onlineTimers[id];
+    if (onlineAbort[id]) onlineAbort[id].abort();
+    delete onlineAbort[id];
+    delete onlineByBlock[id];
+    delete onlineToken[id];
+  }
+
+  function blockIssues(block, fullName) {
+    var issues = grammarIssues(block, fullName);
+    var saved = onlineByBlock[block.id];
+    if (!saved || saved.text !== block.text) return issues;
+    saved.issues.forEach(function (issue) {
+      if (issues.indexOf(issue) < 0 && GRAMMAR_BADGE_TEXT[issue]) issues.push(issue);
+    });
+    return issues;
+  }
+
+  /* Ordinary "act" is not a place. A sentence-start match may still show. */
+  function ordinaryActSuppressed(text, match) {
+    var offset = match.offset || 0;
+    var length = match.length || 0;
+    if (text.substr(offset, length).toLowerCase() !== "act") return false;
+    if (offset > 0 && isLetter(text.charAt(offset - 1))) return false;
+    if (isLetter(text.charAt(offset + length))) return false;
+    if (isTerritoryActLoose(text, offset)) return false;
+    var ruleId = match.rule && match.rule.id;
+    return ruleId !== "UPPERCASE_SENTENCE_START";
+  }
+
+  function classifyOnlineMatch(text, match) {
+    var rule = match.rule || {};
+    var id = String(rule.id || "");
+    var cat = String((rule.category && rule.category.id) || "");
+    var upper = (id + " " + cat).toUpperCase();
+    if (id === "UPPERCASE_SENTENCE_START") return "sentence";
+    if (id === "I_LOWERCASE") return "pronoun";
+    if (id === "SENTENCE_WHITESPACE") return "space";
+    if (/CASING|CAPITAL/.test(upper)) return "midcap";
+    if (/PERIOD|SENTENCE_END/.test(upper)) return "ending";
+    if (cat === "TYPOS" || /MORFOLOGIK|SPELL/.test(upper)) return "spell";
+    if (cat === "PUNCTUATION" || cat === "TYPOGRAPHY") return "punct";
+    if (cat === "STYLE" || cat === "REDUNDANCY") return "simple";
+    return "sense";
+  }
+
+  function mapOnlineMatches(text, fullName, matches) {
+    var issues = [];
+    var names = findNameSpans(text, profileNameWords(fullName));
+    (matches || []).forEach(function (match) {
+      if (!match || typeof match.offset !== "number") return;
+      if (spanCovers(names, match.offset)) return;
+      if (ordinaryActSuppressed(text, match)) return;
+      var key = classifyOnlineMatch(text, match);
+      if (!key || issues.indexOf(key) >= 0) return;
+      issues.push(key);
+    });
+    return issues;
+  }
+
+  function sendOnlineCheck(id, text) {
+    var token = (onlineToken[id] || 0) + 1;
+    onlineToken[id] = token;
+    if (onlineAbort[id]) onlineAbort[id].abort();
+    var controller = typeof AbortController === "function" ? new AbortController() : null;
+    onlineAbort[id] = controller;
+    var slow = window.setTimeout(function () {
+      if (controller) controller.abort();
+    }, 8000);
+    /* The writing goes in the body, not the URL. */
+    var body = "language=en-AU&text=" + encodeURIComponent(text);
+    fetch("https://api.languagetool.org/v2/check", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: body,
+      signal: controller ? controller.signal : undefined
+    }).then(function (res) {
+      if (!res.ok) throw new Error("LanguageTool");
+      return res.json();
+    }).then(function (data) {
+      if (onlineToken[id] !== token) return;
+      var student = activeStudent();
+      if (!student) return;
+      var block = null;
+      for (var i = 0; i < student.blocks.length; i++) {
+        if (student.blocks[i].id === id) block = student.blocks[i];
+      }
+      if (!block || block.text !== text) return;
+      onlineByBlock[id] = {
+        text: text,
+        issues: mapOnlineMatches(text, student.name, data && data.matches)
+      };
+      updateWorkbook(student);
+    }).catch(function () {
+      /* A failed or slow check leaves the local badges in place. */
+    }).then(function () {
+      window.clearTimeout(slow);
+    });
+  }
+
+  function scheduleOnlineCheck(block) {
+    var id = block.id;
+    window.clearTimeout(onlineTimers[id]);
+    var text = block.text || "";
+    if (onlineByBlock[id] && onlineByBlock[id].text !== text) delete onlineByBlock[id];
+    if (!String(text).trim()) {
+      forgetOnlineCheck(id);
+      return;
+    }
+    onlineTimers[id] = window.setTimeout(function () {
+      sendOnlineCheck(id, text);
+    }, 600);
   }
 
   /* A subheader is out of scale when it sits above the title, or when its
@@ -1730,6 +2017,7 @@ tailwind.config = {
         fresh.log.pop();
         return;
       }
+      forgetOnlineCheck(id);
       els["dialog-delete"].close();
       bindDeleteStudent();
       renderCanvas(fresh);
@@ -1812,6 +2100,7 @@ tailwind.config = {
     hidePlagiarism();
     block.text = field.value;
     updateWorkbook(student);
+    scheduleOnlineCheck(block);
     if (student.reportAt) renderWorkSample(student);
     scheduleSave();
   }
