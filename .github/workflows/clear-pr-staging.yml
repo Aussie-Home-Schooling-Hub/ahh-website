@@ -1,0 +1,54 @@
+name: Clear PR staging branch
+
+# Resets the temporary `PR` branch daily so handoff files do not accumulate.
+# Website content on `main` is never modified by this workflow.
+
+on:
+  schedule:
+    # 13:00 UTC ≈ early morning Australia (AEST/AEDT)
+    - cron: "0 13 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: clear-pr-staging
+  cancel-in-progress: true
+
+jobs:
+  reset-pr-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Reset PR branch to README-only orphan commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          WORKDIR=$(mktemp -d)
+          cd "$WORKDIR"
+          git init
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+
+          cat > README.md <<'README'
+          # PR staging branch (temporary)
+
+          This branch is a **daily-cleared drop zone** for temporary PR / handoff files.
+
+          ## Rules
+
+          - **Temporary only.** Anything left here is wiped every day (GitHub Action on `main`).
+          - **Do not store paid apps here long-term.** Paid product files (e.g. BrainForge app HTML) stay off GitHub — Payhip only. See project preferences.
+          - **Website lives on `main`.** Netlify publishes the public site from `main`. This branch is not the website.
+          - Put short-lived review/handoff files here when needed; assume they will disappear within ~24 hours.
+
+          If you need something kept, put it in the Project store or ask Pete — not in this branch.
+          README
+          sed -i 's/^          //' README.md
+
+          git checkout --orphan PR
+          git add README.md
+          git commit -m "Reset PR staging branch (daily clear)"
+          git push -f origin HEAD:PR
