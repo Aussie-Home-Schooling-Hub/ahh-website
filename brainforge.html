@@ -1114,11 +1114,19 @@
       student.blocks.forEach(function (block) {
         /* One badge per issue, above that block. The typed text is not changed. */
         blockIssues(block, student.name).forEach(function (issue) {
+          var message = GRAMMAR_BADGE_TEXT[issue];
+          /* No specific words means no badge. The old catch-all is gone. */
+          if (!message) return;
           var badge = document.createElement("p");
           badge.className = "grammar-badge no-print";
           badge.setAttribute("role", "status");
           badge.setAttribute("data-grammar", issue);
-          badge.textContent = GRAMMAR_BADGE_TEXT[issue];
+          badge.appendChild(document.createTextNode(message));
+          var example = GRAMMAR_BADGE_EXAMPLE[issue];
+          if (example) {
+            badge.appendChild(document.createElement("br"));
+            badge.appendChild(document.createTextNode(example));
+          }
           body.appendChild(badge);
         });
         var line = document.createElement("p");
@@ -1194,17 +1202,22 @@
   ];
 
   var GRAMMAR_BADGE_TEXT = {
-    sentence: "💡 Grammar Check: A new sentence starts with a capital letter.",
-    proper: "💡 Grammar Check: Proper nouns, names, and places require a Capital Letter regardless of where they sit in a sentence.",
+    sentence: "💡 Grammar: Sentences and headings must start with a Capital Letter.",
+    proper: "💡 Grammar: Names, places, and Australian states always need a Capital Letter.",
     pronoun: "💡 Grammar Check: The word I is always a capital letter.",
     name: "💡 Grammar Check: A name starts with a capital letter.",
     midcap: "💡 Grammar Check: This word does not need a capital letter in the middle of a sentence.",
-    ending: "💡 Grammar Check: A sentence needs a full stop, question mark, or exclamation mark at the end.",
+    ending: "💡 Punctuation: Informative paragraphs must end with a full stop, question mark, or exclamation mark.",
     space: "💡 Grammar Check: Leave a space after a full stop before the next word.",
     spell: "💡 Grammar Check: Check the spelling of this word.",
-    sense: "💡 Grammar Check: Check that this part makes sense.",
     punct: "💡 Grammar Check: Check the punctuation in this sentence.",
     simple: "💡 Grammar Check: See if a simpler word would do."
+  };
+
+  var GRAMMAR_BADGE_EXAMPLE = {
+    sentence: "Example: 'uluru' should be written as 'Uluru'.",
+    ending: "Example: Make sure to add a '.' at the very end of your paragraph.",
+    proper: "Example: 'qld' should be written as 'QLD'."
   };
 
   function isLetter(ch) {
@@ -1515,20 +1528,28 @@
     if (!text) return [];
     var words = profileNameWords(fullName);
     var isParagraph = block.type === "p";
+    var isHeading = block.type === "h1" || block.type === "h2";
     var names = findNameSpans(text, words);
     var proper = dropCovered(findProperSpans(text), names);
     var pronoun = isParagraph ? findPronounSpans(text) : [];
+    var headingStart = isHeading ? firstLetterIndex(text) : -1;
     var starts = sentenceStartIndexes(text).filter(function (index) {
+      /* A heading that opens with a small letter keeps this badge, even
+         when that first word is also a place. */
+      if (index === headingStart) return true;
       return !spanCovers(proper, index) && !spanCovers(pronoun, index) && !spanCovers(names, index);
     });
+    if (headingStart >= 0 && starts.indexOf(headingStart) !== -1) {
+      proper = proper.filter(function (span) { return span.start !== headingStart; });
+    }
     var issues = [];
     if (starts.length) issues.push("sentence");
     if (names.length) issues.push("name");
     if (proper.length) issues.push("proper");
     if (pronoun.length) issues.push("pronoun");
     if (hasMidSentenceCapital(text, words)) issues.push("midcap");
-    /* A heading does not need a full stop. */
-    if (isParagraph && needsEnding(text)) issues.push("ending");
+    /* A subheader never gets a missing full stop. Only a paragraph can. */
+    if (block.type !== "h2" && isParagraph && needsEnding(text)) issues.push("ending");
     if (isParagraph && missingSpaceAfterStop(text)) issues.push("space");
     return issues;
   }
@@ -1555,10 +1576,15 @@
     return !needsEnding(text) && !missingSpaceAfterStop(text);
   }
 
+  function withoutSubheaderStop(block, issues) {
+    if (block.type !== "h2") return issues;
+    return issues.filter(function (issue) { return issue !== "ending"; });
+  }
+
   function blockIssues(block, fullName) {
     var issues = grammarIssues(block, fullName);
     var saved = onlineByBlock[block.id];
-    if (!saved || saved.text !== block.text) return issues;
+    if (!saved || saved.text !== block.text) return withoutSubheaderStop(block, issues);
     var heading = block.type === "h1" || block.type === "h2";
     var text = block.text || "";
     var sound = punctuationSound(text);
@@ -1571,7 +1597,7 @@
       if (!heading && sound && (issue === "ending" || issue === "space")) return;
       if (issues.indexOf(issue) < 0 && GRAMMAR_BADGE_TEXT[issue]) issues.push(issue);
     });
-    return issues;
+    return withoutSubheaderStop(block, issues);
   }
 
   /* Ordinary "act" is not a place. A sentence-start match may still show. */
@@ -1601,7 +1627,8 @@
        end marks and missing spaces already have their own badges. */
     if (cat === "PUNCTUATION" || cat === "TYPOGRAPHY") return "";
     if (cat === "STYLE" || cat === "REDUNDANCY") return "simple";
-    return "sense";
+    /* No specific Years 3–6 message, so no badge. */
+    return "";
   }
 
   function mapOnlineMatches(text, fullName, matches, blockType) {
