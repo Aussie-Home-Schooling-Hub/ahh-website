@@ -1,0 +1,78 @@
+name: Clear PR staging branch
+
+# Resets the temporary `PR` branch nightly at 11pm Australia/Sydney
+# (unless Pete says otherwise). Website content on `main` is never modified.
+
+on:
+  schedule:
+    # GitHub cron is UTC-only. 23:00 Australia/Sydney is:
+    #   - 12:00 UTC during AEDT (UTC+11)
+    #   - 13:00 UTC during AEST (UTC+10)
+    # Fire at both; the job gates on the real Sydney hour so DST stays correct.
+    - cron: "0 12,13 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: clear-pr-staging
+  cancel-in-progress: true
+
+jobs:
+  reset-pr-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Only run at 11pm Australia/Sydney (or manual)
+        id: gate
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+            echo "Manual run — clearing PR staging now."
+            exit 0
+          fi
+          HOUR=$(TZ=Australia/Sydney date +%H)
+          echo "Australia/Sydney hour now: $HOUR"
+          if [ "$HOUR" = "23" ]; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "run=false" >> "$GITHUB_OUTPUT"
+            echo "Skipping — not 23:00 Australia/Sydney (DST-safe gate)."
+          fi
+
+      - name: Reset PR branch to README-only orphan commit
+        if: steps.gate.outputs.run == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          WORKDIR=$(mktemp -d)
+          cd "$WORKDIR"
+          git init
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+
+          python3 - <<'PY'
+          from pathlib import Path
+          Path("README.md").write_text(
+              "# PR staging branch (temporary)\n"
+              "\n"
+              "This branch is a **nightly-cleared drop zone** for temporary PR / handoff files.\n"
+              "\n"
+              "## Rules\n"
+              "\n"
+              "- **Temporary only.** Cleared every night at **11pm Australia/Sydney** (GitHub Action on `main`), unless Pete says otherwise.\n"
+              "- **Do not store paid apps here long-term.** Paid product files (e.g. BrainForge app HTML) stay off GitHub — Payhip only. See project preferences.\n"
+              "- **Website lives on `main`.** Netlify publishes the public site from `main`. This branch is not the website.\n"
+              "- Put short-lived review/handoff files here when needed; assume they will disappear overnight.\n"
+              "\n"
+              "If you need something kept, put it in the Project store or ask Pete — not in this branch.\n"
+          )
+          PY
+
+          git checkout --orphan PR
+          git add README.md
+          git commit -m "Reset PR staging branch (nightly 11pm Sydney clear)"
+          git push -f origin HEAD:PR
