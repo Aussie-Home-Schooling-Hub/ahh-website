@@ -1529,7 +1529,7 @@
   }
 
   /* A full stop, question mark, or exclamation mark at the end, and a
-     space after any earlier one. A heading is not included: it is not a sentence. */
+     space after any earlier one. */
   function punctuationSound(text) {
     return !needsEnding(text) && !missingSpaceAfterStop(text);
   }
