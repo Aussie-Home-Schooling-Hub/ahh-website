@@ -1044,9 +1044,15 @@
       field.maxLength = 4000;
       field.spellcheck = true;
       field.value = block.text;
-      /* Headings and paragraphs all get this, including a block added later. */
-      field.addEventListener("paste", onCanvasPaste);
       wrap.appendChild(field);
+      /* Only this writing field. Intake, evidence, the date, and the
+         student name never get this listener. A later block gets it too.
+         A failure here must not stop the field from appearing. */
+      try {
+        field.addEventListener("paste", onCanvasPaste);
+      } catch (err) {
+        console.error("BrainForge could not watch this writing field for pasted research.", err);
+      }
 
       var row = document.createElement("div");
       row.className = "mt-2 flex flex-wrap gap-2";
@@ -2099,14 +2105,54 @@
   }
 
   function predictedValue(field, pasted) {
-    var start = typeof field.selectionStart === "number" ? field.selectionStart : field.value.length;
-    var end = typeof field.selectionEnd === "number" ? field.selectionEnd : start;
+    var start = 0;
+    var end = 0;
+    try {
+      start = typeof field.selectionStart === "number" ? field.selectionStart : field.value.length;
+      end = typeof field.selectionEnd === "number" ? field.selectionEnd : start;
+    } catch (err) {
+      start = field.value.length;
+      end = start;
+    }
     return field.value.slice(0, start) + pasted + field.value.slice(end);
   }
 
+  /* Edge throws if the type is not on the clipboard. One throw used to
+     leave this handler, so the rest of that paste never ran. Try each
+     type, and keep going when a type is refused. */
+  function readClipboardText(event) {
+    var data = event && event.clipboardData;
+    if (!data || typeof data.getData !== "function") return "";
+    var types = ["text/plain", "text", "Text"];
+    for (var i = 0; i < types.length; i++) {
+      try {
+        var value = data.getData(types[i]);
+        if (value) return value;
+      } catch (err) {
+        /* This type is not available. The next one may be. */
+      }
+    }
+    return "";
+  }
+
   function onCanvasPaste(event) {
+    try {
+      blockIntakePaste(event);
+    } catch (err) {
+      /* A throw here used to stop the rest of the page script. */
+      console.error("BrainForge could not check that paste.", err);
+    }
+  }
+
+  function blockIntakePaste(event) {
     var field = event.target;
-    if (!field || field.nodeName !== "TEXTAREA" || !field.getAttribute) return;
+    if (!field || !field.getAttribute) return;
+    var fieldId = field.id || "";
+    /* These boxes are where research, evidence, the date, and the name
+       are entered. Never block a paste that lands in one of them. */
+    if (fieldId === "intake" || fieldId === "workbook-date" || fieldId === "student-name") return;
+    if (field.classList && field.classList.contains("fact-input")) return;
+    if (field.nodeName !== "TEXTAREA") return;
     var blockId = field.getAttribute("data-block-id");
     var blockType = field.getAttribute("data-block-type");
     if (!blockId) return;
@@ -2117,16 +2163,13 @@
       event.preventDefault();
       return;
     }
-    var pasted = "";
-    if (event.clipboardData) {
-      pasted = event.clipboardData.getData("text/plain") || event.clipboardData.getData("text") || "";
-    }
+    var pasted = readClipboardText(event);
     var fromIntake = comesFromIntake(pasted, student.intake) || comesFromIntake(predictedValue(field, pasted), student.intake);
     if (!fromIntake) return;
     event.preventDefault();
     field.value = "";
-    for (var i = 0; i < student.blocks.length; i++) {
-      if (student.blocks[i].id === blockId) student.blocks[i].text = "";
+    for (var n = 0; n < student.blocks.length; n++) {
+      if (student.blocks[n].id === blockId) student.blocks[n].text = "";
     }
     updateWorkbook(student);
     scheduleSave();
@@ -2269,15 +2312,18 @@
     });
 
     els["btn-add-h1"].addEventListener("click", function () {
-      showTip("h1", true);
+      try { showTip("h1", true); }
+      catch (err) { console.error("BrainForge could not show the title note.", err); }
       addBlock("h1");
     });
     els["btn-add-h2"].addEventListener("click", function () {
-      showTip("h2", true);
+      try { showTip("h2", true); }
+      catch (err) { console.error("BrainForge could not show the subheader note.", err); }
       addBlock("h2");
     });
     els["btn-add-p"].addEventListener("click", function () {
-      clearTips();
+      try { clearTips(); }
+      catch (err) { console.error("BrainForge could not clear the notes.", err); }
       addBlock("p");
     });
     bindTips();
