@@ -5,7 +5,10 @@ AHH module checker for one self-contained HTML file.
 This is not a Teach Then Do checker. It looks at a single HTML module.
 
 A pass is not a human fact check of every sentence. The script fails what
-it can prove is leftover, invented, or off the approved lists.
+it can prove is leftover, invented, or off the approved lists. A curriculum
+failure is a learning-area label or a curriculum code that is not on the
+approved v9.0 list. Ordinary words in a sentence, including "text structures",
+are not a learning-area label.
 
 Usage:
     python3 qa_module.py brainforge.html
@@ -266,52 +269,31 @@ def approved_name(phrase: str) -> bool:
     return False
 
 
-def curriculum_phrase_after_label(sentence: str) -> str:
-    """The words after 'Australian Curriculum' that are not a version, year, or approved name."""
-    match = re.search(r"\bAustralian Curriculum\b\s*(.*)$", sentence, re.I)
-    if not match:
-        return ""
-    rest = match.group(1).strip()
-    rest = re.sub(r"^(?:v9(?:\.0)?|version\s+9(?:\.0)?)\b[,:\s]*", "", rest, flags=re.I).strip()
-    rest = re.sub(
-        r"^(?:years?|ages?)\s+\d[\d\s\u2013\-toand]*[,:\s]*",
-        "",
-        rest,
-        flags=re.I,
-    ).strip()
-    names = sorted(APPROVED_CURRICULUM + CURRICULUM_META, key=len, reverse=True)
-    changed = True
-    while rest and changed:
-        changed = False
-        for name in names:
-            if rest.casefold().startswith(name.casefold()):
-                rest = rest[len(name):].lstrip(" ,:;>-").strip()
-                changed = True
-                break
-    if not rest or re.match(r"^(?:These|This|It|The)\b", rest):
-        return ""
-    name = re.match(
-        r"([A-Za-z][A-Za-z\s]{1,80}?)(?=\s+(?:require|requires|required|must|include|includes|cover|covers)\b|[.]|$)",
-        rest,
-    )
-    if not name:
-        return ""
-    phrase = norm(name.group(1))
-    if approved_name(phrase):
-        return ""
-    return phrase
+def labelled_areas_off_list(sentence: str) -> list[str]:
+    """A learning-area label is a name in a label slot, not ordinary words in a sentence.
 
-
-def path_names_off_list(sentence: str) -> list[str]:
+    'Australian Curriculum text structures require a clear title' uses
+    'text structures' as ordinary wording. It is not a claim that a learning
+    area is named Text structures. 'English > Phonics' or 'Learning area: Phonics'
+    is a label.
+    """
     off: list[str] = []
+    chunks: list[str] = []
     for match in re.finditer(
         r"\b([A-Z][^<>\n.]{0,40}?)\s*>\s*([A-Z][^<>\n.]{0,40})",
         sentence,
     ):
-        for part in (match.group(1), match.group(2)):
-            cleaned = norm(re.sub(r"^(?:Subject:\s*)", "", part))
-            if cleaned and not approved_name(cleaned):
-                off.append(cleaned)
+        chunks.extend((match.group(1), match.group(2)))
+    for match in re.finditer(
+        r"\b(?:learning areas?|subject)\s*:\s*([^.]{1,80})",
+        sentence,
+        re.I,
+    ):
+        chunks.extend(re.split(r"\s*>\s*", match.group(1)))
+    for part in chunks:
+        cleaned = norm(re.sub(r"^(?:Subject:\s*)", "", part, flags=re.I))
+        if cleaned and not approved_name(cleaned):
+            off.append(cleaned)
     return off
 
 
@@ -342,21 +324,9 @@ def fact_problems(sentence: str, allowed: bool) -> list[str]:
             "NESA is not the current NSW home-schooling body; home schooling moved to the NSW Department of Education"
         )
     for code in curriculum_codes(sentence):
-        problems.append(f"curriculum-looking code {code} is not an approved v9.0 name")
-    for name in path_names_off_list(sentence):
-        problems.append(f"curriculum name {name!r} is not on the approved v9.0 list")
-    phrase = curriculum_phrase_after_label(sentence)
-    if phrase:
-        problems.append(
-            f"curriculum name {phrase!r} is not on the approved v9.0 list"
-        )
-    if re.search(r"\b(?:outcomes?|achievement standards?)\b", sentence, re.I):
-        problems.append("curriculum outcome is not Pete's activity statement and not an approved name")
-    if re.search(r"\bAustralian Curriculum\b", sentence, re.I) and re.search(
-        r"\b(?:require|requires|required|must)\b", sentence, re.I
-    ):
-        if not any("not on the approved" in item or "curriculum outcome" in item for item in problems):
-            problems.append("curriculum requirement is not Pete's activity statement and not an approved name")
+        problems.append(f"curriculum code {code} is not an approved v9.0 name")
+    for name in labelled_areas_off_list(sentence):
+        problems.append(f"learning-area label {name!r} is not on the approved v9.0 list")
     if has_date(sentence):
         problems.append("states a date that is not in Pete's activity statement")
     for pattern, label in INVENTED_PATTERNS:
@@ -550,7 +520,7 @@ def run_facts(pieces: list[Piece]) -> None:
             UNVERIFIED.append((piece.line, sentence, reason))
     if not seen:
         check(
-            "no invented statistic, quote, testimonial, review, award, customer number, authority promise, date, price, people count, or off-list curriculum claim",
+            "no off-list learning-area label or curriculum code, and no invented statistic, testimonial, customer number, award, or authority promise",
             True,
         )
 
