@@ -32,21 +32,23 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
 
-          cat > README.md <<'README'
-          # PR staging branch (temporary)
-
-          This branch is a **daily-cleared drop zone** for temporary PR / handoff files.
-
-          ## Rules
-
-          - **Temporary only.** Anything left here is wiped every day (GitHub Action on `main`).
-          - **Do not store paid apps here long-term.** Paid product files (e.g. BrainForge app HTML) stay off GitHub — Payhip only. See project preferences.
-          - **Website lives on `main`.** Netlify publishes the public site from `main`. This branch is not the website.
-          - Put short-lived review/handoff files here when needed; assume they will disappear within ~24 hours.
-
-          If you need something kept, put it in the Project store or ask Pete — not in this branch.
-          README
-          sed -i 's/^          //' README.md
+          python3 - <<'PY'
+          from pathlib import Path
+          Path("README.md").write_text(
+              "# PR staging branch (temporary)\n"
+              "\n"
+              "This branch is a **daily-cleared drop zone** for temporary PR / handoff files.\n"
+              "\n"
+              "## Rules\n"
+              "\n"
+              "- **Temporary only.** Anything left here is wiped every day (GitHub Action on `main`).\n"
+              "- **Do not store paid apps here long-term.** Paid product files (e.g. BrainForge app HTML) stay off GitHub — Payhip only. See project preferences.\n"
+              "- **Website lives on `main`.** Netlify publishes the public site from `main`. This branch is not the website.\n"
+              "- Put short-lived review/handoff files here when needed; assume they will disappear within ~24 hours.\n"
+              "\n"
+              "If you need something kept, put it in the Project store or ask Pete — not in this branch.\n"
+          )
+          PY
 
           git checkout --orphan PR
           git add README.md
