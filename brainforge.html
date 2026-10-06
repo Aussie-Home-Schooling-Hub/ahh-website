@@ -1458,7 +1458,7 @@ tailwind.config = {
     return false;
   }
 
-  /* Paragraphs only. The first word of a sentence may keep its capital. */
+  /* Titles, subheaders, and paragraphs. The first word may keep its capital. */
   function hasMidSentenceCapital(text, words) {
     var loose = findLooseProperSpans(text);
     var firsts = sentenceFirstWordIndexes(text);
@@ -1504,7 +1504,8 @@ tailwind.config = {
     if (names.length) issues.push("name");
     if (proper.length) issues.push("proper");
     if (pronoun.length) issues.push("pronoun");
-    if (isParagraph && hasMidSentenceCapital(text, words)) issues.push("midcap");
+    if (hasMidSentenceCapital(text, words)) issues.push("midcap");
+    /* A heading does not need a full stop. */
     if (isParagraph && needsEnding(text)) issues.push("ending");
     if (isParagraph && missingSpaceAfterStop(text)) issues.push("space");
     return issues;
@@ -1530,7 +1531,9 @@ tailwind.config = {
     var issues = grammarIssues(block, fullName);
     var saved = onlineByBlock[block.id];
     if (!saved || saved.text !== block.text) return issues;
+    var heading = block.type === "h1" || block.type === "h2";
     saved.issues.forEach(function (issue) {
+      if (heading && issue === "ending") return;
       if (issues.indexOf(issue) < 0 && GRAMMAR_BADGE_TEXT[issue]) issues.push(issue);
     });
     return issues;
@@ -1618,6 +1621,8 @@ tailwind.config = {
     });
   }
 
+  /* Titles, subheaders, and paragraphs all use this pause. A failed
+     request leaves the local badges on screen. */
   function scheduleOnlineCheck(block) {
     var id = block.id;
     window.clearTimeout(onlineTimers[id]);
