@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/png" sizes="32x32" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAABBJJREFUWIW9l9tPVFcUxn/rnDMHGBiZi8wEVG6Kow2mKCGiFSNNrKWpDySNfWprmvapT/1LmjTpU23fmt5i+qAJkmijtTReqlKqBkcuAyoKw8zgCAbOMLP7QLjOGWTGod/T7P2tdb5vzt57rX2EFThW63anTPNLEVqVkiYR/BQASjEhonqV4ppuWV9dDk9NLXKy+OOt3RUdmsgZQaoKIZrVDGosrdRnPaFI15KBtl3+E6LLhc0UXouUSr/XE4p0yZHqco+UFN0TpPL/NKBQY/Mzs/sMKSn+ROC1xE2HTm2Nh9pqHwDh0SjhkThWMpU1R5Aqo7TkYwNF6/JOyA0icLKjkVOdTZimsYqzrHl+Pnub8933USrLAxSt0hYMhAVqchWvqtzCF5+30bCzYt24h4MRvvn2KmNPEzb6jGj5iAOc6mx6pThAw84KTnU22XICNVo+4ocP1nH4YH0O8fW0HNhhy+Vl4NiRnTnnHG8PFs5AVWV5wXLyMuB2lxQsJy8DkcnpnHNGRuOFMzAyGss5Jzxin5OXgXNd90il0huOT6XSXLz8IH8DRrFBIOij1LewjoPDUa7cHN6wge5L/QxneQOG7ewKVO3zU9uyHU1bqNd//3qXIqdJf/IlLXMWriJz3fxobIafzt7OysvRYMC2UusOjeDb9Xh3lOMQxd4yocKEIhRzCBEL/o1Y+BLwwck3bXvBL7/1cq7rbvZekM2Ao8SgsaOBUq8TAY56we3I7FhPxl/y9Xf3MYzcu+EibJcg2F5HqdcJQIVpLw6wLeBkV90WQkMJQgOThAYmAcXhZj/vn96Dz20ST8xx484kf9wYX3kBW0LGJnR6inFXbVkal71il/h9xavGR1oCdL5bQ6W/BNPUCWx1cvJ4Ne2H7K8cGQbmreXXlk6liYWn1oasi0PN9h2y9cBW2/mM/2fNJOn/fQjdoREdec7+Zj/gySo4EZ1dNfaU258KV5ljYwYAJocWyqbL78TcHSCeVHhs9sGjp9MMDK++aLyYTuJ16xmx8eeWrYGshch0OnjjnQZE1+iZmOd6X5RIbJZkMkUkNstftyY48+ND0mvO0K2+qO3z7j2wX0oDpcYRCaxyZWg0djTgKDZQStF3cZj448wrlR2uXH+GYWjs3VWO11NE/LlFaCjBpZ6xzGClxqUt6L8gyImV83UHt7Nt34Kn8M0nPP7n2YbEc4VCdWuSlt61hO5YWMPIUGzTxAEkLb3Susdda6bNO4i4lwgBV6CMF5EZVGqdOvo6UGrK0qz92rX+qXAaPl3NQeLZ9OaJA0rk9LX+qbAOMBqd6d/uc94QoV0Q16apLn+cfvhnaOI8wNKBfRR9OVDvcnyf1nVLhDmlxCVCaUFEFz7Pe5TiB92yPro6GLu7yP0H7m90FlZ4hP0AAAAASUVORK5CYII=">
 <title>BrainForge</title>
 <!--
   BrainForge is one offline file for Years 3–6. The child turns research
@@ -26,8 +27,8 @@
     --page-text: var(--walnut-deep);
     --card-bg: #fffaf0;
     --card-text: var(--walnut-deep);
-    --font-display: Georgia, "Palatino Linotype", Palatino, "Times New Roman", serif;
-    --font-body: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    --font-display: "Fraunces", Georgia, "Palatino Linotype", Palatino, "Times New Roman", serif;
+    --font-body: "Source Sans 3", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
     color-scheme: light;
   }
 
@@ -64,7 +65,8 @@
 
   html.dark :focus-visible { outline-color: var(--brass-bright); }
 
-  /* An icon must not take the click away from its button. */
+  /* An icon must not take the click away from its button.
+     The hidden attribute has to win over display, or both theme icons show. */
   .icon {
     width: 1.15em;
     height: 1.15em;
@@ -72,6 +74,8 @@
     pointer-events: none;
     display: inline-block;
   }
+
+  .icon[hidden] { display: none; }
 
   .skip {
     position: absolute;
@@ -132,9 +136,25 @@
   }
 
   .btn-solid { background: var(--walnut); color: var(--parchment); border-color: var(--walnut); }
-  .btn-dark { background: var(--walnut-dark); color: var(--parchment); }
+  .btn-dark { background: var(--walnut-dark); color: var(--parchment); border: 2px solid var(--walnut-dark); }
   .btn-leaf { background: var(--leaf-dark); color: var(--parchment); }
   .btn-line { border-color: rgba(107, 69, 48, 0.4); background: transparent; }
+
+  /* Dark card and walnut are the same brown, so the subheader button and
+     field edges need a lighter edge to stay visible. */
+  html.dark input[type="text"],
+  html.dark select,
+  html.dark textarea {
+    border-color: #E8C877;
+  }
+
+  html.dark .btn-dark {
+    background: #C9A24B;
+    color: #2A1B10;
+    border-color: #F3E9D2;
+  }
+
+  html.dark .btn-line { border-color: #E8C877; color: #F3E9D2; }
   .btn-block { width: 100%; text-align: left; border-radius: 1rem; }
 
   .status { min-height: 1.5rem; font-weight: 650; margin: 0.75rem 0 0; }
@@ -418,6 +438,12 @@
       <button type="button" id="btn-add-student" class="btn btn-solid">+ Add Student</button>
       <button type="button" id="btn-rename-student" class="btn btn-line">Rename</button>
       <button type="button" id="btn-remove-student" class="btn btn-line">Remove student</button>
+      <div class="field grow">
+        <label for="piece-select">My writing</label>
+        <select id="piece-select"></select>
+      </div>
+      <button type="button" id="btn-new-piece" class="btn btn-solid">Start a new piece</button>
+      <button type="button" id="btn-remove-piece" class="btn btn-line">Remove this piece</button>
       <button type="button" id="btn-theme" class="btn btn-line" aria-pressed="false">
         <svg class="icon" id="theme-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M14 3a8 8 0 1 0 7 12A7 7 0 0 1 14 3z"/></svg>
         <svg class="icon" id="theme-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false" hidden><circle cx="12" cy="12" r="4" fill="currentColor"/><path fill="currentColor" d="M11 2h2v3h-2zm0 17h2v3h-2zM2 11h3v2H2zm17 0h3v2h-3zM4.2 4.2l1.4 1.4L4.2 7 2.8 5.6zm13.4 13.4 1.4 1.4-1.4 1.4-1.4-1.4zM4.2 19.8 5.6 18.4 7 19.8l-1.4 1.4zM18.4 5.6 19.8 4.2l1.4 1.4-1.4 1.4z"/></svg>
@@ -432,40 +458,41 @@
 <main class="wrap">
   <div class="no-print grid">
     <section class="card" aria-labelledby="intake-heading">
-      <h2 id="intake-heading">Cognitive Retention Engine</h2>
+      <h2 id="intake-heading">1. Research and facts</h2>
       <p>Paste the research, then pull out three facts in your own notes.</p>
       <div id="intake-wrap">
-        <label for="intake">Digital Research Intake</label>
+        <label for="intake">Paste your research here</label>
         <textarea id="intake" maxlength="20000" spellcheck="true"></textarea>
       </div>
       <p id="source-hidden-note" class="hint" hidden>The source is hidden so you write from your three facts.</p>
       <fieldset>
-        <legend class="legend">Three evidence points</legend>
+        <legend class="legend">Three facts</legend>
         <p class="hint">Use a date, a figure, or a specialised word. All three are needed.</p>
         <div class="stack">
           <div class="field">
-            <label for="fact-1">Evidence point 1</label>
-            <input id="fact-1" data-fact="0" class="fact-input" type="text" maxlength="240" spellcheck="true">
+            <label for="fact-1">Fact 1</label>
+            <input id="fact-1" data-fact="0" class="fact-input" type="text" maxlength="80" spellcheck="true">
           </div>
           <div class="field">
-            <label for="fact-2">Evidence point 2</label>
-            <input id="fact-2" data-fact="1" class="fact-input" type="text" maxlength="240" spellcheck="true">
+            <label for="fact-2">Fact 2</label>
+            <input id="fact-2" data-fact="1" class="fact-input" type="text" maxlength="80" spellcheck="true">
           </div>
           <div class="field">
-            <label for="fact-3">Evidence point 3</label>
-            <input id="fact-3" data-fact="2" class="fact-input" type="text" maxlength="240" spellcheck="true">
+            <label for="fact-3">Fact 3</label>
+            <input id="fact-3" data-fact="2" class="fact-input" type="text" maxlength="80" spellcheck="true">
           </div>
         </div>
       </fieldset>
       <button type="button" id="btn-lock-clues" class="btn btn-leaf" disabled>
         <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M8 10V8a4 4 0 0 1 8 0v2h1a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h1zm2 0h4V8a2 2 0 0 0-4 0v2z"/></svg>
-        Lock Clues
+        Hide the research
       </button>
-      <p id="forge-prompt" class="prompt" hidden>Now, forge a complete sentence combining these 3 pieces of evidence.</p>
+      <button type="button" id="btn-show-research" class="btn btn-line" hidden>Show the research again</button>
+      <p id="forge-prompt" class="prompt" hidden>Now write using your three facts.</p>
     </section>
 
     <section id="canvas-panel" class="card" aria-labelledby="canvas-heading">
-      <h2 id="canvas-heading">Document Architect Canvas</h2>
+      <h2 id="canvas-heading">2. Write it in your own words</h2>
       <p>Add a main title, subheaders, and paragraphs in your own words.</p>
       <div class="stack-tight">
         <button type="button" id="btn-add-h1" class="btn btn-solid btn-block" aria-describedby="tip-h1" aria-expanded="false">
@@ -483,32 +510,26 @@
           + Add Informative Paragraph
         </button>
       </div>
-      <p id="cheat-alert" class="alert" role="alert" hidden>No cheating! BrainForge requires you to physically type your headings and paragraphs to lock it into your memory.</p>
-      <p id="hierarchy-alert" class="note" role="status" hidden>
-        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path fill="currentColor" d="M11 10h2v7h-2zm0-3h2v2h-2z"/></svg>
-        A subheader is scaled larger than the title. Keep the main title first and bigger, so the reader knows the topic straight away.
-      </p>
+      <p id="cheat-alert" class="alert" role="alert" hidden>Pasting is switched off here. Type it in your own words and it will stick in your memory.</p>
+      <p id="hierarchy-order" class="note" role="status" hidden>A subheader is sitting above the main title. Move the main title to the top.</p>
+      <p id="hierarchy-count" class="note" role="status" hidden>A page has one main title. Change the extra one to a subheader.</p>
       <div id="canvas-list" class="stack"></div>
     </section>
 
     <section class="card" aria-labelledby="workbook-heading">
-      <h2 id="workbook-heading">Australian Workbook Simulator</h2>
+      <h2 id="workbook-heading">3. How it looks in your workbook</h2>
       <p>See how the writing sits on workbook lines.</p>
       <p class="hint">Grammar and word hints stay on this page. They are not part of the printed report.</p>
-      <p id="margin-alert" class="alert" role="alert" hidden>
-        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 3 2 21h20L12 3zm0 6 1 6h-2l1-6zm0 8a1.2 1.2 0 1 0 0 2.4A1.2 1.2 0 0 0 12 17z"/></svg>
-        Keep all text to the right of the margin line.
-      </p>
       <div id="workbook-page" class="workbook-page" aria-label="Workbook page preview">
         <div id="margin-line" class="margin-line" aria-hidden="true"></div>
         <div class="top-margin">
-          <p class="js-ink" id="top-cue">Leave the top lines blank for structural breathing room.</p>
+          <p class="js-ink" id="top-cue">Leave the top lines blank.</p>
           <label class="date-cue">
             <span class="visually-hidden">Write the date</span>
             <input id="workbook-date" class="workbook-date" type="text" maxlength="120" autocomplete="off" spellcheck="false" aria-label="Write the date" placeholder="Write the date">
           </label>
         </div>
-        <p class="spacing-marker" id="spacing-cue"><span class="js-ink">Skip 1 blank line after headers/subheaders to structure paragraphs cleanly.</span></p>
+        <p class="spacing-marker" id="spacing-cue"><span class="js-ink">Skip one line after a heading.</span></p>
         <div id="workbook-body" class="workbook-body"></div>
       </div>
     </section>
@@ -517,8 +538,9 @@
   <div class="no-print" style="margin-top:1rem">
     <button type="button" id="btn-generate" class="btn btn-leaf">
       <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M6 3h12v4H6V3zM4 9h16a2 2 0 0 1 2 2v5h-4v5H6v-5H2v-5a2 2 0 0 1 2-2zm4 8h8v3H8v-3z"/></svg>
-      Generate Evidence &amp; Print
+      Create evidence report
     </button>
+    <p id="report-missing" class="hint"></p>
   </div>
 
   <section id="evidence-report" hidden aria-labelledby="report-heading">
@@ -534,11 +556,17 @@
       <li>English &gt; Literacy</li>
     </ul>
     <h3>Activity</h3>
-    <p id="activity-statement">The student conducted independent inquiry using digital research tools. To fulfill curriculum outcomes for creating informative texts, the student analyzed source data, extracted key evidence to mitigate plagiarism risks, and synthesised findings into an objective text structure. The student successfully applied textual hierarchies—including structural main headings and subordinate subheadings—to organize information logically before transferring the schema into physical media.</p>
+    <p id="activity-statement"></p>
+    <h3>Facts recorded from the research</h3>
+    <ul id="report-facts"></ul>
     <h3>Work sample</h3>
     <div id="report-work"></div>
     <p>This is a record of the work. Your registering authority decides what it accepts.</p>
-    <button type="button" id="btn-print" class="no-print btn btn-solid">Print Official Report</button>
+    <div class="no-print actions">
+      <button type="button" id="btn-export" class="btn btn-leaf">Export evidence file</button>
+      <p id="export-note">This file contains your child's name and photos. Store it somewhere private.</p>
+      <button type="button" id="btn-print" class="btn btn-solid">Print report</button>
+    </div>
   </section>
 </main>
 
@@ -576,7 +604,7 @@
     <h2 id="check-title">Before you print</h2>
     <p class="hint">Tick each check once it is true of the paper workbook.</p>
     <label class="check"><input id="check-date" type="checkbox"><span>Written the date in the top-right corner of your workbook?</span></label>
-    <label class="check"><input id="check-ruler" type="checkbox"><span>Used a ruler to underline your subheaders on paper?</span></label>
+    <label class="check"><input id="check-ruler" type="checkbox"><span>Used a ruler to underline your headings on paper?</span></label>
     <label class="check"><input id="check-gap" type="checkbox"><span>Left a physical blank line between paragraphs?</span></label>
     <p id="check-hint" class="hint">Tick all three checks before the report is created.</p>
     <div class="actions">
@@ -594,21 +622,25 @@
 (function () {
   "use strict";
 
-  /* One key holds every student. The id stays put when a child is renamed,
-     so drafts are not given to another child. A second key is only the colour mode. */
+  /* One key holds every student. Each student has pieces of writing.
+     The student id and each piece id stay put, so a later export matches
+     the same work. A second key is only the colour mode. */
   var STORAGE_KEY = "ahh-brainforge-state";
   var THEME_KEY = "ahh-brainforge-theme";
   var SUBJECT = "English";
   var BLOCK_LABELS = { h1: "Main title", h2: "Subheader", p: "Paragraph" };
-  var CHEAT_TEXT = "No cheating! BrainForge requires you to physically type your headings and paragraphs to lock it into your memory.";
+  var PASTE_TEXT = "Pasting is switched off here. Type it in your own words and it will stick in your memory.";
+  var NUMBER_WORDS = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"];
 
   var state = { activeStudentId: null, students: [] };
   var storageUnreadable = false;
+  var migrationBlocked = false;
   var saveTimer = 0;
   var nameMode = "add";
-  var pendingRemoveId = "";
+  var pendingRemove = null;
   var pinnedTip = "";
   var lastFocus = null;
+  var focusedBlockId = "";
   var els = {};
 
   function $(id) { return document.getElementById(id); }
@@ -616,15 +648,18 @@
   function cacheEls() {
     [
       "student-select", "btn-add-student", "btn-rename-student", "btn-remove-student",
+      "piece-select", "btn-new-piece", "btn-remove-piece",
       "btn-theme", "theme-moon", "theme-sun", "theme-label", "status", "no-student",
       "intake-wrap", "intake", "source-hidden-note", "forge-prompt", "btn-lock-clues",
+      "btn-show-research",
       "btn-add-h1", "btn-add-h2", "btn-add-p", "tip-h1", "tip-h2",
-      "cheat-alert", "hierarchy-alert", "canvas-list", "margin-alert",
-      "workbook-page", "workbook-body", "workbook-date", "btn-generate", "evidence-report",
-      "report-date", "report-name", "report-work", "btn-print",
+      "cheat-alert", "hierarchy-order", "hierarchy-count", "canvas-list",
+      "workbook-page", "workbook-body", "workbook-date", "btn-generate", "report-missing",
+      "evidence-report", "report-date", "report-name", "activity-statement", "report-facts",
+      "report-work", "btn-export", "btn-print",
       "dialog-student", "student-form", "student-dialog-title", "student-name",
       "student-form-error", "student-save", "student-cancel",
-      "dialog-delete", "delete-message", "delete-confirm", "delete-cancel",
+      "dialog-delete", "delete-title", "delete-message", "delete-confirm", "delete-cancel",
       "dialog-check", "check-form", "check-date", "check-ruler", "check-gap",
       "btn-create-report", "check-cancel"
     ].forEach(function (id) { els[id] = $(id); });
@@ -634,20 +669,45 @@
     return prefix + "_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 8);
   }
 
-  function emptyStudent(name) {
+  function pad2(n) { return (n < 10 ? "0" : "") + n; }
+
+  /* Local offset, never Z. Importers compare these timestamps as written. */
+  function toLocalIso(value) {
+    var date = value instanceof Date ? value : new Date(value);
+    if (isNaN(date.getTime())) date = new Date();
+    var off = -date.getTimezoneOffset();
+    var sign = off >= 0 ? "+" : "-";
+    var abs = Math.abs(off);
+    return date.getFullYear() + "-" + pad2(date.getMonth() + 1) + "-" + pad2(date.getDate()) +
+      "T" + pad2(date.getHours()) + ":" + pad2(date.getMinutes()) + ":" + pad2(date.getSeconds()) +
+      sign + pad2(Math.floor(abs / 60)) + ":" + pad2(abs % 60);
+  }
+
+  function localDateOnly(value) {
+    var date = new Date(value);
+    if (isNaN(date.getTime())) return "";
+    return date.getFullYear() + "-" + pad2(date.getMonth() + 1) + "-" + pad2(date.getDate());
+  }
+
+  function emptyPiece() {
+    var now = toLocalIso(new Date());
     return {
-      id: newId("stu"),
-      name: name,
-      createdAt: new Date().toISOString(),
+      id: newId("piece"),
+      createdAt: now,
+      updatedAt: now,
       intake: "",
       facts: ["", "", ""],
       cluesLocked: false,
       blocks: [],
       workbookDate: "",
-      subject: SUBJECT,
-      checks: { date: false, ruler: false, gap: false },
-      reportAt: ""
+      reportAt: "",
+      reportSourceHidden: false
     };
+  }
+
+  function emptyStudent(name) {
+    var piece = emptyPiece();
+    return { id: newId("stu"), name: name, pieces: [piece], activePieceId: piece.id };
   }
 
   function activeStudent() {
@@ -658,6 +718,15 @@
     return null;
   }
 
+  function activePiece(student) {
+    var current = student || activeStudent();
+    if (!current || !Array.isArray(current.pieces)) return null;
+    for (var i = 0; i < current.pieces.length; i++) {
+      if (current.pieces[i].id === current.activePieceId) return current.pieces[i];
+    }
+    return current.pieces[0] || null;
+  }
+
   function findStudent(id) {
     for (var i = 0; i < state.students.length; i++) {
       if (state.students[i].id === id) return state.students[i];
@@ -665,13 +734,20 @@
     return null;
   }
 
-  /* "Saved" is written only after the browser returns the same text we stored. */
   function showSaved() { els.status.textContent = "Saved"; }
   function showStatus(message) { els.status.textContent = message; }
 
+  function blockedReason() {
+    if (storageUnreadable) return "BrainForge could not read the work already stored in this browser, so it will not overwrite it.";
+    if (migrationBlocked) return "BrainForge could not move the saved writing into separate pieces, so the saved work was left unchanged.";
+    return "";
+  }
+
+  /* "Saved" is written only after the browser returns the same text we stored. */
   function persistState(announce) {
-    if (storageUnreadable) {
-      showStatus("BrainForge could not read the work already stored in this browser, so it will not overwrite it.");
+    var blocked = blockedReason();
+    if (blocked) {
+      showStatus(blocked);
       return false;
     }
     try {
@@ -691,6 +767,8 @@
     window.clearTimeout(saveTimer);
     saveTimer = window.setTimeout(function () { persistState(true); }, 350);
   }
+
+  function markEdited(piece) { piece.updatedAt = toLocalIso(new Date()); }
 
   function applyTheme(mode, persist) {
     var dark = mode === "dark";
@@ -725,7 +803,7 @@
   function normaliseFacts(value) {
     var facts = ["", "", ""];
     if (!Array.isArray(value)) return facts;
-    for (var i = 0; i < 3; i++) facts[i] = typeof value[i] === "string" ? value[i].slice(0, 240) : "";
+    for (var i = 0; i < 3; i++) facts[i] = typeof value[i] === "string" ? value[i].slice(0, 20000) : "";
     return facts;
   }
 
@@ -744,8 +822,57 @@
     return blocks;
   }
 
-  /* An empty store is a first visit, not a broken save. The unreadable
-     flag is set only when a real stored string cannot be used. */
+  function keepStamp(value, fallback) {
+    if (typeof value === "string" && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[+-]\d{2}:\d{2}$/.test(value)) return value;
+    if (typeof value === "string" && value) return toLocalIso(value);
+    return fallback;
+  }
+
+  function normalisePiece(item, fromOld) {
+    if (!item || typeof item !== "object") return null;
+    if (!fromOld && (typeof item.id !== "string" || !item.id)) return null;
+    var id = typeof item.id === "string" && item.id ? item.id : newId("piece");
+    var created = keepStamp(item.createdAt, toLocalIso(new Date()));
+    var updated = keepStamp(item.updatedAt || item.reportAt || item.createdAt, created);
+    return {
+      id: id,
+      createdAt: created,
+      updatedAt: updated,
+      intake: typeof item.intake === "string" ? item.intake.slice(0, 20000) : "",
+      facts: normaliseFacts(item.facts),
+      cluesLocked: !!item.cluesLocked,
+      blocks: normaliseBlocks(item.blocks),
+      workbookDate: typeof item.workbookDate === "string" ? item.workbookDate.slice(0, 120) : "",
+      reportAt: typeof item.reportAt === "string" ? item.reportAt : "",
+      reportSourceHidden: typeof item.reportSourceHidden === "boolean" ? item.reportSourceHidden : !!(item.reportAt && item.cluesLocked)
+    };
+  }
+
+  /* Older saves kept one piece of writing on the student. Copy every field
+     into one piece. If any student cannot be copied, the caller leaves storage alone. */
+  function migrateStudent(item) {
+    if (!item || typeof item.id !== "string" || !item.id) return null;
+    var name = typeof item.name === "string" ? item.name.slice(0, 60) : "";
+    var pieces = [];
+    if (Array.isArray(item.pieces)) {
+      for (var i = 0; i < item.pieces.length; i++) {
+        var piece = normalisePiece(item.pieces[i], false);
+        if (!piece) return null;
+        pieces.push(piece);
+      }
+    } else {
+      var oldPiece = normalisePiece(item, true);
+      if (!oldPiece) return null;
+      pieces.push(oldPiece);
+    }
+    if (!pieces.length) pieces.push(emptyPiece());
+    var active = pieces[0].id;
+    if (typeof item.activePieceId === "string") {
+      for (var n = 0; n < pieces.length; n++) if (pieces[n].id === item.activePieceId) active = item.activePieceId;
+    }
+    return { id: item.id, name: name, pieces: pieces, activePieceId: active };
+  }
+
   function loadState() {
     var raw = null;
     try {
@@ -759,44 +886,40 @@
       state = { activeStudentId: null, students: [] };
       return;
     }
+    var data;
     try {
-      var data = JSON.parse(raw);
-      if (!data || !Array.isArray(data.students)) throw new Error("Saved work has an unexpected shape.");
-      var students = [];
-      data.students.forEach(function (item) {
-        if (!item || typeof item.id !== "string" || !item.id) return;
-        students.push({
-          id: item.id,
-          name: typeof item.name === "string" ? item.name.slice(0, 60) : "",
-          createdAt: typeof item.createdAt === "string" ? item.createdAt : "",
-          intake: typeof item.intake === "string" ? item.intake.slice(0, 20000) : "",
-          facts: normaliseFacts(item.facts),
-          cluesLocked: !!item.cluesLocked,
-          blocks: normaliseBlocks(item.blocks),
-          workbookDate: typeof item.workbookDate === "string" ? item.workbookDate.slice(0, 120) : "",
-          subject: SUBJECT,
-          checks: {
-            date: !!(item.checks && item.checks.date),
-            ruler: !!(item.checks && item.checks.ruler),
-            gap: !!(item.checks && item.checks.gap)
-          },
-          reportAt: typeof item.reportAt === "string" ? item.reportAt : ""
-        });
-      });
-      var active = null;
-      if (typeof data.activeStudentId === "string") {
-        for (var i = 0; i < students.length; i++) {
-          if (students[i].id === data.activeStudentId) active = data.activeStudentId;
-        }
-      }
-      state = { activeStudentId: active, students: students };
-      if (data.activeStudentId && !active) persistState(false);
+      data = JSON.parse(raw);
     } catch (err) {
       console.error("BrainForge could not read saved work.", err);
       storageUnreadable = true;
       state = { activeStudentId: null, students: [] };
-      showStatus("BrainForge could not read saved work in this browser. Nothing new will be stored over it.");
+      return;
     }
+    if (!data || !Array.isArray(data.students)) {
+      storageUnreadable = true;
+      state = { activeStudentId: null, students: [] };
+      return;
+    }
+    var students = [];
+    for (var i = 0; i < data.students.length; i++) {
+      var student = migrateStudent(data.students[i]);
+      if (!student) {
+        migrationBlocked = true;
+        state = { activeStudentId: null, students: [] };
+        return;
+      }
+      students.push(student);
+    }
+    var active = null;
+    if (typeof data.activeStudentId === "string") {
+      for (var s = 0; s < students.length; s++) if (students[s].id === data.activeStudentId) active = data.activeStudentId;
+    }
+    var shapeChanged = false;
+    for (var c = 0; c < data.students.length; c++) {
+      if (!data.students[c] || !Array.isArray(data.students[c].pieces)) shapeChanged = true;
+    }
+    state = { activeStudentId: active, students: students };
+    if (shapeChanged || (data.activeStudentId && !active)) persistState(false);
   }
 
   function formatWhen(iso) {
@@ -805,9 +928,9 @@
     return new Intl.DateTimeFormat("en-AU", { day: "numeric", month: "long", year: "numeric" }).format(date);
   }
 
-  function factsReady(student) {
-    if (!student) return false;
-    return student.facts.every(function (fact) { return fact.trim().length > 0; });
+  function factsReady(piece) {
+    if (!piece) return false;
+    return piece.facts.every(function (fact) { return fact.trim().length > 0; });
   }
 
   function requireStudent() {
@@ -815,6 +938,31 @@
     if (student) return student;
     showStatus("No student is selected, so this work was not saved. Add a student or choose one from Student profile. BrainForge will not guess which child the work belongs to.");
     return null;
+  }
+
+  function nameKey(name) { return String(name || "").toLowerCase().replace(/\s+/g, ""); }
+
+  function nameTaken(name, exceptId) {
+    var key = nameKey(name);
+    for (var i = 0; i < state.students.length; i++) {
+      if (state.students[i].id === exceptId) continue;
+      if (nameKey(state.students[i].name) === key) return true;
+    }
+    return false;
+  }
+
+  function firstFilled(piece, type) {
+    if (!piece) return "";
+    for (var i = 0; i < piece.blocks.length; i++) {
+      if (piece.blocks[i].type === type && piece.blocks[i].text.trim()) return piece.blocks[i].text.trim();
+    }
+    return "";
+  }
+
+  function pieceLabel(piece) {
+    var title = firstFilled(piece, "h1") || "Untitled";
+    var when = (piece.workbookDate || "").trim() || formatWhen(piece.createdAt);
+    return when ? title + " (" + when + ")" : title;
   }
 
   function renderStudentSelect() {
@@ -833,8 +981,32 @@
     select.value = activeStudent() ? state.activeStudentId : "";
   }
 
-  function showCheat() { els["cheat-alert"].hidden = false; }
-  function hideCheat() { els["cheat-alert"].hidden = true; }
+  function renderPieceSelect() {
+    var select = els["piece-select"];
+    while (select.firstChild) select.removeChild(select.firstChild);
+    var student = activeStudent();
+    els["btn-new-piece"].disabled = !student;
+    els["btn-remove-piece"].disabled = !student;
+    select.disabled = !student;
+    if (!student) {
+      var empty = document.createElement("option");
+      empty.value = "";
+      empty.textContent = "No writing yet";
+      select.appendChild(empty);
+      return;
+    }
+    student.pieces.forEach(function (piece) {
+      var option = document.createElement("option");
+      option.value = piece.id;
+      option.textContent = pieceLabel(piece);
+      select.appendChild(option);
+    });
+    var current = activePiece(student);
+    select.value = current ? current.id : "";
+  }
+
+  function showPaste() { els["cheat-alert"].hidden = false; }
+  function hidePaste() { els["cheat-alert"].hidden = true; }
 
   function isWritingField(field) {
     if (!field || !field.getAttribute) return false;
@@ -846,24 +1018,13 @@
     return !!field.getAttribute("data-block-id") && (type === "h1" || type === "h2" || type === "p");
   }
 
-  /* Every paste into a writing field is refused. Clipboard reads are not
-     needed, and a throw from Edge must not stop the add buttons. */
+  /* Block the paste or drop and leave whatever the child already typed. */
   function onWritingPaste(event) {
     var field = event.target;
     try {
       if (!isWritingField(field)) return;
       event.preventDefault();
-      field.value = "";
-      var student = activeStudent();
-      var blockId = field.getAttribute("data-block-id");
-      if (student && blockId) {
-        for (var i = 0; i < student.blocks.length; i++) {
-          if (student.blocks[i].id === blockId) student.blocks[i].text = "";
-        }
-        updateWorkbook(student);
-        scheduleSave();
-      }
-      showCheat();
+      showPaste();
     } catch (err) {
       console.error("BrainForge could not block that paste.", err);
       try { event.preventDefault(); } catch (ignore) {}
@@ -871,15 +1032,26 @@
   }
 
   function onWritingBeforeInput(event) {
-    if (!event || (event.inputType !== "insertFromPaste" && event.inputType !== "insertFromPasteAsQuotation")) return;
+    if (!event) return;
+    var kind = event.inputType;
+    if (kind !== "insertFromPaste" && kind !== "insertFromPasteAsQuotation" && kind !== "insertFromDrop") return;
     onWritingPaste(event);
   }
 
-  function renderCanvas(student) {
+  function onWritingDrag(event) {
+    try {
+      if (!isWritingField(event.target)) return;
+      event.preventDefault();
+    } catch (err) {
+      console.error("BrainForge could not block that drop.", err);
+    }
+  }
+
+  function renderCanvas(piece) {
     var list = els["canvas-list"];
     while (list.firstChild) list.removeChild(list.firstChild);
-    if (!student) return;
-    student.blocks.forEach(function (block, index) {
+    if (!piece) return;
+    piece.blocks.forEach(function (block, index) {
       var wrap = document.createElement("div");
       wrap.className = "block";
       var label = document.createElement("label");
@@ -897,6 +1069,8 @@
       try {
         field.addEventListener("paste", onWritingPaste);
         field.addEventListener("beforeinput", onWritingBeforeInput);
+        field.addEventListener("dragover", onWritingDrag);
+        field.addEventListener("drop", onWritingPaste);
       } catch (err) {
         console.error("BrainForge could not watch this writing field.", err);
       }
@@ -915,7 +1089,7 @@
       down.textContent = "Move down";
       down.setAttribute("data-move", "1");
       down.setAttribute("data-block-id", block.id);
-      down.disabled = index === student.blocks.length - 1;
+      down.disabled = index === piece.blocks.length - 1;
       var remove = document.createElement("button");
       remove.type = "button";
       remove.className = "btn btn-line";
@@ -929,26 +1103,26 @@
     });
   }
 
-  function renderFacts(student) {
-    var facts = student ? student.facts : ["", "", ""];
+  function renderFacts(piece) {
+    var facts = piece ? piece.facts : ["", "", ""];
     for (var i = 0; i < 3; i++) {
       var input = $("fact-" + (i + 1));
       if (document.activeElement !== input) input.value = facts[i];
     }
-    var ready = factsReady(student);
-    var locked = !!(student && student.cluesLocked && ready);
+    var ready = factsReady(piece);
+    var locked = !!(piece && piece.cluesLocked && ready);
     els["intake-wrap"].hidden = locked;
     els["source-hidden-note"].hidden = !locked;
     els["forge-prompt"].hidden = !locked;
     els["btn-lock-clues"].disabled = !ready || locked;
+    els["btn-show-research"].hidden = !locked;
   }
 
-  function appendBadge(parent, kind, lead, example, grammarKey) {
+  function appendBadge(parent, kind, lead, example) {
     if (!lead) return;
     var badge = document.createElement("p");
     badge.className = kind;
     badge.setAttribute("role", "status");
-    if (grammarKey) badge.setAttribute("data-grammar", grammarKey);
     badge.appendChild(document.createTextNode(lead));
     if (example) {
       badge.appendChild(document.createElement("br"));
@@ -957,27 +1131,20 @@
     parent.appendChild(badge);
   }
 
-  function updateWorkbook(student) {
+  function updateWorkbook(piece) {
     var body = els["workbook-body"];
     while (body.firstChild) body.removeChild(body.firstChild);
-    if (!student || !student.blocks.length) {
+    var student = activeStudent();
+    if (!piece || !piece.blocks.length) {
       var empty = document.createElement("p");
-      empty.className = "wb-empty js-ink";
+      empty.className = "wb-empty";
       empty.textContent = "Your writing will show on these lines.";
       body.appendChild(empty);
     } else {
-      student.blocks.forEach(function (block) {
-        blockIssues(block, student.name).forEach(function (issue) {
-          var message = GRAMMAR_BADGE_TEXT[issue];
-          if (!message) return;
-          appendBadge(body, "grammar-badge", message, GRAMMAR_BADGE_EXAMPLE[issue] || "", issue);
-        });
-        tierHits(block.text).forEach(function (hit) {
-          appendBadge(body, "vocab-badge", hit.lead, hit.example, "");
-        });
+      piece.blocks.forEach(function (block) {
         var line = document.createElement("p");
         var kind = block.type === "h1" ? "wb-h1" : block.type === "h2" ? "wb-h2" : "wb-p";
-        line.className = "js-ink " + kind;
+        line.className = kind;
         line.textContent = block.text;
         body.appendChild(line);
         if ((block.type === "h1" || block.type === "h2") && block.text.trim()) {
@@ -986,77 +1153,66 @@
           gap.setAttribute("aria-hidden", "true");
           body.appendChild(gap);
         }
+        grammarIssues(block, student ? student.name : "").forEach(function (issue) {
+          appendBadge(body, "grammar-badge", issue.lead, issue.example);
+        });
+        wordHits(block.text).forEach(function (hit) {
+          appendBadge(body, "vocab-badge", hit.lead, "");
+        });
       });
     }
-    window.requestAnimationFrame(function () { runLayoutChecks(student); });
+    runLayoutChecks(piece);
   }
 
-  /* Fixed list only. A match has to be the whole lowercase word or phrase.
-     wa, sa, and nt are included as whole words. act is not on this list. */
+  /* Whole words and phrases only. may and march are ordinary words, so they
+     are not here. act is not here either. */
   var PROPER_PHRASES = [
     "australian capital territory", "great barrier reef", "great dividing range",
     "northern territory", "western australia", "south australia", "new south wales",
     "murray river", "lake eyre", "queensland", "tasmania", "victoria", "australia",
     "canberra", "melbourne", "brisbane", "adelaide", "sydney", "hobart", "darwin",
     "perth", "uluru", "monday", "tuesday", "wednesday", "thursday", "friday",
-    "saturday", "sunday", "january", "february", "march", "april", "may", "june",
+    "saturday", "sunday", "january", "february", "april", "june",
     "july", "august", "september", "october", "november", "december",
     "qld", "nsw", "vic", "tas", "wa", "sa", "nt"
   ];
 
+  var ABBREVIATIONS = ["e.g.", "i.e.", "etc.", "approx.", "mr.", "mrs.", "ms.", "dr.", "st.", "no."];
+  var STATE_FORMS = { qld: "QLD", nsw: "NSW", vic: "VIC", tas: "TAS", wa: "WA", sa: "SA", nt: "NT" };
+
   var GRAMMAR_BADGE_TEXT = {
-    sentence: "💡 Grammar: Sentences and headings must start with a Capital Letter.",
-    proper: "💡 Grammar: Names, places, and Australian states always need a Capital Letter.",
-    pronoun: "💡 Grammar Check: The word I is always a capital letter.",
-    name: "💡 Grammar Check: A name starts with a capital letter.",
-    midcap: "💡 Grammar Check: This word does not need a capital letter in the middle of a sentence.",
-    ending: "💡 Punctuation: Informative paragraphs must end with a full stop, question mark, or exclamation mark.",
-    space: "💡 Grammar Check: Leave a space after a full stop before the next word."
+    sentence: "💡 Grammar: Sentences and headings start with a capital letter.",
+    proper: "💡 Grammar: Names of places, days and months start with a capital letter.",
+    pronoun: "💡 Grammar: The word I is always a capital letter.",
+    name: "💡 Grammar: A name starts with a capital letter.",
+    ending: "💡 Punctuation: Finish the paragraph with a full stop, question mark or exclamation mark.",
+    space: "💡 Punctuation: Leave a space after a full stop before the next word."
   };
 
-  var GRAMMAR_BADGE_EXAMPLE = {
-    sentence: "Example: 'uluru' should be written as 'Uluru'.",
-    ending: "Example: Make sure to add a '.' at the very end of your paragraph.",
-    proper: "Example: 'qld' should be written as 'QLD'."
-  };
-
-  /* Tier 1 words and only the Tier 2 words Pete listed for that group.
-     The student's word is never replaced. Spellings stay as he wrote
-     them, including utilize, unfavourable, scrutinise, and analyse. */
-  var BIG_TIER = ["massive", "monolithic", "immense", "substantial", "colossal", "vast"];
-  var SMALL_TIER = ["minute", "compact", "microscopic", "nominal", "diminutive", "negligible"];
-  var GOOD_TIER = ["exceptional", "advantageous", "beneficial", "authoritative", "outstanding", "exemplary"];
-  var BAD_TIER = ["detrimental", "adverse", "severe", "unfavourable", "catastrophic", "deficient"];
-  var NICE_TIER = ["pleasant", "favourable", "hospitable", "cordial", "amenable"];
-  var IMPORTANT_TIER = ["vital", "critical", "essential", "significant", "captivating", "intriguing"];
-  var RESEARCH_TIER = ["scrutinise", "analyse", "examine", "discern", "perceive", "demonstrate", "illustrate", "articulate", "acquire", "procure", "construct", "formulate", "utilize", "harness"];
-  var ENVIRONMENT_TIER = ["evident", "conspicuous", "complex", "intricate", "straightforward", "elementary", "extreme", "torrid", "frigid", "arctic", "saturated", "arid", "parched"];
+  /* One list per word. hard, clear and poor are left out: each has two meanings. */
   var TIER_WORDS = {
-    big: BIG_TIER,
-    huge: BIG_TIER,
-    small: SMALL_TIER,
-    little: SMALL_TIER,
-    good: GOOD_TIER,
-    great: GOOD_TIER,
-    bad: BAD_TIER,
-    poor: BAD_TIER,
-    nice: NICE_TIER,
-    important: IMPORTANT_TIER,
-    interesting: IMPORTANT_TIER,
-    look: RESEARCH_TIER,
-    see: RESEARCH_TIER,
-    show: RESEARCH_TIER,
-    tell: RESEARCH_TIER,
-    get: RESEARCH_TIER,
-    make: RESEARCH_TIER,
-    use: RESEARCH_TIER,
-    clear: ENVIRONMENT_TIER,
-    hard: ENVIRONMENT_TIER,
-    easy: ENVIRONMENT_TIER,
-    hot: ENVIRONMENT_TIER,
-    cold: ENVIRONMENT_TIER,
-    wet: ENVIRONMENT_TIER,
-    dry: ENVIRONMENT_TIER
+    big: ["enormous", "massive", "vast"],
+    huge: ["enormous", "immense", "colossal"],
+    small: ["tiny", "compact", "miniature"],
+    little: ["tiny", "slight", "miniature"],
+    good: ["excellent", "effective", "beneficial"],
+    great: ["excellent", "outstanding", "remarkable"],
+    bad: ["harmful", "severe", "unpleasant"],
+    nice: ["pleasant", "enjoyable", "friendly"],
+    important: ["vital", "essential", "significant"],
+    interesting: ["fascinating", "intriguing", "remarkable"],
+    look: ["observe", "examine", "inspect"],
+    see: ["observe", "notice", "spot"],
+    show: ["demonstrate", "display", "reveal"],
+    tell: ["explain", "describe", "report"],
+    get: ["obtain", "collect", "gather"],
+    make: ["create", "build", "produce"],
+    use: ["utilise", "apply", "operate"],
+    easy: ["simple", "straightforward", "effortless"],
+    hot: ["scorching", "sweltering", "boiling"],
+    cold: ["chilly", "freezing", "icy"],
+    wet: ["damp", "soaked", "soggy"],
+    dry: ["arid", "parched", "dusty"]
   };
 
   function isLetter(ch) { return !!ch && ch.toLowerCase() !== ch.toUpperCase(); }
@@ -1070,23 +1226,6 @@
     return isLetter(text.charAt(index)) && (index === 0 || !isLetter(text.charAt(index - 1)));
   }
 
-  function previousWord(text, index) {
-    var j = index - 1;
-    while (j >= 0 && isSpace(text.charAt(j))) j--;
-    var end = j + 1;
-    while (j >= 0 && isLetter(text.charAt(j))) j--;
-    if (end === j + 1) return "";
-    return text.slice(j + 1, end).toLowerCase();
-  }
-
-  /* act is the territory after in, from, or across. act now is ordinary. */
-  function isTerritoryAct(text, index) {
-    if (text.substr(index, 3) !== "act") return false;
-    if (isLetter(text.charAt(index + 3))) return false;
-    var prev = previousWord(text, index);
-    return prev === "in" || prev === "from" || prev === "across";
-  }
-
   function readWord(text, index) {
     var end = index + 1;
     while (end < text.length) {
@@ -1098,11 +1237,44 @@
     return end;
   }
 
-  function matchLowerPhrase(text, index) {
+  function dotIsAbbreviation(text, dotIndex) {
+    var start = dotIndex;
+    while (start > 0) {
+      var prev = text.charAt(start - 1);
+      if (isLetter(prev) || prev === ".") start--;
+      else break;
+    }
+    var end = dotIndex + 1;
+    while (end < text.length && isLetter(text.charAt(end))) {
+      var k = end;
+      while (k < text.length && isLetter(text.charAt(k))) k++;
+      if (text.charAt(k) !== ".") break;
+      end = k + 1;
+    }
+    var token = text.slice(start, end).toLowerCase();
+    if (ABBREVIATIONS.indexOf(token) !== -1) return true;
+    return ABBREVIATIONS.indexOf(text.slice(start, dotIndex + 1).toLowerCase()) !== -1;
+  }
+
+  function isSentenceGap(ch) {
+    return isSpace(ch) || ch === "\"" || ch === "'" || ch === "\u201c" || ch === "\u201d" || ch === "\u2018" || ch === "\u2019" || ch === "(" || ch === "[" || ch === "{";
+  }
+
+  function stopIsBoundary(text, index) {
+    var ch = text.charAt(index);
+    if (ch !== "." && ch !== "!" && ch !== "?") return false;
+    if (ch === "." && isDigit(text.charAt(index - 1)) && isDigit(text.charAt(index + 1))) return false;
+    if (ch === "." && dotIsAbbreviation(text, index)) return false;
+    return true;
+  }
+
+  function matchPhrase(text, index) {
+    var lower = text.toLowerCase();
     for (var p = 0; p < PROPER_PHRASES.length; p++) {
       var phrase = PROPER_PHRASES[p];
-      if (text.substr(index, phrase.length) !== phrase) continue;
+      if (lower.substr(index, phrase.length) !== phrase) continue;
       if (isLetter(text.charAt(index + phrase.length))) continue;
+      if (text.substr(index, phrase.length) !== phrase) continue;
       return phrase;
     }
     return "";
@@ -1113,15 +1285,10 @@
     var i = 0;
     while (i < text.length) {
       if (!isWordStart(text, i)) { i++; continue; }
-      var phrase = matchLowerPhrase(text, i);
+      var phrase = matchPhrase(text, i);
       if (phrase) {
-        spans.push({ start: i, end: i + phrase.length });
+        spans.push({ start: i, end: i + phrase.length, phrase: phrase });
         i += phrase.length;
-        continue;
-      }
-      if (isTerritoryAct(text, i)) {
-        spans.push({ start: i, end: i + 3 });
-        i += 3;
         continue;
       }
       i++;
@@ -1129,11 +1296,28 @@
     return spans;
   }
 
+  function phraseCovers(text, index) {
+    var lower = text.toLowerCase();
+    var i = 0;
+    while (i < text.length) {
+      if (!isWordStart(text, i)) { i++; continue; }
+      for (var p = 0; p < PROPER_PHRASES.length; p++) {
+        var phrase = PROPER_PHRASES[p];
+        if (lower.substr(i, phrase.length) !== phrase) continue;
+        if (isLetter(text.charAt(i + phrase.length))) continue;
+        if (index >= i && index < i + phrase.length) return true;
+      }
+      i++;
+    }
+    return false;
+  }
+
   function findPronounSpans(text) {
     var spans = [];
     var i = 0;
     while (i < text.length) {
       if (!isWordStart(text, i) || text.charAt(i) !== "i") { i++; continue; }
+      if (text.substr(i, 4).toLowerCase() === "i.e.") { i += 4; continue; }
       var mark = text.charAt(i + 1);
       if (mark === "'" || mark === "\u2019") {
         if (text.charAt(i + 2) === "m" && !isLetter(text.charAt(i + 3))) {
@@ -1162,27 +1346,42 @@
     return -1;
   }
 
-  function isSentenceGap(ch) {
-    return isSpace(ch) || ch === "\"" || ch === "'" || ch === "\u201c" || ch === "\u201d" || ch === "\u2018" || ch === "\u2019" || ch === "(" || ch === "[" || ch === "{";
+  function nextWordIndex(text, index) {
+    var j = index + 1;
+    while (j < text.length && isSentenceGap(text.charAt(j))) j++;
+    return j < text.length && isLetter(text.charAt(j)) ? j : -1;
   }
 
-  function sentenceStartIndexes(text) {
+  function sentenceFirstIndexes(text) {
     var indexes = [];
     var first = firstLetterIndex(text);
-    if (first >= 0 && isLowercaseLetter(text.charAt(first))) indexes.push(first);
+    if (first >= 0) indexes.push(first);
     for (var i = 0; i < text.length; i++) {
-      var ch = text.charAt(i);
-      if (ch !== "." && ch !== "!" && ch !== "?") continue;
-      if (ch === "." && isDigit(text.charAt(i - 1)) && isDigit(text.charAt(i + 1))) continue;
-      var j = i + 1;
-      while (j < text.length && isSentenceGap(text.charAt(j))) j++;
-      if (j < text.length && isLowercaseLetter(text.charAt(j))) indexes.push(j);
+      if (!stopIsBoundary(text, i)) continue;
+      var next = nextWordIndex(text, i);
+      if (next >= 0) indexes.push(next);
     }
     return indexes;
   }
 
+  function capitaliseWord(word) {
+    if (!word) return word;
+    return word.charAt(0).toUpperCase() + word.slice(1);
+  }
+
+  function properForm(phrase) {
+    if (STATE_FORMS[phrase]) return STATE_FORMS[phrase];
+    return phrase.split(" ").map(capitaliseWord).join(" ");
+  }
+
+  function stripClosers(text) {
+    var trimmed = String(text || "").replace(/\s+$/, "");
+    while (trimmed && /["'\u201d\u2019)\]]$/.test(trimmed)) trimmed = trimmed.slice(0, -1).replace(/\s+$/, "");
+    return trimmed;
+  }
+
   function needsEnding(text) {
-    var trimmed = text.replace(/\s+$/, "");
+    var trimmed = stripClosers(text);
     if (!trimmed) return false;
     var last = trimmed.charAt(trimmed.length - 1);
     return last !== "." && last !== "!" && last !== "?";
@@ -1190,9 +1389,7 @@
 
   function missingSpaceAfterStop(text) {
     for (var i = 0; i < text.length; i++) {
-      var ch = text.charAt(i);
-      if (ch !== "." && ch !== "!" && ch !== "?") continue;
-      if (ch === "." && isDigit(text.charAt(i - 1)) && isDigit(text.charAt(i + 1))) continue;
+      if (!stopIsBoundary(text, i)) continue;
       if (isLetter(text.charAt(i + 1))) return true;
     }
     return false;
@@ -1216,7 +1413,7 @@
         var lower = slice.toLowerCase();
         for (var n = 0; n < words.length; n++) {
           if (words[n].toLowerCase() === lower) {
-            spans.push({ start: i, end: end });
+            spans.push({ start: i, end: end, word: slice, form: capitaliseWord(words[n]) });
             break;
           }
         }
@@ -1226,102 +1423,20 @@
     return spans;
   }
 
-  function isTerritoryActLoose(text, index) {
-    if (text.substr(index, 3).toLowerCase() !== "act") return false;
-    if (isLetter(text.charAt(index + 3))) return false;
-    var prev = previousWord(text, index);
-    return prev === "in" || prev === "from" || prev === "across";
-  }
+  function quoteFix(found, corrected) { return "'" + found + "' should be written as '" + corrected + "'."; }
 
-  function matchLoosePhrase(text, index) {
-    for (var p = 0; p < PROPER_PHRASES.length; p++) {
-      var phrase = PROPER_PHRASES[p];
-      if (text.substr(index, phrase.length).toLowerCase() !== phrase) continue;
-      if (isLetter(text.charAt(index + phrase.length))) continue;
-      return phrase;
-    }
-    return "";
-  }
-
-  function findLooseProperSpans(text) {
-    var spans = [];
-    var i = 0;
-    while (i < text.length) {
-      if (!isWordStart(text, i)) { i++; continue; }
-      var phrase = matchLoosePhrase(text, i);
-      if (phrase) {
-        spans.push({ start: i, end: i + phrase.length });
-        i += phrase.length;
-        continue;
-      }
-      if (isTerritoryActLoose(text, i)) {
-        spans.push({ start: i, end: i + 3 });
-        i += 3;
-        continue;
-      }
-      i++;
-    }
-    return spans;
-  }
-
-  function sentenceFirstWordIndexes(text) {
-    var indexes = [];
-    var first = firstLetterIndex(text);
-    if (first >= 0) indexes.push(first);
-    for (var i = 0; i < text.length; i++) {
-      var ch = text.charAt(i);
-      if (ch !== "." && ch !== "!" && ch !== "?") continue;
-      if (ch === "." && isDigit(text.charAt(i - 1)) && isDigit(text.charAt(i + 1))) continue;
-      var j = i + 1;
-      while (j < text.length && isSentenceGap(text.charAt(j))) j++;
-      if (j < text.length && isLetter(text.charAt(j))) indexes.push(j);
-    }
-    return indexes;
-  }
-
-  function isAllowedMidCapital(word, index, words, loose) {
-    if (word === "I") return true;
-    if (word.length === 3 && word.charAt(0) === "I" && (word.charAt(1) === "'" || word.charAt(1) === "\u2019") && word.charAt(2).toLowerCase() === "m") return true;
-    if (spanCovers(loose, index)) return true;
-    var lower = word.toLowerCase();
-    for (var n = 0; n < words.length; n++) if (words[n].toLowerCase() === lower) return true;
-    return false;
-  }
-
-  function hasMidSentenceCapital(text, words) {
-    var loose = findLooseProperSpans(text);
-    var firsts = sentenceFirstWordIndexes(text);
-    var i = 0;
-    while (i < text.length) {
-      if (!isWordStart(text, i)) { i++; continue; }
-      var end = readWord(text, i);
-      var word = text.slice(i, end);
-      var isFirst = false;
-      for (var f = 0; f < firsts.length; f++) if (firsts[f] === i) isFirst = true;
-      if (!isFirst && isUppercaseLetter(word.charAt(0)) && !isAllowedMidCapital(word, i, words, loose)) return true;
-      i = end;
-    }
-    return false;
-  }
-
-  function dropCovered(spans, cover) {
-    return spans.filter(function (span) { return !spanCovers(cover, span.start); });
-  }
-
-  /* A correct sentence, with its capitals and its ending mark, gets no badge.
-     A subheader never gets a missing-full-stop badge. */
-  function grammarIssues(block) {
+  function grammarIssues(block, studentName) {
     var text = block.text || "";
     if (!text) return [];
-    var student = activeStudent();
-    var words = profileNameWords(student ? student.name : "");
     var isParagraph = block.type === "p";
     var isHeading = block.type === "h1" || block.type === "h2";
+    var words = profileNameWords(studentName);
     var names = findNameSpans(text, words);
-    var proper = dropCovered(findProperSpans(text), names);
+    var proper = findProperSpans(text).filter(function (span) { return !spanCovers(names, span.start); });
     var pronoun = isParagraph ? findPronounSpans(text) : [];
     var headingStart = isHeading ? firstLetterIndex(text) : -1;
-    var starts = sentenceStartIndexes(text).filter(function (index) {
+    var starts = sentenceFirstIndexes(text).filter(function (index) {
+      if (!isLowercaseLetter(text.charAt(index))) return false;
       if (index === headingStart) return true;
       return !spanCovers(proper, index) && !spanCovers(pronoun, index) && !spanCovers(names, index);
     });
@@ -1329,36 +1444,55 @@
       proper = proper.filter(function (span) { return span.start !== headingStart; });
     }
     var issues = [];
-    if (starts.length) issues.push("sentence");
-    if (names.length) issues.push("name");
-    if (proper.length) issues.push("proper");
-    if (pronoun.length) issues.push("pronoun");
-    if (hasMidSentenceCapital(text, words)) issues.push("midcap");
-    if (block.type !== "h2" && isParagraph && needsEnding(text)) issues.push("ending");
-    if (isParagraph && missingSpaceAfterStop(text)) issues.push("space");
-    if (block.type === "h2") issues = issues.filter(function (issue) { return issue !== "ending"; });
-    return issues.filter(function (issue) { return !!GRAMMAR_BADGE_TEXT[issue]; });
+    if (starts.length) {
+      var sentenceExamples = starts.map(function (index) {
+        var word = text.slice(index, readWord(text, index));
+        return quoteFix(word, capitaliseWord(word));
+      });
+      issues.push({ lead: GRAMMAR_BADGE_TEXT.sentence, example: sentenceExamples.join(" ") });
+    }
+    if (names.length) {
+      issues.push({
+        lead: GRAMMAR_BADGE_TEXT.name,
+        example: names.map(function (span) { return quoteFix(span.word, span.form); }).join(" ")
+      });
+    }
+    if (proper.length) {
+      issues.push({
+        lead: GRAMMAR_BADGE_TEXT.proper,
+        example: proper.map(function (span) { return quoteFix(span.phrase, properForm(span.phrase)); }).join(" ")
+      });
+    }
+    if (pronoun.length) issues.push({ lead: GRAMMAR_BADGE_TEXT.pronoun, example: "" });
+    var showEnding = isParagraph && block.id !== focusedBlockId && needsEnding(text);
+    if (showEnding) issues.push({ lead: GRAMMAR_BADGE_TEXT.ending, example: "" });
+    if (isParagraph && missingSpaceAfterStop(text)) issues.push({ lead: GRAMMAR_BADGE_TEXT.space, example: "" });
+    return issues;
   }
 
-  function blockIssues(block) { return grammarIssues(block); }
+  function joinChoices(options) {
+    var quoted = options.map(function (item) { return "'" + item + "'"; });
+    if (quoted.length === 1) return quoted[0];
+    return quoted.slice(0, -1).join(", ") + " or " + quoted[quoted.length - 1];
+  }
 
-  function tierHits(text) {
+  function wordHits(text) {
     var hits = [];
     var seen = {};
-    var i = 0;
     var source = text || "";
-    while (i < source.length) {
+    var firsts = sentenceFirstIndexes(source);
+    var i = 0;
+    while (i < source.length && hits.length < 3) {
       if (!isWordStart(source, i)) { i++; continue; }
       var end = readWord(source, i);
-      var word = source.slice(i, end).toLowerCase();
+      var raw = source.slice(i, end);
+      var word = raw.toLowerCase();
       var options = TIER_WORDS[word];
-      if (options && !seen[word]) {
+      var capitalInside = isUppercaseLetter(raw.charAt(0)) && firsts.indexOf(i) === -1;
+      if (options && !seen[word] && !capitalInside && !phraseCovers(source, i)) {
         seen[word] = true;
-        var quoted = options.map(function (item) { return "'" + item + "'"; });
-        var joined = quoted.length === 1 ? quoted[0] : quoted.slice(0, -1).join(", ") + " or " + quoted[quoted.length - 1];
         hits.push({
-          lead: "💡 Vocabulary: '" + word + "' is a Tier 1 word.",
-          example: "Try " + joined + "."
+          lead: "💡 Word choice: '" + word + "' is an everyday word. Could " + joinChoices(options) + " fit what you mean?"
         });
       }
       i = end;
@@ -1366,66 +1500,83 @@
     return hits;
   }
 
-  function subheaderScaledLarger(student) {
-    if (!student) return false;
+  function layoutWarnings(piece) {
+    var order = false;
     var seenTitle = false;
-    var promoted = false;
-    student.blocks.forEach(function (block) {
-      if (block.type === "h1" && block.text.trim()) seenTitle = true;
-      if (block.type === "h2" && block.text.trim() && !seenTitle) promoted = true;
+    var titles = 0;
+    if (piece) {
+      piece.blocks.forEach(function (block) {
+        if (block.type === "h1") titles += 1;
+        if (block.type === "h1" && block.text.trim()) seenTitle = true;
+        if (block.type === "h2" && block.text.trim() && !seenTitle) order = true;
+      });
+    }
+    return { order: order, extraTitle: titles > 1 };
+  }
+
+  function runLayoutChecks(piece) {
+    var warnings = layoutWarnings(piece || activePiece());
+    els["hierarchy-order"].hidden = !warnings.order;
+    els["hierarchy-count"].hidden = !warnings.extraTitle;
+  }
+
+  function countWords(text) {
+    var found = String(text || "").match(/[A-Za-z0-9]+(?:['\u2019-][A-Za-z0-9]+)*/g);
+    return found ? found.length : 0;
+  }
+
+  function countWord(n) { return n >= 0 && n < NUMBER_WORDS.length ? NUMBER_WORDS[n] : String(n); }
+
+  function activityStatement(student, piece) {
+    var name = (student && student.name && student.name.trim()) || "The student";
+    var subs = 0;
+    var paras = 0;
+    var words = 0;
+    piece.blocks.forEach(function (block) {
+      if (block.type === "h2" && block.text.trim()) subs += 1;
+      if (block.type === "p" && block.text.trim()) paras += 1;
+      if (block.text.trim()) words += countWords(block.text);
     });
-    if (promoted) return true;
-    var title = els["workbook-body"].querySelector(".wb-h1");
-    var subs = els["workbook-body"].querySelectorAll(".wb-h2");
-    if (!title || !subs.length) return false;
-    var titleSize = parseFloat(window.getComputedStyle(title).fontSize) || 0;
-    for (var i = 0; i < subs.length; i++) {
-      var size = parseFloat(window.getComputedStyle(subs[i]).fontSize) || 0;
-      if (size > titleSize + 0.5) return true;
-    }
-    return false;
+    var sentence = piece.reportSourceHidden ? "With the source hidden, " + name + " wrote" : name + " wrote";
+    sentence += " an informative text with a main title";
+    if (subs > 0) sentence += ", " + countWord(subs) + (subs === 1 ? " subheader" : " subheaders");
+    sentence += " and " + countWord(paras) + (paras === 1 ? " paragraph" : " paragraphs");
+    sentence += " (" + words + (words === 1 ? " word" : " words") + ").";
+    return [
+      name + " researched a topic online and recorded three facts from the source.",
+      sentence,
+      "Pasting was switched off in the writing area, so the text was typed, not pasted."
+    ].join(" ");
   }
 
-  function textCrossesMargin() {
-    var line = $("margin-line");
-    if (!line) return false;
-    var limit = line.getBoundingClientRect().right - 0.5;
-    var nodes = els["workbook-page"].querySelectorAll(".js-ink");
-    for (var i = 0; i < nodes.length; i++) {
-      var rect = nodes[i].getBoundingClientRect();
-      if (rect.width < 1 || rect.height < 1) continue;
-      if (rect.left < limit) return true;
-    }
-    return false;
-  }
-
-  function runLayoutChecks(student) {
-    var current = student || activeStudent();
-    els["hierarchy-alert"].hidden = !subheaderScaledLarger(current);
-    els["margin-alert"].hidden = !textCrossesMargin();
-  }
-
-  function renderReport(student) {
+  function renderReport(student, piece) {
     var report = els["evidence-report"];
-    if (!student || !student.reportAt) {
+    if (!student || !piece || !piece.reportAt) {
       report.hidden = true;
       return;
     }
     report.hidden = false;
-    els["report-date"].textContent = formatWhen(student.reportAt);
+    els["report-date"].textContent = formatWhen(piece.reportAt);
     els["report-name"].textContent = student.name;
-    renderWorkSample(student);
+    els["activity-statement"].textContent = activityStatement(student, piece);
+    var facts = els["report-facts"];
+    while (facts.firstChild) facts.removeChild(facts.firstChild);
+    piece.facts.forEach(function (fact) {
+      var item = document.createElement("li");
+      item.textContent = fact;
+      facts.appendChild(item);
+    });
+    renderWorkSample(piece);
   }
 
-  /* The printed sample is the typed text, mistakes included. Badges are not copied in. */
-  function renderWorkSample(student) {
+  function renderWorkSample(piece) {
     var host = els["report-work"];
     while (host.firstChild) host.removeChild(host.firstChild);
     var dateLine = document.createElement("p");
     dateLine.className = "report-date-line";
-    dateLine.textContent = student.workbookDate || "";
+    dateLine.textContent = piece.workbookDate || "";
     host.appendChild(dateLine);
-    student.blocks.forEach(function (block) {
+    piece.blocks.forEach(function (block) {
       var node;
       if (block.type === "h1") {
         node = document.createElement("h1");
@@ -1442,85 +1593,190 @@
     });
   }
 
-  function firstBlockText(student, type) {
-    for (var i = 0; i < student.blocks.length; i++) {
-      if (student.blocks[i].type === type) return student.blocks[i].text;
+  function reportGaps(piece) {
+    var gaps = [];
+    if (!factsReady(piece)) gaps.push("three facts");
+    if (!firstFilled(piece, "h1")) gaps.push("a main title");
+    var paras = 0;
+    if (piece) piece.blocks.forEach(function (block) { if (block.type === "p" && block.text.trim()) paras += 1; });
+    if (!paras) gaps.push("a paragraph");
+    return gaps;
+  }
+
+  function joinGaps(items) {
+    if (!items.length) return "";
+    if (items.length === 1) return items[0];
+    if (items.length === 2) return items[0] + " and " + items[1];
+    return items.slice(0, -1).join(", ") + " and " + items[items.length - 1];
+  }
+
+  function syncReportControls() {
+    var student = activeStudent();
+    var piece = activePiece(student);
+    var gaps = student ? reportGaps(piece) : ["three facts", "a main title", "a paragraph"];
+    if (!student) {
+      els["btn-generate"].disabled = true;
+      els["report-missing"].textContent = "";
+    } else if (gaps.length) {
+      els["btn-generate"].disabled = true;
+      els["report-missing"].textContent = "Add " + joinGaps(gaps) + " before a report can be created.";
+    } else {
+      els["btn-generate"].disabled = false;
+      els["report-missing"].textContent = "";
     }
+    var ticks = els["check-date"].checked && els["check-ruler"].checked && els["check-gap"].checked;
+    els["btn-create-report"].disabled = !student || gaps.length > 0 || !ticks;
+  }
+
+  function cutText(value, max) {
+    var text = String(value || "");
+    return text.length <= max ? text : text.slice(0, max);
+  }
+
+  function pieceDescription(piece) {
+    var lines = piece.facts.slice();
+    piece.blocks.forEach(function (block) { lines.push(block.text); });
+    return cutText(lines.join("\n"), 2000);
+  }
+
+  function hasOffsetStamp(value) {
+    return /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[+-]\d{2}:\d{2}$/.test(value);
+  }
+
+  function curriculumLines() {
+    return [
+      { kind: "learningArea", area: "English", path: ["Language"], label: "English > Language" },
+      { kind: "learningArea", area: "English", path: ["Literacy"], label: "English > Literacy" }
+    ];
+  }
+
+  function evidenceDocument(student) {
+    var entries = [];
+    student.pieces.forEach(function (piece) {
+      if (!piece.reportAt) return;
+      var date = localDateOnly(piece.reportAt);
+      var title = cutText(firstFilled(piece, "h1") || "Untitled", 120);
+      var summary = cutText(activityStatement(student, piece), 2000);
+      entries.push({
+        entryId: "brainforge:" + piece.id,
+        date: date,
+        title: title,
+        summary: summary,
+        description: pieceDescription(piece),
+        curriculum: curriculumLines(),
+        evidenceTypes: [{ type: "workSample", note: "Typed informative text" }],
+        tags: ["research", "informative writing"],
+        createdAt: toLocalIso(piece.createdAt),
+        updatedAt: toLocalIso(piece.updatedAt)
+      });
+    });
+    entries.sort(function (a, b) { return a.date < b.date ? -1 : a.date > b.date ? 1 : 0; });
+    return {
+      format: "wattlewood-evidence",
+      formatVersion: "1.0",
+      exportedAt: toLocalIso(new Date()),
+      source: { app: "brainforge", appName: "BrainForge", appVersion: "1.1" },
+      student: { name: student.name, sourceStudentId: student.id },
+      entries: entries
+    };
+  }
+
+  function evidenceProblems(doc) {
+    if (!doc || doc.format !== "wattlewood-evidence" || doc.formatVersion !== "1.0") return "The file format is not valid.";
+    if (!hasOffsetStamp(doc.exportedAt)) return "The export time is not a local time.";
+    if (!doc.source || doc.source.app !== "brainforge" || doc.source.appName !== "BrainForge") return "The source is not valid.";
+    if (!/^[a-z0-9-]+$/.test(doc.source.app)) return "The source id is not valid.";
+    if (!doc.student || typeof doc.student.name !== "string" || doc.student.name.length < 1 || doc.student.name.length > 60) return "The student name is not valid.";
+    if (!Array.isArray(doc.entries) || doc.entries.length > 2000) return "The entries are not valid.";
+    var seen = {};
+    for (var i = 0; i < doc.entries.length; i++) {
+      var entry = doc.entries[i];
+      if (!entry || typeof entry.entryId !== "string" || entry.entryId.indexOf("brainforge:") !== 0) return "An entry id is not valid.";
+      if (seen[entry.entryId]) return "An entry id is repeated.";
+      seen[entry.entryId] = true;
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(entry.date)) return "An entry date is not valid.";
+      if (typeof entry.title !== "string" || entry.title.length < 1 || entry.title.length > 120) return "An entry title is not valid.";
+      if (typeof entry.summary !== "string" || entry.summary.length < 1 || entry.summary.length > 2000) return "An entry summary is not valid.";
+      if (typeof entry.description !== "string" || entry.description.length > 2000) return "An entry description is not valid.";
+      if (!Array.isArray(entry.curriculum) || entry.curriculum.length < 1 || entry.curriculum.length > 10) return "The learning areas are not valid.";
+      if (!Array.isArray(entry.evidenceTypes) || entry.evidenceTypes.length < 1 || entry.evidenceTypes.length > 6) return "The evidence type is not valid.";
+      if (entry.evidenceTypes[0].type !== "workSample") return "The evidence type is not valid.";
+      if (!Array.isArray(entry.tags) || entry.tags.length > 10) return "The tags are not valid.";
+      if (!hasOffsetStamp(entry.createdAt) || !hasOffsetStamp(entry.updatedAt)) return "An entry time is not a local time.";
+      if (JSON.stringify(entry.curriculum) !== JSON.stringify(curriculumLines())) return "The learning areas are not valid.";
+    }
+    if (new Blob([JSON.stringify(doc)]).size > 25 * 1024 * 1024) return "The file is too large.";
     return "";
   }
 
-  function evidenceFileName(studentName, isoDate) {
-    var clean = function (value) {
-      return String(value).replace(/[\\/:*?"<>|\u0000-\u001f]/g, "-");
-    };
-    return "brainforge-evidence-" + clean(studentName) + "-" + clean(isoDate) + ".json";
+  function evidenceFileName(student, doc) {
+    var clean = String(student.name || "student").replace(/[\\/:*?"<>|\u0000-\u001f]/g, "").replace(/\s+/g, "");
+    if (!clean) clean = "student";
+    var dates = doc.entries.map(function (entry) { return entry.date; }).sort();
+    var from = dates[0] || localDateOnly(new Date());
+    var to = dates[dates.length - 1] || from;
+    return clean + "_brainforge_" + from + "_to_" + to + ".wwevidence.json";
   }
 
-  function evidenceRecord(student, isoDate) {
-    var paragraphs = [];
-    student.blocks.forEach(function (block) {
-      if (block.type === "p") paragraphs.push(block.text);
-    });
-    return {
-      studentName: student.name,
-      date: isoDate,
-      subject: SUBJECT,
-      curriculumVersion: "v9.0",
-      activityType: "Digital Research & Informative Text Structuring",
-      extractedFacts: student.facts.slice(),
-      workSample: {
-        title: firstBlockText(student, "h1"),
-        subheader: firstBlockText(student, "h2"),
-        paragraphs: paragraphs
-      },
-      bureaucraticStatement: $("activity-statement").textContent
-    };
-  }
-
-  function downloadEvidence(student, isoDate) {
-    var record = evidenceRecord(student, isoDate);
-    var blob = new Blob([JSON.stringify(record, null, 2)], { type: "application/json" });
+  function offerDownload(filename, text) {
+    var blob = new Blob([text], { type: "application/json" });
     var url = URL.createObjectURL(blob);
     var link = document.createElement("a");
     link.href = url;
-    link.download = evidenceFileName(student.name, isoDate);
+    link.download = filename;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+    window.setTimeout(function () { URL.revokeObjectURL(url); }, 1500);
+  }
+
+  function exportEvidence() {
+    var student = requireStudent();
+    if (!student) return;
+    var doc = evidenceDocument(student);
+    if (!doc.entries.length) {
+      showStatus("Create a report before exporting an evidence file.");
+      return;
+    }
+    var problem = evidenceProblems(doc);
+    if (problem) {
+      showStatus(problem + " No file was downloaded.");
+      return;
+    }
+    try {
+      offerDownload(evidenceFileName(student, doc), JSON.stringify(doc, null, 2));
+    } catch (err) {
+      console.error("BrainForge could not download the evidence file.", err);
+      showStatus("The evidence file did not download. Try the export again.");
+    }
   }
 
   function renderAll() {
     var student = activeStudent();
+    var piece = activePiece(student);
     renderStudentSelect();
+    renderPieceSelect();
     els["no-student"].hidden = !!student;
     els["btn-rename-student"].disabled = !student;
     els["btn-remove-student"].disabled = !student;
-    if (!student) {
-      els.intake.value = "";
-      els["workbook-date"].value = "";
+    if (!student || !piece) {
+      if (document.activeElement !== els.intake) els.intake.value = "";
+      if (document.activeElement !== els["workbook-date"]) els["workbook-date"].value = "";
       renderFacts(null);
       renderCanvas(null);
       updateWorkbook(null);
-      renderReport(null);
-      hideCheat();
+      renderReport(null, null);
+      hidePaste();
+      syncReportControls();
       return;
     }
-    els.intake.value = student.intake;
-    els["workbook-date"].value = student.workbookDate;
-    renderFacts(student);
-    renderCanvas(student);
-    updateWorkbook(student);
-    renderReport(student);
-    syncChecks(student);
-  }
-
-  function syncChecks(student) {
-    els["check-date"].checked = !!(student && student.checks.date);
-    els["check-ruler"].checked = !!(student && student.checks.ruler);
-    els["check-gap"].checked = !!(student && student.checks.gap);
-    var ready = !!(student && student.checks.date && student.checks.ruler && student.checks.gap);
-    els["btn-create-report"].disabled = !ready;
+    if (document.activeElement !== els.intake) els.intake.value = piece.intake;
+    if (document.activeElement !== els["workbook-date"]) els["workbook-date"].value = piece.workbookDate;
+    renderFacts(piece);
+    renderCanvas(piece);
+    updateWorkbook(piece);
+    renderReport(student, piece);
+    syncReportControls();
   }
 
   function showTip(which, pin) {
@@ -1551,7 +1807,7 @@
     var nextId = els["student-select"].value;
     if (!nextId) {
       state.activeStudentId = null;
-      hideCheat();
+      hidePaste();
       renderAll();
       persistState(true);
       return;
@@ -1563,7 +1819,21 @@
       return;
     }
     state.activeStudentId = nextId;
-    hideCheat();
+    hidePaste();
+    renderAll();
+    persistState(true);
+  }
+
+  function onSelectPiece() {
+    var student = requireStudent();
+    if (!student) return;
+    var nextId = els["piece-select"].value;
+    var found = false;
+    for (var i = 0; i < student.pieces.length; i++) if (student.pieces[i].id === nextId) found = true;
+    if (!found) return;
+    student.activePieceId = nextId;
+    focusedBlockId = "";
+    hidePaste();
     renderAll();
     persistState(true);
   }
@@ -1603,6 +1873,11 @@
       els["student-form-error"].textContent = "Use 60 characters or fewer.";
       return;
     }
+    var exceptId = nameMode === "rename" && activeStudent() ? activeStudent().id : "";
+    if (nameTaken(name, exceptId)) {
+      els["student-form-error"].textContent = "There is already a student called " + name + ". Add an initial to tell them apart.";
+      return;
+    }
     if (nameMode === "rename") {
       var current = requireStudent();
       if (!current) return;
@@ -1626,51 +1901,98 @@
     renderAll();
   }
 
-  function openDelete() {
-    var student = requireStudent();
-    if (!student) return;
-    pendingRemoveId = student.id;
+  function openRemoveDialog(action, title, message) {
+    pendingRemove = action;
     lastFocus = document.activeElement;
-    els["delete-message"].textContent = "Remove " + student.name + " and the work stored for them on this device? This cannot be undone.";
-    els["delete-confirm"].onclick = confirmDelete;
+    els["delete-title"].textContent = title;
+    els["delete-message"].textContent = message;
     els["dialog-delete"].showModal();
     els["delete-cancel"].focus();
   }
 
+  function openDelete() {
+    var student = requireStudent();
+    if (!student) return;
+    openRemoveDialog(
+      { type: "student", id: student.id },
+      "Remove this student?",
+      "Remove " + student.name + " and the work stored for them on this device? This cannot be undone."
+    );
+  }
+
   function confirmDelete() {
-    var index = -1;
-    for (var i = 0; i < state.students.length; i++) {
-      if (state.students[i].id === pendingRemoveId) index = i;
-    }
-    if (index < 0) {
+    var action = pendingRemove;
+    if (!action) {
       els["dialog-delete"].close();
       return;
     }
-    var removed = state.students.splice(index, 1)[0];
-    var previousId = state.activeStudentId;
-    if (state.activeStudentId === removed.id) state.activeStudentId = null;
-    if (!persistState(true)) {
-      state.students.splice(index, 0, removed);
-      state.activeStudentId = previousId;
-      return;
+    if (action.type === "student") {
+      var index = -1;
+      for (var i = 0; i < state.students.length; i++) if (state.students[i].id === action.id) index = i;
+      if (index < 0) { els["dialog-delete"].close(); return; }
+      var removed = state.students.splice(index, 1)[0];
+      var previousId = state.activeStudentId;
+      if (state.activeStudentId === removed.id) state.activeStudentId = null;
+      if (!persistState(true)) {
+        state.students.splice(index, 0, removed);
+        state.activeStudentId = previousId;
+        return;
+      }
+    } else if (action.type === "piece") {
+      var student = activeStudent();
+      if (!student) return;
+      var pieceIndex = -1;
+      for (var p = 0; p < student.pieces.length; p++) if (student.pieces[p].id === action.id) pieceIndex = p;
+      if (pieceIndex < 0) { els["dialog-delete"].close(); return; }
+      var keptPieces = student.pieces.slice();
+      var previousPiece = student.activePieceId;
+      student.pieces.splice(pieceIndex, 1);
+      if (!student.pieces.length) student.pieces.push(emptyPiece());
+      if (!activePiece(student)) student.activePieceId = student.pieces[0].id;
+      if (!persistState(true)) {
+        student.pieces = keptPieces;
+        student.activePieceId = previousPiece;
+        return;
+      }
+    } else if (action.type === "block") {
+      var owner = activeStudent();
+      var piece = activePiece(owner);
+      if (!piece) return;
+      var blockIndex = -1;
+      for (var b = 0; b < piece.blocks.length; b++) if (piece.blocks[b].id === action.id) blockIndex = b;
+      if (blockIndex < 0) { els["dialog-delete"].close(); return; }
+      var removedBlock = piece.blocks.splice(blockIndex, 1)[0];
+      var previousUpdated = piece.updatedAt;
+      markEdited(piece);
+      if (!persistState(true)) {
+        piece.blocks.splice(blockIndex, 0, removedBlock);
+        piece.updatedAt = previousUpdated;
+        return;
+      }
     }
-    pendingRemoveId = "";
+    pendingRemove = null;
     els["dialog-delete"].close();
-    hideCheat();
+    hidePaste();
     renderAll();
   }
 
   function addBlock(type) {
     var student = requireStudent();
     if (!student) return;
+    var piece = activePiece(student);
+    if (!piece) return;
     var block = { id: newId("blk"), type: type, text: "" };
-    student.blocks.push(block);
+    var previousUpdated = piece.updatedAt;
+    piece.blocks.push(block);
+    markEdited(piece);
     if (!persistState(true)) {
-      student.blocks.pop();
+      piece.blocks.pop();
+      piece.updatedAt = previousUpdated;
       return;
     }
-    renderCanvas(student);
-    updateWorkbook(student);
+    renderCanvas(piece);
+    updateWorkbook(piece);
+    syncReportControls();
     var field = $("block-" + block.id);
     if (field) field.focus();
   }
@@ -1678,171 +2000,223 @@
   function moveBlock(id, direction) {
     var student = requireStudent();
     if (!student) return;
+    var piece = activePiece(student);
+    if (!piece) return;
     var index = -1;
-    for (var i = 0; i < student.blocks.length; i++) if (student.blocks[i].id === id) index = i;
+    for (var i = 0; i < piece.blocks.length; i++) if (piece.blocks[i].id === id) index = i;
     var next = index + direction;
-    if (index < 0 || next < 0 || next >= student.blocks.length) return;
-    var item = student.blocks[index];
-    student.blocks.splice(index, 1);
-    student.blocks.splice(next, 0, item);
+    if (index < 0 || next < 0 || next >= piece.blocks.length) return;
+    var item = piece.blocks[index];
+    var previousUpdated = piece.updatedAt;
+    piece.blocks.splice(index, 1);
+    piece.blocks.splice(next, 0, item);
+    markEdited(piece);
     if (!persistState(true)) {
-      student.blocks.splice(next, 1);
-      student.blocks.splice(index, 0, item);
+      piece.blocks.splice(next, 1);
+      piece.blocks.splice(index, 0, item);
+      piece.updatedAt = previousUpdated;
       return;
     }
-    renderCanvas(student);
-    updateWorkbook(student);
+    renderCanvas(piece);
+    updateWorkbook(piece);
   }
 
   function removeBlock(id) {
     var student = requireStudent();
     if (!student) return;
+    var piece = activePiece(student);
+    if (!piece) return;
     var block = null;
-    for (var i = 0; i < student.blocks.length; i++) if (student.blocks[i].id === id) block = student.blocks[i];
+    for (var i = 0; i < piece.blocks.length; i++) if (piece.blocks[i].id === id) block = piece.blocks[i];
     if (!block) return;
-    pendingRemoveId = "";
-    lastFocus = document.activeElement;
-    els["delete-message"].textContent = "Remove this " + (BLOCK_LABELS[block.type] || "part").toLowerCase() + "? This cannot be undone.";
-    els["dialog-delete"].showModal();
-    els["delete-cancel"].focus();
-    els["delete-confirm"].onclick = function () {
-      var fresh = requireStudent();
-      if (!fresh) return;
-      var index = -1;
-      for (var n = 0; n < fresh.blocks.length; n++) if (fresh.blocks[n].id === id) index = n;
-      if (index < 0) {
-        els["dialog-delete"].close();
-        return;
-      }
-      var removed = fresh.blocks.splice(index, 1)[0];
-      if (!persistState(true)) {
-        fresh.blocks.splice(index, 0, removed);
-        return;
-      }
-      els["dialog-delete"].close();
-      els["delete-confirm"].onclick = confirmDelete;
-      renderCanvas(fresh);
-      updateWorkbook(fresh);
-      if (fresh.reportAt) renderWorkSample(fresh);
-    };
+    openRemoveDialog(
+      { type: "block", id: id },
+      "Remove this part?",
+      "Remove this " + (BLOCK_LABELS[block.type] || "part").toLowerCase() + "? This cannot be undone."
+    );
+  }
+
+  function startPiece() {
+    var student = requireStudent();
+    if (!student) return;
+    var piece = emptyPiece();
+    student.pieces.push(piece);
+    var previous = student.activePieceId;
+    student.activePieceId = piece.id;
+    focusedBlockId = "";
+    if (!persistState(true)) {
+      student.pieces.pop();
+      student.activePieceId = previous;
+      return;
+    }
+    hidePaste();
+    renderAll();
+  }
+
+  function removePiece() {
+    var student = requireStudent();
+    if (!student) return;
+    var piece = activePiece(student);
+    if (!piece) return;
+    openRemoveDialog(
+      { type: "piece", id: piece.id },
+      "Remove this piece?",
+      "Remove this piece of writing? This cannot be undone."
+    );
   }
 
   function onIntakeInput() {
     var student = requireStudent();
     if (!student) return;
-    student.intake = els.intake.value;
+    var piece = activePiece(student);
+    if (!piece) return;
+    piece.intake = els.intake.value;
     scheduleSave();
   }
 
   function onFactInput(input) {
     var student = requireStudent();
     if (!student) return;
+    var piece = activePiece(student);
+    if (!piece) return;
     var index = Number(input.getAttribute("data-fact"));
-    student.facts[index] = input.value;
-    if (!factsReady(student)) student.cluesLocked = false;
-    renderFacts(student);
+    if (piece.facts[index] === input.value) return;
+    piece.facts[index] = input.value;
+    if (!factsReady(piece)) piece.cluesLocked = false;
+    markEdited(piece);
+    renderFacts(piece);
+    syncReportControls();
     scheduleSave();
   }
 
   function lockClues() {
     var student = requireStudent();
     if (!student) return;
-    if (!factsReady(student)) {
-      showStatus("Add all three evidence points before the research is hidden.");
+    var piece = activePiece(student);
+    if (!piece) return;
+    if (!factsReady(piece)) {
+      showStatus("Add all three facts before the research is hidden.");
       return;
     }
-    student.cluesLocked = true;
-    renderFacts(student);
-    if (!persistState(true)) student.cluesLocked = false;
-    renderFacts(student);
+    piece.cluesLocked = true;
+    renderFacts(piece);
+    if (!persistState(true)) piece.cluesLocked = false;
+    renderFacts(piece);
+  }
+
+  function showResearch() {
+    var student = requireStudent();
+    if (!student) return;
+    var piece = activePiece(student);
+    if (!piece) return;
+    piece.cluesLocked = false;
+    renderFacts(piece);
+    if (!persistState(true)) piece.cluesLocked = true;
+    renderFacts(piece);
   }
 
   function onCanvasInput(field) {
     var student = requireStudent();
     if (!student) return;
+    var piece = activePiece(student);
+    if (!piece) return;
     var id = field.getAttribute("data-block-id");
     var block = null;
-    for (var i = 0; i < student.blocks.length; i++) if (student.blocks[i].id === id) block = student.blocks[i];
+    for (var i = 0; i < piece.blocks.length; i++) if (piece.blocks[i].id === id) block = piece.blocks[i];
     if (!block) return;
-    hideCheat();
-    block.text = field.value;
-    updateWorkbook(student);
-    if (student.reportAt) renderWorkSample(student);
-    scheduleSave();
+    hidePaste();
+    if (block.text !== field.value) {
+      block.text = field.value;
+      markEdited(piece);
+      scheduleSave();
+    }
+    updateWorkbook(piece);
+    syncReportControls();
+    if (piece.reportAt) renderReport(student, piece);
+    renderPieceSelect();
   }
 
   function onWorkbookDateInput() {
     var student = requireStudent();
     if (!student) return;
-    student.workbookDate = els["workbook-date"].value;
-    if (student.reportAt) {
-      var shown = els["report-work"].querySelector(".report-date-line");
-      if (shown) shown.textContent = student.workbookDate;
+    var piece = activePiece(student);
+    if (!piece) return;
+    if (piece.workbookDate !== els["workbook-date"].value) {
+      piece.workbookDate = els["workbook-date"].value;
+      markEdited(piece);
+      scheduleSave();
     }
-    scheduleSave();
+    if (piece.reportAt) {
+      var shown = els["report-work"].querySelector(".report-date-line");
+      if (shown) shown.textContent = piece.workbookDate;
+    }
+    renderPieceSelect();
   }
 
   function openChecklist() {
     var student = requireStudent();
     if (!student) return;
-    syncChecks(student);
+    var piece = activePiece(student);
+    if (reportGaps(piece).length) {
+      syncReportControls();
+      return;
+    }
+    els["check-date"].checked = false;
+    els["check-ruler"].checked = false;
+    els["check-gap"].checked = false;
+    syncReportControls();
     lastFocus = document.activeElement;
     els["dialog-check"].showModal();
     els["check-date"].focus();
   }
 
-  function onCheckChange() {
-    var student = requireStudent();
-    if (!student) return;
-    student.checks.date = els["check-date"].checked;
-    student.checks.ruler = els["check-ruler"].checked;
-    student.checks.gap = els["check-gap"].checked;
-    syncChecks(student);
-    scheduleSave();
-  }
+  function onCheckChange() { syncReportControls(); }
 
   function createReport(event) {
     event.preventDefault();
     var student = requireStudent();
     if (!student) return;
-    if (!student.checks.date || !student.checks.ruler || !student.checks.gap) {
+    var piece = activePiece(student);
+    if (!piece) return;
+    if (reportGaps(piece).length) {
+      syncReportControls();
+      showStatus(els["report-missing"].textContent || "Add the missing parts before a report can be created.");
+      return;
+    }
+    if (!els["check-date"].checked || !els["check-ruler"].checked || !els["check-gap"].checked) {
       showStatus("Tick all three checks before the report is created. Nothing was saved as a report.");
       return;
     }
-    var previous = student.reportAt;
-    student.reportAt = new Date().toISOString();
-    student.subject = SUBJECT;
+    var previousAt = piece.reportAt;
+    var previousHidden = piece.reportSourceHidden;
+    piece.reportAt = toLocalIso(new Date());
+    piece.reportSourceHidden = !!piece.cluesLocked;
     if (!persistState(true)) {
-      student.reportAt = previous;
+      piece.reportAt = previousAt;
+      piece.reportSourceHidden = previousHidden;
       return;
     }
     els["dialog-check"].close();
-    renderReport(student);
+    renderReport(student, piece);
     els["evidence-report"].scrollIntoView({ block: "start" });
-    try {
-      downloadEvidence(student, student.reportAt);
-    } catch (err) {
-      console.error("BrainForge could not download the evidence file.", err);
-      showStatus("The report is on this page, but the evidence file did not download. Try creating the report again.");
-    }
   }
 
   function bindEvents() {
     els["student-select"].addEventListener("change", onSelectStudent);
+    els["piece-select"].addEventListener("change", onSelectPiece);
     els["btn-add-student"].addEventListener("click", function () { openNameDialog("add"); });
     els["btn-rename-student"].addEventListener("click", function () { openNameDialog("rename"); });
     els["btn-remove-student"].addEventListener("click", openDelete);
+    els["btn-new-piece"].addEventListener("click", startPiece);
+    els["btn-remove-piece"].addEventListener("click", removePiece);
     els["student-cancel"].addEventListener("click", closeNameDialog);
     els["student-form"].addEventListener("submit", saveName);
     els["delete-cancel"].addEventListener("click", function () {
       els["dialog-delete"].close();
-      els["delete-confirm"].onclick = confirmDelete;
+      pendingRemove = null;
       if (lastFocus && lastFocus.focus) lastFocus.focus();
     });
-    els["dialog-delete"].addEventListener("close", function () {
-      els["delete-confirm"].onclick = confirmDelete;
-    });
-    els["delete-confirm"].onclick = confirmDelete;
+    els["delete-confirm"].addEventListener("click", confirmDelete);
     els["btn-theme"].addEventListener("click", function () {
       applyTheme(document.documentElement.classList.contains("dark") ? "light" : "dark", true);
     });
@@ -1852,6 +2226,7 @@
       input.addEventListener("input", function () { onFactInput(input); });
     });
     els["btn-lock-clues"].addEventListener("click", lockClues);
+    els["btn-show-research"].addEventListener("click", showResearch);
     els["btn-add-h1"].addEventListener("mouseenter", function () { showTip("h1", false); });
     els["btn-add-h1"].addEventListener("focus", function () { showTip("h1", false); });
     els["btn-add-h1"].addEventListener("mouseleave", function () { hideTip("h1"); });
@@ -1875,6 +2250,18 @@
     els["canvas-list"].addEventListener("input", function (event) {
       if (event.target && event.target.getAttribute("data-block-id")) onCanvasInput(event.target);
     });
+    els["canvas-list"].addEventListener("focusin", function (event) {
+      if (!isWritingField(event.target)) return;
+      focusedBlockId = event.target.getAttribute("data-block-id") || "";
+      var piece = activePiece();
+      if (piece) updateWorkbook(piece);
+    });
+    els["canvas-list"].addEventListener("focusout", function (event) {
+      if (!isWritingField(event.target)) return;
+      if (focusedBlockId === event.target.getAttribute("data-block-id")) focusedBlockId = "";
+      var piece = activePiece();
+      if (piece) updateWorkbook(piece);
+    });
     els["canvas-list"].addEventListener("click", function (event) {
       var move = event.target && event.target.getAttribute && event.target.getAttribute("data-move");
       var removeId = event.target && event.target.getAttribute && event.target.getAttribute("data-remove-block");
@@ -1891,18 +2278,13 @@
       els["dialog-check"].close();
       if (lastFocus && lastFocus.focus) lastFocus.focus();
     });
+    els["btn-export"].addEventListener("click", exportEvidence);
     els["btn-print"].addEventListener("click", function () {
       try { window.print(); } catch (err) { console.error("Print did not open.", err); }
     });
     document.addEventListener("keydown", function (event) {
       if (event.key === "Escape") clearTips();
     });
-    if (window.ResizeObserver) {
-      var observer = new ResizeObserver(function () { runLayoutChecks(activeStudent()); });
-      observer.observe(els["workbook-page"]);
-    } else {
-      window.addEventListener("resize", function () { runLayoutChecks(activeStudent()); });
-    }
     window.addEventListener("pagehide", function () {
       if (saveTimer) {
         window.clearTimeout(saveTimer);
@@ -1912,15 +2294,15 @@
   }
 
   cacheEls();
-  if (els["cheat-alert"].textContent !== CHEAT_TEXT) els["cheat-alert"].textContent = CHEAT_TEXT;
+  if (els["cheat-alert"].textContent !== PASTE_TEXT) els["cheat-alert"].textContent = PASTE_TEXT;
   loadTheme();
   loadState();
-  if (storageUnreadable) {
-    showStatus("BrainForge could not read saved work in this browser. Nothing new will be stored over it.");
-  }
+  var blocked = blockedReason();
+  if (blocked) showStatus(blocked);
   bindEvents();
   renderAll();
 })();
+
 </script>
 </body>
 </html>
