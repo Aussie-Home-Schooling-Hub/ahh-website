@@ -293,7 +293,7 @@ tailwind.config = {
   /* On-screen guide only. It is not part of the student's writing,
      so it is not ink for the margin check and it does not print. */
   .grammar-badge {
-    display: inline-block;
+    display: block;
     max-width: 100%;
     margin: 0 0 1mm;
     padding: 0.15rem 0.4rem;
@@ -1089,15 +1089,15 @@ tailwind.config = {
       body.appendChild(empty);
     } else {
       student.blocks.forEach(function (block) {
-        /* Headings only. A lowercase first character gets a badge above
-           the line. The typed text is left exactly as it is. */
-        if ((block.type === "h1" || block.type === "h2") && startsWithLowercaseLetter(block.text)) {
+        /* One badge per issue, above that block. The typed text is not changed. */
+        grammarIssues(block).forEach(function (issue) {
           var badge = document.createElement("p");
           badge.className = "grammar-badge no-print";
           badge.setAttribute("role", "status");
-          badge.textContent = "💡 Remember: Headings should start with a Capital Letter!";
+          badge.setAttribute("data-grammar", issue);
+          badge.textContent = GRAMMAR_BADGE_TEXT[issue];
           body.appendChild(badge);
-        }
+        });
         var line = document.createElement("p");
         var kind = block.type === "h1" ? "wb-h1" : block.type === "h2" ? "wb-h2" : "wb-p";
         line.className = "js-ink " + kind;
@@ -1116,12 +1116,233 @@ tailwind.config = {
     });
   }
 
-  /* The first character only. A space, number, or capital does not count.
-     Paragraphs never reach this check. */
-  function startsWithLowercaseLetter(text) {
-    if (!text) return false;
-    var first = text.charAt(0);
-    return first.toLowerCase() !== first.toUpperCase() && first === first.toLowerCase();
+  /* Fixed list only. A match has to be the whole lowercase word or phrase.
+     wa, sa, and nt are included as whole words, so an ordinary word that is
+     exactly one of those three is flagged too. act is not on this list. */
+  var PROPER_PHRASES = [
+    "australian capital territory",
+    "great barrier reef",
+    "great dividing range",
+    "northern territory",
+    "western australia",
+    "south australia",
+    "new south wales",
+    "murray river",
+    "lake eyre",
+    "queensland",
+    "tasmania",
+    "victoria",
+    "australia",
+    "canberra",
+    "melbourne",
+    "brisbane",
+    "adelaide",
+    "sydney",
+    "hobart",
+    "darwin",
+    "perth",
+    "uluru",
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+    "sunday",
+    "january",
+    "february",
+    "march",
+    "april",
+    "may",
+    "june",
+    "july",
+    "august",
+    "september",
+    "october",
+    "november",
+    "december",
+    "qld",
+    "nsw",
+    "vic",
+    "tas",
+    "wa",
+    "sa",
+    "nt"
+  ];
+
+  var GRAMMAR_BADGE_TEXT = {
+    sentence: "💡 Grammar Check: A new sentence starts with a capital letter.",
+    proper: "💡 Grammar Check: Proper nouns, names, and places require a Capital Letter regardless of where they sit in a sentence.",
+    pronoun: "💡 Grammar Check: The word I is always a capital letter.",
+    ending: "💡 Grammar Check: A sentence needs a full stop, question mark, or exclamation mark at the end.",
+    space: "💡 Grammar Check: Leave a space after a full stop before the next word."
+  };
+
+  function isLetter(ch) {
+    return !!ch && ch.toLowerCase() !== ch.toUpperCase();
+  }
+
+  function isLowercaseLetter(ch) {
+    return isLetter(ch) && ch === ch.toLowerCase();
+  }
+
+  function isDigit(ch) {
+    return ch >= "0" && ch <= "9";
+  }
+
+  function isSpace(ch) {
+    return ch === " " || ch === "\n" || ch === "\r" || ch === "\t" || ch === "\f" || ch === "\u00a0";
+  }
+
+  function isWordStart(text, index) {
+    return isLetter(text.charAt(index)) && (index === 0 || !isLetter(text.charAt(index - 1)));
+  }
+
+  function previousWord(text, index) {
+    var j = index - 1;
+    while (j >= 0 && isSpace(text.charAt(j))) j--;
+    var end = j + 1;
+    while (j >= 0 && isLetter(text.charAt(j))) j--;
+    if (end === j + 1) return "";
+    return text.slice(j + 1, end).toLowerCase();
+  }
+
+  /* act is the territory after in, from, or across. act now, the act, and
+     the other ordinary uses are not the territory. */
+  function isTerritoryAct(text, index) {
+    if (text.substr(index, 3) !== "act") return false;
+    if (isLetter(text.charAt(index + 3))) return false;
+    var prev = previousWord(text, index);
+    return prev === "in" || prev === "from" || prev === "across";
+  }
+
+  function matchLowerPhrase(text, index) {
+    for (var p = 0; p < PROPER_PHRASES.length; p++) {
+      var phrase = PROPER_PHRASES[p];
+      if (text.substr(index, phrase.length) !== phrase) continue;
+      if (isLetter(text.charAt(index + phrase.length))) continue;
+      return phrase;
+    }
+    return "";
+  }
+
+  function findProperSpans(text) {
+    var spans = [];
+    var i = 0;
+    while (i < text.length) {
+      if (!isWordStart(text, i)) {
+        i++;
+        continue;
+      }
+      var phrase = matchLowerPhrase(text, i);
+      if (phrase) {
+        spans.push({ start: i, end: i + phrase.length });
+        i += phrase.length;
+        continue;
+      }
+      if (isTerritoryAct(text, i)) {
+        spans.push({ start: i, end: i + 3 });
+        i += 3;
+        continue;
+      }
+      i++;
+    }
+    return spans;
+  }
+
+  function findPronounSpans(text) {
+    var spans = [];
+    var i = 0;
+    while (i < text.length) {
+      if (!isWordStart(text, i) || text.charAt(i) !== "i") {
+        i++;
+        continue;
+      }
+      var mark = text.charAt(i + 1);
+      /* i'm is one word. i'll and i've are not the word i, so they are left alone. */
+      if (mark === "'" || mark === "\u2019") {
+        if (text.charAt(i + 2) === "m" && !isLetter(text.charAt(i + 3))) {
+          spans.push({ start: i, end: i + 3 });
+          i += 3;
+          continue;
+        }
+        i++;
+        continue;
+      }
+      if (!isLetter(mark)) spans.push({ start: i, end: i + 1 });
+      i++;
+    }
+    return spans;
+  }
+
+  function spanCovers(spans, index) {
+    for (var i = 0; i < spans.length; i++) {
+      if (index >= spans[i].start && index < spans[i].end) return true;
+    }
+    return false;
+  }
+
+  function firstLetterIndex(text) {
+    for (var i = 0; i < text.length; i++) {
+      if (isLetter(text.charAt(i))) return i;
+    }
+    return -1;
+  }
+
+  function isSentenceGap(ch) {
+    return isSpace(ch) || ch === "\"" || ch === "'" || ch === "\u201c" || ch === "\u201d" || ch === "\u2018" || ch === "\u2019" || ch === "(" || ch === "[" || ch === "{";
+  }
+
+  function sentenceStartIndexes(text) {
+    var indexes = [];
+    var first = firstLetterIndex(text);
+    if (first >= 0 && isLowercaseLetter(text.charAt(first))) indexes.push(first);
+    for (var i = 0; i < text.length; i++) {
+      var ch = text.charAt(i);
+      if (ch !== "." && ch !== "!" && ch !== "?") continue;
+      if (ch === "." && isDigit(text.charAt(i - 1)) && isDigit(text.charAt(i + 1))) continue;
+      var j = i + 1;
+      while (j < text.length && isSentenceGap(text.charAt(j))) j++;
+      if (j < text.length && isLowercaseLetter(text.charAt(j))) indexes.push(j);
+    }
+    return indexes;
+  }
+
+  function needsEnding(text) {
+    var trimmed = text.replace(/\s+$/, "");
+    if (!trimmed) return false;
+    var last = trimmed.charAt(trimmed.length - 1);
+    return last !== "." && last !== "!" && last !== "?";
+  }
+
+  function missingSpaceAfterStop(text) {
+    for (var i = 0; i < text.length; i++) {
+      var ch = text.charAt(i);
+      if (ch !== "." && ch !== "!" && ch !== "?") continue;
+      if (ch === "." && isDigit(text.charAt(i - 1)) && isDigit(text.charAt(i + 1))) continue;
+      if (isLetter(text.charAt(i + 1))) return true;
+    }
+    return false;
+  }
+
+  /* The sentence-start badge is skipped when that same word is already
+     covered by the proper-noun badge or the pronoun badge. */
+  function grammarIssues(block) {
+    var text = block.text || "";
+    if (!text) return [];
+    var isParagraph = block.type === "p";
+    var proper = findProperSpans(text);
+    var pronoun = isParagraph ? findPronounSpans(text) : [];
+    var starts = sentenceStartIndexes(text).filter(function (index) {
+      return !spanCovers(proper, index) && !spanCovers(pronoun, index);
+    });
+    var issues = [];
+    if (starts.length) issues.push("sentence");
+    if (proper.length) issues.push("proper");
+    if (pronoun.length) issues.push("pronoun");
+    if (isParagraph && needsEnding(text)) issues.push("ending");
+    if (isParagraph && missingSpaceAfterStop(text)) issues.push("space");
+    return issues;
   }
 
   /* A subheader is out of scale when it sits above the title, or when its
