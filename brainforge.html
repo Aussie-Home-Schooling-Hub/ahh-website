@@ -290,6 +290,24 @@ tailwind.config = {
     height: 8mm;
   }
 
+  /* On-screen guide only. It is not part of the student's writing,
+     so it is not ink for the margin check and it does not print. */
+  .grammar-badge {
+    display: inline-block;
+    max-width: 100%;
+    margin: 0 0 1mm;
+    padding: 0.15rem 0.4rem;
+    background: #E8C877;
+    color: #2A1B10;
+    border: 1px solid #8F6F2E;
+    border-radius: 0.35rem;
+    font-family: var(--font-body);
+    font-size: 3.4mm;
+    font-weight: 700;
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+  }
+
   dialog {
     border: 0;
     border-radius: 1rem;
@@ -361,7 +379,8 @@ tailwind.config = {
 
   @media print {
     .no-print,
-  .no-print * {
+    .no-print *,
+    .grammar-badge {
       display: none !important;
     }
 
@@ -1070,6 +1089,15 @@ tailwind.config = {
       body.appendChild(empty);
     } else {
       student.blocks.forEach(function (block) {
+        /* Headings only. A lowercase first character gets a badge above
+           the line. The typed text is left exactly as it is. */
+        if ((block.type === "h1" || block.type === "h2") && startsWithLowercaseLetter(block.text)) {
+          var badge = document.createElement("p");
+          badge.className = "grammar-badge no-print";
+          badge.setAttribute("role", "status");
+          badge.textContent = "💡 Remember: Headings should start with a Capital Letter!";
+          body.appendChild(badge);
+        }
         var line = document.createElement("p");
         var kind = block.type === "h1" ? "wb-h1" : block.type === "h2" ? "wb-h2" : "wb-p";
         line.className = "js-ink " + kind;
@@ -1086,6 +1114,14 @@ tailwind.config = {
     window.requestAnimationFrame(function () {
       runLayoutChecks(student);
     });
+  }
+
+  /* The first character only. A space, number, or capital does not count.
+     Paragraphs never reach this check. */
+  function startsWithLowercaseLetter(text) {
+    if (!text) return false;
+    var first = text.charAt(0);
+    return first.toLowerCase() !== first.toUpperCase() && first === first.toLowerCase();
   }
 
   /* A subheader is out of scale when it sits above the title, or when its
