@@ -1528,13 +1528,26 @@
     delete onlineToken[id];
   }
 
+  /* A full stop, question mark, or exclamation mark at the end, and a
+     space after any earlier one. A heading is not included: it is not a sentence. */
+  function punctuationSound(text) {
+    return !needsEnding(text) && !missingSpaceAfterStop(text);
+  }
+
   function blockIssues(block, fullName) {
     var issues = grammarIssues(block, fullName);
     var saved = onlineByBlock[block.id];
     if (!saved || saved.text !== block.text) return issues;
     var heading = block.type === "h1" || block.type === "h2";
+    var text = block.text || "";
+    var sound = punctuationSound(text);
     saved.issues.forEach(function (issue) {
-      if (heading && issue === "ending") return;
+      /* The vague punctuation badge does not name a Years 3–6 mistake.
+         Headings are not sentences. A paragraph that already ends properly
+         keeps its punctuation even when the online checker disagrees. */
+      if (issue === "punct") return;
+      if (heading && (issue === "ending" || issue === "space")) return;
+      if (!heading && sound && (issue === "ending" || issue === "space")) return;
       if (issues.indexOf(issue) < 0 && GRAMMAR_BADGE_TEXT[issue]) issues.push(issue);
     });
     return issues;
@@ -1563,20 +1576,28 @@
     if (/CASING|CAPITAL/.test(upper)) return "midcap";
     if (/PERIOD|SENTENCE_END/.test(upper)) return "ending";
     if (cat === "TYPOS" || /MORFOLOGIK|SPELL/.test(upper)) return "spell";
-    if (cat === "PUNCTUATION" || cat === "TYPOGRAPHY") return "punct";
+    /* Commas and other marks are not named in Years 3–6 words. Missing
+       end marks and missing spaces already have their own badges. */
+    if (cat === "PUNCTUATION" || cat === "TYPOGRAPHY") return "";
     if (cat === "STYLE" || cat === "REDUNDANCY") return "simple";
     return "sense";
   }
 
-  function mapOnlineMatches(text, fullName, matches) {
+  function mapOnlineMatches(text, fullName, matches, blockType) {
     var issues = [];
     var names = findNameSpans(text, profileNameWords(fullName));
+    var heading = blockType === "h1" || blockType === "h2";
+    var sound = punctuationSound(text);
     (matches || []).forEach(function (match) {
       if (!match || typeof match.offset !== "number") return;
       if (spanCovers(names, match.offset)) return;
       if (ordinaryActSuppressed(text, match)) return;
       var key = classifyOnlineMatch(text, match);
       if (!key || issues.indexOf(key) >= 0) return;
+      /* Ignore an online punctuation match on a heading, and on a
+         paragraph whose own stops are already in the right places. */
+      if ((heading || sound) && (key === "ending" || key === "space" || key === "punct")) return;
+      if (key === "punct") return;
       issues.push(key);
     });
     return issues;
@@ -1612,7 +1633,7 @@
       if (!block || block.text !== text) return;
       onlineByBlock[id] = {
         text: text,
-        issues: mapOnlineMatches(text, student.name, data && data.matches)
+        issues: mapOnlineMatches(text, student.name, data && data.matches, block.type)
       };
       updateWorkbook(student);
     }).catch(function () {
