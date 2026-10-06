@@ -194,11 +194,52 @@ tailwind.config = {
     min-height: 8rem;
   }
 
+  /* The top-right of the page is a real box the child can click.
+     It starts empty. The hint is only a placeholder, so it is not the
+     saved date and it is not copied onto the report or the printout. */
   .date-cue {
+    position: relative;
+    z-index: 3;
+    display: block;
+    flex: 0 0 auto;
+    width: 12rem;
+    max-width: 100%;
     margin: 0;
-    font-size: 0.95rem;
+  }
+
+  .workbook-date {
+    box-sizing: border-box;
+    display: block;
+    width: 100%;
+    min-height: 44px;
+    border: 2px solid #2A1B10;
+    border-radius: 0.4rem;
+    background: #fff;
+    color: #2A1B10;
+    font-family: var(--font-body);
+    font-size: 1rem;
     font-weight: 700;
+    line-height: 1.2;
+    text-align: left;
+    padding: 0.4rem 0.55rem;
+  }
+
+  .workbook-date::placeholder {
+    color: #6B4530;
+    font-weight: 600;
+    opacity: 1;
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
     white-space: nowrap;
+    border: 0;
   }
 
   .top-margin p {
@@ -268,6 +309,48 @@ tailwind.config = {
       transition: none !important;
       animation: none !important;
     }
+  }
+
+  /* The work sample is the child's writing, in their order, with no labels.
+     A title is a centred bold heading. A subheader is a smaller bold heading. */
+  #report-work .sample-title {
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    line-height: 1.25;
+    font-weight: 700;
+    text-align: center;
+    margin: 0.75rem 0 0.35rem;
+    color: #000;
+    overflow-wrap: anywhere;
+  }
+
+  #report-work .sample-sub {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    line-height: 1.3;
+    font-weight: 700;
+    text-align: start;
+    margin: 0.9rem 0 0.25rem;
+    color: #000;
+    overflow-wrap: anywhere;
+  }
+
+  #report-work .sample-paragraph {
+    margin: 0.25rem 0 0.75rem;
+    text-align: start;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    color: #000;
+  }
+
+  #report-work .report-workbook-date {
+    margin: 0 0 0.75rem;
+    min-height: 1.25rem;
+    text-align: right;
+    font-weight: 700;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    color: #000;
   }
 
   /* Print keeps a single A4 record. Every control, panel, and sidebar goes. */
@@ -412,7 +495,10 @@ tailwind.config = {
         <div id="margin-line" class="margin-line" aria-hidden="true"></div>
         <div class="top-margin">
           <p class="js-ink" id="top-cue">Leave the top lines blank for structural breathing room.</p>
-          <p class="js-ink date-cue">Date</p>
+          <label class="date-cue">
+            <span class="visually-hidden">Write the date</span>
+            <input id="workbook-date" class="workbook-date" type="text" maxlength="120" autocomplete="off" spellcheck="false" autocapitalize="off" placeholder="Write the date" aria-label="Write the date">
+          </label>
         </div>
         <p class="spacing-marker" id="spacing-cue"><span class="js-ink">Skip 1 blank line after headers/subheaders to structure paragraphs cleanly.</span></p>
         <div id="workbook-body" class="workbook-body"></div>
@@ -432,22 +518,14 @@ tailwind.config = {
     <p class="mt-0 mb-1 text-black"><span class="font-semibold">Student: </span><span id="report-name"></span></p>
     <p class="mt-0 mb-1 text-black">Years 3–6, ages 8–12</p>
 
-    <div class="mt-4 no-print">
-      <label for="report-subject" class="block font-semibold mb-1 text-black">Subject</label>
-      <select id="report-subject" class="min-h-[44px] w-full max-w-xs rounded-lg border border-black/30 bg-white text-black px-3">
-        <option value="">Select a subject</option>
-        <option value="English">English</option>
-        <option value="Science">Science</option>
-        <option value="Geography">Geography</option>
-        <option value="History">History</option>
-        <option value="Civics">Civics</option>
-      </select>
-    </div>
-    <p class="mt-3 mb-1 text-black"><span class="font-semibold">Subject: </span><span id="report-subject-text"></span></p>
+    <p class="mt-3 mb-1 text-black"><span class="font-semibold">Subject: </span>English</p>
 
     <h3 class="font-display text-lg mt-5 mb-2 text-black">Learning areas</h3>
     <p class="mt-0 mb-2 text-sm text-black">Australian Curriculum v9.0, Years 3–6. These are the learning areas this activity is built around.</p>
-    <ul id="report-curriculum" class="mt-0 mb-4 pl-5 text-black"></ul>
+    <ul id="report-curriculum" class="mt-0 mb-4 pl-5 text-black">
+      <li>English &gt; Language</li>
+      <li>English &gt; Literacy</li>
+    </ul>
 
     <h3 class="font-display text-lg mt-4 mb-2 text-black">Activity</h3>
     <p id="activity-statement" class="mt-0 mb-4 leading-relaxed text-black">The student conducted independent inquiry using digital research tools. To fulfill curriculum outcomes for creating informative texts, the student analyzed source data, extracted key evidence to mitigate plagiarism risks, and synthesised findings into an objective text structure. The student successfully applied textual hierarchies—including structural main headings and subordinate subheadings—to organize information logically before transferring the schema into physical media.</p>
@@ -456,9 +534,7 @@ tailwind.config = {
     <div id="report-work" class="text-black leading-relaxed"></div>
 
     <p class="mt-6 mb-4 text-sm text-black">This is a record of the work. Your registering authority decides what it accepts.</p>
-    <button type="button" id="btn-print" class="no-print min-h-[44px] rounded-lg bg-walnut text-parchment px-4 font-semibold">
-      <i class="fa-solid fa-print" aria-hidden="true"></i> Print
-    </button>
+    <button type="button" id="btn-print" class="no-print min-h-[44px] rounded-lg bg-walnut text-parchment px-4 font-semibold">🖨️ Print Official Report</button>
   </section>
 </main>
 
@@ -529,19 +605,8 @@ tailwind.config = {
   var STORAGE_KEY = "ahh-brainforge-state";
   var THEME_KEY = "ahh-brainforge-theme";
 
-  var SUBJECTS = ["English", "Science", "Geography", "History", "Civics"];
-
-  /* Labels use Australian Curriculum v9.0 learning-area names for Years 3–6.
-     Informative writing is always English. The chosen subject adds the
-     inquiry area. Civics maps to Civics and Citizenship, which starts in Year 3.
-     Codes are not shown. */
-  var CURRICULUM = {
-    English: ["English > Language", "English > Literacy"],
-    Science: ["English > Language", "English > Literacy", "Science > Science inquiry"],
-    Geography: ["English > Language", "English > Literacy", "HASS > Geography"],
-    History: ["English > Language", "English > Literacy", "HASS > History"],
-    Civics: ["English > Language", "English > Literacy", "HASS > Civics and Citizenship"]
-  };
+  /* BrainForge records English only. There is no subject choice. */
+  var SUBJECT = "English";
 
   var BLOCK_LABELS = { h1: "Main title", h2: "Subheader", p: "Paragraph" };
 
@@ -566,9 +631,8 @@ tailwind.config = {
       "intake-wrap", "intake", "source-hidden-note", "forge-prompt",
       "btn-add-h1", "btn-add-h2", "btn-add-p", "tip-h1", "tip-h2",
       "plagiarism-alert", "hierarchy-alert", "canvas-list", "margin-alert",
-      "workbook-page", "workbook-body", "btn-generate", "evidence-report",
-      "report-date", "report-name", "report-subject", "report-subject-text",
-      "report-curriculum", "report-work", "btn-print",
+      "workbook-page", "workbook-body", "workbook-date", "btn-generate", "evidence-report",
+      "report-date", "report-name", "report-work", "btn-print",
       "dialog-student", "student-form", "student-dialog-title", "student-name",
       "student-form-error", "student-save", "student-cancel",
       "dialog-delete", "delete-message", "delete-confirm", "delete-cancel",
@@ -591,7 +655,8 @@ tailwind.config = {
       intake: "",
       facts: ["", "", ""],
       blocks: [],
-      subject: "",
+      workbookDate: "",
+      subject: SUBJECT,
       checks: { date: false, ruler: false, gap: false },
       reportAt: "",
       log: []
@@ -752,9 +817,10 @@ tailwind.config = {
       var data = JSON.parse(raw);
       if (!data || !Array.isArray(data.students)) throw new Error("Saved work has an unexpected shape.");
       var students = [];
+      var subjectChanged = false;
       data.students.forEach(function (item) {
         if (!item || typeof item.id !== "string" || !item.id) return;
-        var subject = SUBJECTS.indexOf(item.subject) >= 0 ? item.subject : "";
+        if (item.subject !== SUBJECT) subjectChanged = true;
         students.push({
           id: item.id,
           name: typeof item.name === "string" ? item.name.slice(0, 60) : "",
@@ -762,7 +828,8 @@ tailwind.config = {
           intake: typeof item.intake === "string" ? item.intake.slice(0, 20000) : "",
           facts: normaliseFacts(item.facts),
           blocks: normaliseBlocks(item.blocks),
-          subject: subject,
+          workbookDate: typeof item.workbookDate === "string" ? item.workbookDate.slice(0, 120) : "",
+          subject: SUBJECT,
           checks: {
             date: !!(item.checks && item.checks.date),
             ruler: !!(item.checks && item.checks.ruler),
@@ -779,8 +846,9 @@ tailwind.config = {
         }
       }
       state = { activeStudentId: active, students: students };
-      /* A stored id that matches nobody is dropped. We do not pick another child. */
-      if (data.activeStudentId && !active) persistState(false);
+      /* A stored id that matches nobody is dropped. We do not pick another child.
+         A subject other than English is rewritten, because this activity is English only. */
+      if ((data.activeStudentId && !active) || subjectChanged) persistState(false);
     } catch (err) {
       console.error("BrainForge could not read saved work.", err);
       storageUnreadable = true;
@@ -876,7 +944,7 @@ tailwind.config = {
 
   function setWorkingEnabled(on) {
     var controls = [
-      els.intake, $("fact-1"), $("fact-2"), $("fact-3"),
+      els.intake, $("fact-1"), $("fact-2"), $("fact-3"), els["workbook-date"],
       els["btn-add-h1"], els["btn-add-h2"], els["btn-add-p"], els["btn-generate"],
       els["btn-rename-student"], els["btn-remove-student"]
     ];
@@ -1070,50 +1138,88 @@ tailwind.config = {
     report.hidden = false;
     els["report-date"].textContent = formatWhen(student.reportAt);
     els["report-name"].textContent = student.name;
-    els["report-subject"].value = student.subject || "";
-    els["report-subject-text"].textContent = student.subject || "Subject not chosen";
-    renderCurriculum(student.subject);
     renderWorkSample(student);
   }
 
-  function renderCurriculum(subject) {
-    var list = els["report-curriculum"];
-    while (list.firstChild) list.removeChild(list.firstChild);
-    var lines = CURRICULUM[subject] || [];
-    if (!lines.length) {
-      var none = document.createElement("li");
-      none.textContent = "Choose a subject to list the learning areas.";
-      list.appendChild(none);
-      return;
-    }
-    lines.forEach(function (line) {
-      var item = document.createElement("li");
-      item.textContent = line;
-      list.appendChild(item);
-    });
-  }
-
+  /* The preview follows the block list exactly. It does not sort headings
+     or fix spelling. Every title and subheader is shown, not only the first. */
   function renderWorkSample(student) {
     var host = els["report-work"];
     while (host.firstChild) host.removeChild(host.firstChild);
-    var any = false;
+    var dateLine = document.createElement("p");
+    dateLine.id = "report-workbook-date";
+    dateLine.className = "report-workbook-date";
+    dateLine.textContent = student.workbookDate || "";
+    host.appendChild(dateLine);
     student.blocks.forEach(function (block) {
-      if (!block.text.trim()) return;
-      any = true;
-      var heading = document.createElement("p");
-      heading.className = "mb-0 mt-3 font-semibold";
-      heading.textContent = BLOCK_LABELS[block.type] || "Writing";
-      var body = document.createElement("p");
-      body.className = "mt-0 mb-2 whitespace-pre-wrap break-words";
-      body.textContent = block.text;
-      host.appendChild(heading);
-      host.appendChild(body);
+      var node;
+      if (block.type === "h1") {
+        node = document.createElement("h1");
+        node.className = "sample-title";
+      } else if (block.type === "h2") {
+        node = document.createElement("h2");
+        node.className = "sample-sub";
+      } else {
+        node = document.createElement("p");
+        node.className = "sample-paragraph";
+      }
+      node.textContent = block.text;
+      host.appendChild(node);
     });
-    if (!any) {
-      var empty = document.createElement("p");
-      empty.textContent = "No writing has been entered yet.";
-      host.appendChild(empty);
+  }
+
+  function firstBlockText(student, type) {
+    for (var i = 0; i < student.blocks.length; i++) {
+      if (student.blocks[i].type === type) return student.blocks[i].text;
     }
+    return "";
+  }
+
+  function paragraphTexts(student) {
+    var list = [];
+    student.blocks.forEach(function (block) {
+      if (block.type === "p") list.push(block.text);
+    });
+    return list;
+  }
+
+  /* Colons cannot be used in a Windows file name. The same replacement
+     covers the other characters a file name cannot contain. */
+  function evidenceFileName(studentName, isoDate) {
+    var clean = function (value) {
+      return String(value).replace(/[\\/:*?"<>|\u0000-\u001f]/g, "-");
+    };
+    return "brainforge-evidence-" + clean(studentName) + "-" + clean(isoDate) + ".json";
+  }
+
+  function evidenceRecord(student, isoDate) {
+    return {
+      studentName: student.name,
+      date: isoDate,
+      subject: SUBJECT,
+      curriculumVersion: "v9.0",
+      activityType: "Digital Research & Informative Text Structuring",
+      extractedFacts: student.facts.slice(),
+      workSample: {
+        title: firstBlockText(student, "h1"),
+        subheader: firstBlockText(student, "h2"),
+        paragraphs: paragraphTexts(student)
+      },
+      bureaucraticStatement: $("activity-statement").textContent
+    };
+  }
+
+  function downloadEvidence(student, isoDate) {
+    var record = evidenceRecord(student, isoDate);
+    var blob = new Blob([JSON.stringify(record, null, 2)], { type: "application/json" });
+    var url = URL.createObjectURL(blob);
+    var link = document.createElement("a");
+    link.href = url;
+    link.download = evidenceFileName(student.name, isoDate);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   }
 
   function renderAll() {
@@ -1122,6 +1228,7 @@ tailwind.config = {
     setWorkingEnabled(!!student);
     if (!student) {
       els.intake.value = "";
+      els["workbook-date"].value = "";
       renderFacts(null, true);
       renderCanvas(null);
       renderLog(null);
@@ -1131,6 +1238,7 @@ tailwind.config = {
       return;
     }
     els.intake.value = student.intake;
+    els["workbook-date"].value = student.workbookDate;
     renderFacts(student, true);
     renderCanvas(student);
     renderLog(student);
@@ -1479,6 +1587,7 @@ tailwind.config = {
       return;
     }
     var previous = student.reportAt;
+    var previousSubject = student.subject;
     var logSnapshot = student.log.map(function (entry) {
       return {
         id: entry.id,
@@ -1489,9 +1598,11 @@ tailwind.config = {
       };
     });
     student.reportAt = new Date().toISOString();
+    student.subject = SUBJECT;
     addLog(student, "report", "Evidence report prepared.");
     if (!persistState(true)) {
       student.reportAt = previous;
+      student.subject = previousSubject;
       student.log = logSnapshot;
       return;
     }
@@ -1500,23 +1611,22 @@ tailwind.config = {
     renderLog(student);
     els["evidence-report"].scrollIntoView({ block: "start" });
     try {
-      window.print();
+      downloadEvidence(student, student.reportAt);
     } catch (err) {
-      console.error("Print did not open.", err);
+      console.error("BrainForge could not download the evidence file.", err);
+      showStatus("The report is on this page, but the evidence file did not download. Try creating the report again.");
     }
   }
 
-  function onSubjectChange() {
+  function onWorkbookDateInput() {
     var student = requireStudent();
     if (!student) {
-      els["report-subject"].value = "";
+      els["workbook-date"].value = "";
       return;
     }
-    var value = els["report-subject"].value;
-    if (value && SUBJECTS.indexOf(value) < 0) value = "";
-    student.subject = value;
-    els["report-subject-text"].textContent = value || "Subject not chosen";
-    renderCurriculum(value);
+    student.workbookDate = els["workbook-date"].value;
+    var shown = $("report-workbook-date");
+    if (shown) shown.textContent = student.workbookDate;
     scheduleSave();
   }
 
@@ -1553,6 +1663,7 @@ tailwind.config = {
     });
 
     els.intake.addEventListener("input", onIntakeInput);
+    els["workbook-date"].addEventListener("input", onWorkbookDateInput);
     document.querySelectorAll(".fact-input").forEach(function (input) {
       input.addEventListener("input", function () { onFactInput(input); });
     });
@@ -1592,7 +1703,6 @@ tailwind.config = {
       els["dialog-check"].close();
       if (lastFocus && lastFocus.focus) lastFocus.focus();
     });
-    els["report-subject"].addEventListener("change", onSubjectChange);
     els["btn-print"].addEventListener("click", function () {
       try { window.print(); }
       catch (err) { console.error("Print did not open.", err); }
