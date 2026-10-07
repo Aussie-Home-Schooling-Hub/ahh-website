@@ -1,4 +1,4 @@
-/* App shell only. Camera libraries and Google stay on the network.
+/* App shell only. The scanner libraries stay on the network.
    This scanner does not work offline. */
 
 const CACHE = 'wattlewood-smart-scanner-v1';

@@ -2,7 +2,7 @@
   "id": "./",
   "name": "Wattlewood Smart Scanner",
   "short_name": "Smart Scanner",
-  "description": "Photograph a page and upload the batch to a Google Drive folder you choose.",
+  "description": "Photograph a page and share the batch as a zip.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

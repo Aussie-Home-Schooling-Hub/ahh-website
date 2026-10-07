@@ -9,14 +9,12 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Smart Scanner">
   <title>Wattlewood Smart Scanner</title>
-  <meta name="description" content="Photograph a page and upload the batch to a Google Drive folder you choose.">
+  <meta name="description" content="Photograph a page and share the batch as a zip.">
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="icon-192.png" type="image/png">
   <link rel="apple-touch-icon" href="icon-192.png">
   <script src="https://cdn.tailwindcss.com"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
-  <script async src="https://accounts.google.com/gsi/client"></script>
-  <script async src="https://apis.google.com/js/api.js"></script>
   <style>
     #shutter-ring {
       background: conic-gradient(#10B981 calc(var(--p, 0) * 360deg), #374151 0);
@@ -28,57 +26,14 @@
     <header class="mb-4">
       <p class="text-sm font-semibold uppercase tracking-wide text-emerald-400">Wattlewood</p>
       <h1 class="text-2xl font-semibold text-white">Smart Scanner</h1>
-      <p id="folder-label" class="mt-2 text-base text-gray-200">Folder: not chosen yet</p>
-      <p id="auth-label" class="text-sm text-gray-400">Not signed in</p>
+      <p class="mt-2 text-sm leading-relaxed text-gray-300">Photograph the page. Share the batch when it is ready.</p>
     </header>
 
     <p id="library-warning" class="mb-4 hidden rounded-2xl border border-amber-500/60 bg-amber-500/10 px-4 py-3 text-sm text-amber-100" role="status">
       The scanner libraries did not load. This page needs a connection. It does not run offline.
     </p>
 
-    <details id="setup" class="mb-4 rounded-2xl bg-gray-800 p-4" open>
-      <summary class="cursor-pointer text-lg font-semibold text-white">Set up Google Drive</summary>
-      <p class="mt-2 text-sm leading-relaxed text-gray-300">
-        Each person signs in with their own Google account and chooses their own upload folder.
-        This browser remembers the client ID, the API key, the folder, and the child's name.
-        It does not remember the Google sign-in.
-      </p>
-      <p class="mt-2 text-sm leading-relaxed text-gray-300">
-        Google access is limited to files this scanner creates and the folder you choose. It does not ask for your whole Drive.
-      </p>
-
-      <label class="mt-4 block text-sm font-medium text-gray-200" for="client-id">OAuth client ID</label>
-      <input id="client-id" class="mt-1 w-full rounded-xl border border-gray-600 bg-gray-900 px-3 py-3 text-base text-white" type="text" autocomplete="off" spellcheck="false" inputmode="text">
-      <p id="project-hint" class="mt-1 text-sm text-gray-400"></p>
-
-      <label class="mt-3 block text-sm font-medium text-gray-200" for="api-key">Picker API key</label>
-      <input id="api-key" class="mt-1 w-full rounded-xl border border-gray-600 bg-gray-900 px-3 py-3 text-base text-white" type="text" autocomplete="off" spellcheck="false">
-
-      <div class="mt-4 grid grid-cols-1 gap-2">
-        <button id="sign-in" class="min-h-12 rounded-xl bg-emerald-500 px-4 py-3 text-base font-semibold text-gray-900" type="button">Sign in with Google</button>
-        <button id="choose-folder" class="min-h-12 rounded-xl border border-emerald-500 px-4 py-3 text-base font-semibold text-emerald-300 disabled:opacity-40" type="button">Choose folder</button>
-        <button id="sign-out" class="min-h-12 rounded-xl bg-gray-700 px-4 py-3 text-base text-gray-100" type="button">Sign out</button>
-      </div>
-      <p id="origin-hint" class="mt-3 text-sm text-gray-400"></p>
-
-      <h3 class="mt-5 text-base font-semibold text-white">How to create the two Google values</h3>
-      <ol id="setup-steps" class="mt-2 list-decimal space-y-2 pl-5 text-sm leading-relaxed text-gray-300">
-        <li>Create a project in Google Cloud Console.</li>
-        <li>Enable the Google Drive API and the Google Picker API.</li>
-        <li>Open the OAuth consent screen. Leave it in Testing. Add your Gmail address as a test user.</li>
-        <li>Create an OAuth client ID. Choose Web application. Under Authorised JavaScript origins, add the Netlify URL for this site, with no path on the end.</li>
-        <li>Create an API key for the Picker. You can restrict it to the Google Picker API and to that same Netlify URL.</li>
-        <li>Paste the client ID and the API key above, sign in, and choose the folder.</li>
-      </ol>
-      <p class="mt-3 text-sm leading-relaxed text-gray-300">
-        Shop customers cannot sign in until you publish that consent screen. While it is in Testing, only the test users you added can sign in.
-      </p>
-      <p class="mt-3 text-sm leading-relaxed text-gray-300">
-        Each upload is its own batch. When the week is finished, copy the upload folder to your archive and empty the upload folder. Claude reads whatever is in the upload folder. This scanner does not move or delete those files.
-      </p>
-    </details>
-
-    <section class="mb-4 rounded-2xl bg-gray-800 p-4">
+    <section id="names" class="mb-4 rounded-2xl bg-gray-800 p-4">
       <label class="block text-sm font-medium text-gray-200" for="child-name">Child's name</label>
       <input id="child-name" class="mt-1 w-full rounded-xl border border-gray-600 bg-gray-900 px-3 py-3 text-base text-white" type="text" maxlength="80" autocomplete="off" required>
       <label class="mt-3 block text-sm font-medium text-gray-200" for="subject">Subject, if you want one</label>
@@ -87,6 +42,8 @@
       <p id="next-name" class="text-sm text-white">Add the child's name. It goes in every file name.</p>
       <p class="mt-2 text-xs uppercase tracking-wide text-gray-400">Packing list</p>
       <p id="packing-name" class="text-sm text-white">Add the child's name before a packing list can be named.</p>
+      <p class="mt-2 text-xs uppercase tracking-wide text-gray-400">Zip</p>
+      <p id="zip-name" class="text-sm text-white">Add the child's name before the zip can be named.</p>
     </section>
 
     <section id="scanner" class="mb-4">
@@ -119,11 +76,10 @@
     <p id="batch-note" class="mb-3 text-sm text-gray-300"></p>
     <div class="grid grid-cols-1 gap-2">
       <button id="review" class="min-h-12 rounded-xl bg-gray-800 px-4 py-3 text-base font-semibold text-white" type="button">Review <span id="page-count">0</span></button>
-      <button id="upload" class="min-h-14 rounded-2xl bg-emerald-500 px-4 py-4 text-lg font-semibold text-gray-900 disabled:opacity-40" type="button">Upload to Drive</button>
-      <button id="download-zip" class="min-h-12 rounded-2xl border border-emerald-500 px-4 py-3 text-base font-semibold text-emerald-300 disabled:opacity-40" type="button">Download zip</button>
+      <button id="export-share" class="min-h-14 rounded-2xl bg-emerald-500 px-4 py-4 text-lg font-semibold text-gray-900 disabled:opacity-40" type="button">Export &amp; Share Batch</button>
     </div>
     <p id="message" class="mt-3 min-h-6 text-sm text-amber-100" role="status"></p>
-    <p class="mt-6 text-sm leading-relaxed text-gray-500">Needs a connection for the camera tools and for Google. It does not work offline, and it does not work from a file in Downloads.</p>
+    <p class="mt-6 text-sm leading-relaxed text-gray-500">Needs a connection for the scanner libraries. It does not work offline, and it does not work from a file in Downloads. No sign-in and no keys.</p>
   </main>
 
   <div id="review-modal" class="fixed inset-0 z-30 hidden items-end justify-center bg-black/70 p-3">
@@ -138,20 +94,14 @@
 
   <script>
     const STORAGE_KEY = 'wattlewood-smart-scanner';
-    const DRIVE_SCOPE = 'https://www.googleapis.com/auth/drive.file';
     const AUTO_HOLD_MS = 1500;
     const PROCESS_WIDTH = 480;
 
-    const clientIdInput = document.getElementById('client-id');
-    const apiKeyInput = document.getElementById('api-key');
     const childInput = document.getElementById('child-name');
     const subjectInput = document.getElementById('subject');
-    const folderLabel = document.getElementById('folder-label');
-    const authLabel = document.getElementById('auth-label');
-    const projectHint = document.getElementById('project-hint');
-    const originHint = document.getElementById('origin-hint');
     const nextName = document.getElementById('next-name');
     const packingName = document.getElementById('packing-name');
+    const zipNameLine = document.getElementById('zip-name');
     const statusLine = document.getElementById('status');
     const messageLine = document.getElementById('message');
     const batchNote = document.getElementById('batch-note');
@@ -168,34 +118,21 @@
     const reviewModal = document.getElementById('review-modal');
     const reviewPanel = document.getElementById('review-panel');
     const reviewList = document.getElementById('review-list');
-    const uploadButton = document.getElementById('upload');
-    const zipButton = document.getElementById('download-zip');
-    const chooseFolderButton = document.getElementById('choose-folder');
-    const signOutButton = document.getElementById('sign-out');
+    const exportButton = document.getElementById('export-share');
 
-    const detectCanvas = document.createElement('canvas');
     const pages = [];
     let pageSeq = 0;
-    let settings = {
-      clientId: '',
-      apiKey: '',
-      folderId: '',
-      folderName: '',
-      childName: ''
-    };
-    let accessToken = '';
-    let tokenExpiresAt = 0;
+    let settings = { childName: '' };
     let colourMode = false;
     let cameraOn = false;
     let cvReady = false;
     let capturing = false;
-    let uploading = false;
+    let exporting = false;
     let reviewOpen = false;
     let lastDetect = 0;
     let cooldownUntil = 0;
     let steadySince = null;
     let lastCorners = null;
-    let loopStarted = false;
 
     function cleanLabel(value) {
       return String(value || '')
@@ -228,8 +165,8 @@
       return batchStem(date, childName, subject) + '.json';
     }
 
-    function zipFileName(date, childName, subject) {
-      return batchStem(date, childName, subject) + '.zip';
+    function zipFileName(date, childName) {
+      return 'Evidence_' + date + '_' + childName + '.zip';
     }
 
     function packingList(batch) {
@@ -260,7 +197,7 @@
         list: list,
         jsonName: jsonFileName(meta.date, meta.childName, meta.subject),
         jsonText: JSON.stringify(list, null, 2) + '\n',
-        zipName: zipFileName(meta.date, meta.childName, meta.subject)
+        zipName: zipFileName(meta.date, meta.childName)
       };
     }
 
@@ -552,27 +489,16 @@
       try {
         const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
         settings = {
-          clientId: typeof stored.clientId === 'string' ? stored.clientId : '',
-          apiKey: typeof stored.apiKey === 'string' ? stored.apiKey : '',
-          folderId: typeof stored.folderId === 'string' ? stored.folderId : '',
-          folderName: typeof stored.folderName === 'string' ? stored.folderName : '',
           childName: typeof stored.childName === 'string' ? stored.childName : ''
         };
       } catch (error) {
-        settings.childName = '';
+        settings = { childName: '' };
       }
     }
 
     function saveSettings() {
-      settings.clientId = clientIdInput.value.trim();
-      settings.apiKey = apiKeyInput.value.trim();
       settings.childName = childInput.value;
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
-    }
-
-    function projectNumberFromClientId(clientId) {
-      const match = /^(\d+)-.+\.apps\.googleusercontent\.com$/i.exec(String(clientId || '').trim());
-      return match ? match[1] : '';
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ childName: settings.childName }));
     }
 
     function setMessage(text) {
@@ -639,39 +565,24 @@
     }
 
     function render() {
-      folderLabel.textContent = settings.folderName
-        ? 'Folder: ' + settings.folderName
-        : 'Folder: not chosen yet';
-      authLabel.textContent = accessToken ? 'Signed in with Google' : 'Not signed in';
-      const appId = projectNumberFromClientId(clientIdInput.value);
-      if (!clientIdInput.value.trim()) projectHint.textContent = '';
-      else if (appId) projectHint.textContent = 'Picker project number: ' + appId + '. Taken from the start of the client ID.';
-      else projectHint.textContent = 'This client ID should look like 1234567890-abc.apps.googleusercontent.com.';
-      if (location.protocol === 'http:' || location.protocol === 'https:') {
-        originHint.textContent = 'Authorised JavaScript origin: ' + location.origin;
-      } else {
-        originHint.textContent = 'Open the Netlify site in the browser. Camera, install, and Google sign-in do not work from a downloaded file.';
-      }
       const meta = readMeta();
       if (!meta.childName) {
         nextName.textContent = "Add the child's name. It goes in every file name.";
         packingName.textContent = "Add the child's name before a packing list can be named.";
+        zipNameLine.textContent = "Add the child's name before the zip can be named.";
       } else {
         nextName.textContent = pageFileName(meta.date, meta.childName, meta.subject, pages.length + 1);
         packingName.textContent = jsonFileName(meta.date, meta.childName, meta.subject);
+        zipNameLine.textContent = zipFileName(meta.date, meta.childName);
       }
       pageCount.textContent = pages.length === 1 ? '1 page' : pages.length + ' pages';
       paintModeButtons();
-      chooseFolderButton.disabled = !accessToken;
       shutterButton.disabled = !cvReady || !cameraOn || capturing;
-      uploadButton.disabled = uploading || !pages.length;
-      zipButton.disabled = uploading || !pages.length;
-      uploadButton.textContent = uploading ? 'Uploading…' : 'Upload to Drive';
-      if (!meta.childName) batchNote.textContent = "Add the child's name before uploading or downloading.";
+      exportButton.disabled = exporting || !pages.length;
+      exportButton.textContent = exporting ? 'Packing the batch…' : 'Export & Share Batch';
+      if (!meta.childName) batchNote.textContent = "Add the child's name. It goes in every file name.";
       else if (!pages.length) batchNote.textContent = 'Photograph a page to start this batch.';
-      else if (!settings.folderId) batchNote.textContent = 'Choose an upload folder. Download zip still works without Drive.';
-      else if (!accessToken) batchNote.textContent = 'Sign in with Google to upload. Download zip still works if Drive is unavailable.';
-      else batchNote.textContent = 'Upload sends this batch to the folder. Download zip keeps a copy if Drive fails.';
+      else batchNote.textContent = 'Export & Share Batch packs this zip. If the phone can share a file, the share sheet opens. Otherwise the zip downloads.';
       if (reviewOpen) renderReview();
     }
 
@@ -713,263 +624,59 @@
       reviewModal.classList.remove('flex');
     }
 
-    function signInMessage(code) {
-      if (code === 'popup_closed') return 'Sign-in was closed before it finished.';
-      if (code === 'access_denied') return 'Google did not grant access. If the consent screen is still in Testing, your Gmail address needs to be a test user.';
-      if (code === 'popup_failed_to_open') return 'The sign-in window was blocked. Allow pop-ups for this site and try again.';
-      return 'Sign in with Google, then choose a folder.';
+    function downloadBlob(blob, filename) {
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 4000);
     }
 
-    function ensureToken() {
-      return new Promise((resolve, reject) => {
-        if (accessToken && tokenExpiresAt - Date.now() > 60000) {
-          resolve(accessToken);
-          return;
-        }
-        const clientId = clientIdInput.value.trim();
-        if (!clientId) {
-          reject(new Error('missing-client'));
-          return;
-        }
-        if (!window.google || !google.accounts || !google.accounts.oauth2) {
-          reject(new Error('google-missing'));
-          return;
-        }
-        const client = google.accounts.oauth2.initTokenClient({
-          client_id: clientId,
-          scope: DRIVE_SCOPE,
-          callback: (response) => {
-            if (!response || response.error) {
-              reject(new Error(response && response.error ? response.error : 'access_denied'));
-              return;
-            }
-            accessToken = response.access_token;
-            tokenExpiresAt = Date.now() + (Number(response.expires_in) || 3600) * 1000;
-            render();
-            resolve(accessToken);
-          }
-        });
-        client.requestAccessToken({ prompt: 'select_account' });
-      });
-    }
-
-    async function signIn() {
-      saveSettings();
-      if (!projectNumberFromClientId(clientIdInput.value)) {
-        setMessage('Paste the OAuth client ID first. It should start with your Cloud project number.');
-        clientIdInput.focus();
-        return;
-      }
-      try {
-        await ensureToken();
-        setMessage('Signed in with Google. Choose the upload folder next.');
-      } catch (error) {
-        const code = error && error.message ? error.message : '';
-        if (code === 'google-missing') setMessage('Google sign-in did not load. Check your connection.');
-        else setMessage(signInMessage(code));
-      }
-    }
-
-    function signOut() {
-      const token = accessToken;
-      accessToken = '';
-      tokenExpiresAt = 0;
-      render();
-      setMessage('Signed out on this page. The saved folder is still on this device.');
-      if (token && window.google && google.accounts && google.accounts.oauth2 && google.accounts.oauth2.revoke) {
-        google.accounts.oauth2.revoke(token, function () {});
-      }
-    }
-
-    function openPicker(token, apiKey, appId) {
-      const view = new google.picker.DocsView(google.picker.ViewId.FOLDERS)
-        .setIncludeFolders(true)
-        .setSelectFolderEnabled(true)
-        .setMimeTypes('application/vnd.google-apps.folder');
-      const picker = new google.picker.PickerBuilder()
-        .setTitle('Choose the upload folder')
-        .setOAuthToken(token)
-        .setDeveloperKey(apiKey)
-        .setAppId(appId)
-        .addView(view)
-        .setCallback((data) => {
-          if (!data || data.action !== google.picker.Action.PICKED || !data.docs || !data.docs[0]) return;
-          settings.folderId = data.docs[0].id;
-          settings.folderName = data.docs[0].name || 'Chosen folder';
-          saveSettings();
-          render();
-          setMessage('Upload folder: ' + settings.folderName + '.');
-        })
-        .build();
-      picker.setVisible(true);
-    }
-
-    async function chooseFolder() {
-      saveSettings();
-      const apiKey = apiKeyInput.value.trim();
-      const appId = projectNumberFromClientId(clientIdInput.value);
-      if (!apiKey) {
-        setMessage('Paste the Picker API key first.');
-        apiKeyInput.focus();
-        return;
-      }
-      if (!appId) {
-        setMessage('Paste the OAuth client ID first. It should start with your Cloud project number.');
-        return;
-      }
-      let token = accessToken;
-      if (!token || tokenExpiresAt - Date.now() < 60000) {
-        try {
-          token = await ensureToken();
-        } catch (error) {
-          setMessage('Sign in with Google before choosing a folder.');
-          return;
-        }
-      }
-      if (!window.gapi) {
-        setMessage('The Google Picker did not load. Check your connection.');
-        return;
-      }
-      gapi.load('picker', {
-        callback: function () {
-          openPicker(token, apiKey, appId);
-        },
-        onerror: function () {
-          setMessage('The Google Picker did not load. Check your connection.');
-        }
-      });
-    }
-
-    function uploadFailure(error) {
-      if (!error) return 'Drive did not take the whole batch.';
-      if (error.status === 401) return 'Google signed you out. Sign in again, then upload.';
-      if (error.status === 403 || error.status === 404) {
-        return 'Drive refused this folder. Choose the folder again so this scanner is allowed to write to it.';
-      }
-      if (error instanceof TypeError) return 'Drive could not be reached. Check your connection, or download the zip.';
-      const code = error.message || '';
-      if (code === 'missing-client' || code === 'google-missing' || code === 'popup_closed' || code === 'access_denied' || code === 'popup_failed_to_open') {
-        return signInMessage(code === 'missing-client' || code === 'google-missing' ? code : code);
-      }
-      return 'Drive did not take the whole batch.';
-    }
-
-    async function readError(response) {
-      try {
-        const data = await response.json();
-        if (data && data.error && data.error.message) return data.error.message;
-      } catch (error) {
-        return '';
-      }
-      return '';
-    }
-
-    async function uploadDriveFile(token, folderId, name, blob, mime) {
-      const boundary = 'wattlewood_' + Math.random().toString(16).slice(2);
-      const metadata = { name: name, mimeType: mime, parents: [folderId] };
-      const head = '--' + boundary + '\r\n' +
-        'Content-Type: application/json; charset=UTF-8\r\n\r\n' +
-        JSON.stringify(metadata) + '\r\n' +
-        '--' + boundary + '\r\n' +
-        'Content-Type: ' + mime + '\r\n\r\n';
-      const tail = '\r\n--' + boundary + '--';
-      const response = await fetch(
-        'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,name',
-        {
-          method: 'POST',
-          headers: {
-            Authorization: 'Bearer ' + token,
-            'Content-Type': 'multipart/related; boundary=' + boundary
-          },
-          body: new Blob([head, blob, tail])
-        }
-      );
-      if (!response.ok) {
-        const detail = await readError(response);
-        const error = new Error(detail || ('Drive returned ' + response.status));
-        error.status = response.status;
-        throw error;
-      }
-      return response.json();
-    }
-
-    async function uploadBatch() {
-      if (uploading) return;
+    async function exportAndShare() {
+      if (exporting) return;
       const meta = readMeta();
       if (!meta.childName) {
-        setMessage("Add the child's name before uploading.");
+        setMessage("Add the child's name before sharing.");
         childInput.focus();
         return;
       }
       if (!pages.length) {
-        setMessage('Photograph a page before uploading.');
-        return;
-      }
-      if (!settings.folderId || !accessToken) {
-        const setup = document.getElementById('setup');
-        setup.open = true;
-        setup.scrollIntoView({ block: 'start' });
-        setMessage(accessToken
-          ? 'Choose the upload folder first.'
-          : 'Sign in with Google and choose a folder first.');
-        return;
-      }
-      uploading = true;
-      render();
-      const described = describeBatch(pages.length, meta);
-      try {
-        const token = await ensureToken();
-        for (let index = 0; index < pages.length; index += 1) {
-          setMessage('Uploading ' + (index + 1) + ' of ' + (pages.length + 1) + '…');
-          await uploadDriveFile(token, settings.folderId, described.fileNames[index], pages[index].blob, 'image/jpeg');
-        }
-        setMessage('Uploading ' + (pages.length + 1) + ' of ' + (pages.length + 1) + '…');
-        await uploadDriveFile(
-          token,
-          settings.folderId,
-          described.jsonName,
-          new Blob([described.jsonText], { type: 'application/json' }),
-          'application/json'
-        );
-        const count = pages.length;
-        const folderName = settings.folderName || 'the folder';
-        clearPages();
-        setMessage(count === 1
-          ? '1 page is in ' + folderName + '.'
-          : count + ' pages are in ' + folderName + '.');
-      } catch (error) {
-        setMessage(uploadFailure(error) + ' The pages are still on this screen. Download the zip if you need the whole batch. A page that already uploaded may already be in the folder.');
-      } finally {
-        uploading = false;
-        render();
-      }
-    }
-
-    async function downloadZip() {
-      const meta = readMeta();
-      if (!meta.childName) {
-        setMessage("Add the child's name before downloading.");
-        childInput.focus();
-        return;
-      }
-      if (!pages.length) {
-        setMessage('Photograph a page before downloading.');
+        setMessage('Photograph a page before sharing.');
         return;
       }
       if (typeof JSZip === 'undefined') {
         setMessage('The zip library did not load. Check your connection.');
         return;
       }
-      const built = await buildZip(pages.map((page) => page.blob), meta);
-      const url = URL.createObjectURL(built.zipBlob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = built.zipName;
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      setTimeout(() => URL.revokeObjectURL(url), 4000);
-      setMessage('Zip downloaded. It has the same pages and the same packing list as an upload.');
+      exporting = true;
+      render();
+      try {
+        const built = await buildZip(pages.map((page) => page.blob), meta);
+        const file = new File([built.zipBlob], built.zipName, { type: 'application/zip' });
+        const payload = { files: [file], title: built.zipName };
+        if (navigator.canShare && navigator.canShare(payload)) {
+          try {
+            await navigator.share(payload);
+            setMessage('The share sheet has the zip.');
+            return;
+          } catch (error) {
+            if (error && error.name === 'AbortError') {
+              setMessage('Share cancelled. The pages are still on this screen.');
+              return;
+            }
+          }
+        }
+        downloadBlob(built.zipBlob, built.zipName);
+        setMessage('Zip downloaded. This browser could not open a share sheet.');
+      } catch (error) {
+        setMessage('The batch could not be packed.');
+      } finally {
+        exporting = false;
+        render();
+      }
     }
 
     function drawOverlay(videoCorners) {
@@ -1120,14 +827,6 @@
       setStatus('The scanner libraries did not load.');
     };
 
-    clientIdInput.addEventListener('input', () => {
-      saveSettings();
-      render();
-    });
-    apiKeyInput.addEventListener('input', () => {
-      saveSettings();
-      render();
-    });
     childInput.addEventListener('input', () => {
       saveSettings();
       render();
@@ -1151,19 +850,10 @@
     document.addEventListener('keydown', (event) => {
       if (event.key === 'Escape' && reviewOpen) closeReview();
     });
-    document.getElementById('sign-in').addEventListener('click', signIn);
-    signOutButton.addEventListener('click', signOut);
-    chooseFolderButton.addEventListener('click', chooseFolder);
-    uploadButton.addEventListener('click', uploadBatch);
-    zipButton.addEventListener('click', downloadZip);
+    exportButton.addEventListener('click', exportAndShare);
 
     loadSettings();
-    clientIdInput.value = settings.clientId;
-    apiKeyInput.value = settings.apiKey;
     childInput.value = settings.childName;
-    if (settings.clientId && settings.apiKey && settings.folderId && cleanLabel(settings.childName)) {
-      document.getElementById('setup').open = false;
-    }
     render();
     requestAnimationFrame(loop);
 
@@ -1179,7 +869,6 @@
 
     window.WattlewoodScanner = {
       AUTO_HOLD_MS: AUTO_HOLD_MS,
-      DRIVE_SCOPE: DRIVE_SCOPE,
       cleanLabel: cleanLabel,
       todayParts: todayParts,
       pageFileName: pageFileName,
