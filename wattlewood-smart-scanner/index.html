@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#10B981">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Smart Scanner">
+  <title>Wattlewood Smart Scanner</title>
+  <meta name="description" content="Photograph a page and upload the batch to a Google Drive folder you choose.">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon-192.png" type="image/png">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+  <script async src="https://accounts.google.com/gsi/client"></script>
+  <script async src="https://apis.google.com/js/api.js"></script>
+  <style>
+    #shutter-ring {
+      background: conic-gradient(#10B981 calc(var(--p, 0) * 360deg), #374151 0);
+    }
+  </style>
+</head>
+<body class="min-h-dvh bg-gray-900 text-gray-100 antialiased">
+  <main class="mx-auto flex min-h-dvh w-full max-w-lg flex-col px-4 pb-10 pt-4">
+    <header class="mb-4">
+      <p class="text-sm font-semibold uppercase tracking-wide text-emerald-400">Wattlewood</p>
+      <h1 class="text-2xl font-semibold text-white">Smart Scanner</h1>
+      <p id="folder-label" class="mt-2 text-base text-gray-200">Folder: not chosen yet</p>
+      <p id="auth-label" class="text-sm text-gray-400">Not signed in</p>
+    </header>
+
+    <p id="library-warning" class="mb-4 hidden rounded-2xl border border-amber-500/60 bg-amber-500/10 px-4 py-3 text-sm text-amber-100" role="status">
+      The scanner libraries did not load. This page needs a connection. It does not run offline.
+    </p>
+
+    <details id="setup" class="mb-4 rounded-2xl bg-gray-800 p-4" open>
+      <summary class="cursor-pointer text-lg font-semibold text-white">Set up Google Drive</summary>
+      <p class="mt-2 text-sm leading-relaxed text-gray-300">
+        Each person signs in with their own Google account and chooses their own upload folder.
+        This browser remembers the client ID, the API key, the folder, and the child's name.
+        It does not remember the Google sign-in.
+      </p>
+      <p class="mt-2 text-sm leading-relaxed text-gray-300">
+        Google access is limited to files this scanner creates and the folder you choose. It does not ask for your whole Drive.
+      </p>
+
+      <label class="mt-4 block text-sm font-medium text-gray-200" for="client-id">OAuth client ID</label>
+      <input id="client-id" class="mt-1 w-full rounded-xl border border-gray-600 bg-gray-900 px-3 py-3 text-base text-white" type="text" autocomplete="off" spellcheck="false" inputmode="text">
+      <p id="project-hint" class="mt-1 text-sm text-gray-400"></p>
+
+      <label class="mt-3 block text-sm font-medium text-gray-200" for="api-key">Picker API key</label>
+      <input id="api-key" class="mt-1 w-full rounded-xl border border-gray-600 bg-gray-900 px-3 py-3 text-base text-white" type="text" autocomplete="off" spellcheck="false">
+
+      <div class="mt-4 grid grid-cols-1 gap-2">
+        <button id="sign-in" class="min-h-12 rounded-xl bg-emerald-500 px-4 py-3 text-base font-semibold text-gray-900" type="button">Sign in with Google</button>
+        <button id="choose-folder" class="min-h-12 rounded-xl border border-emerald-500 px-4 py-3 text-base font-semibold text-emerald-300 disabled:opacity-40" type="button">Choose folder</button>
+        <button id="sign-out" class="min-h-12 rounded-xl bg-gray-700 px-4 py-3 text-base text-gray-100" type="button">Sign out</button>
+      </div>
+      <p id="origin-hint" class="mt-3 text-sm text-gray-400"></p>
+
+      <h3 class="mt-5 text-base font-semibold text-white">How to create the two Google values</h3>
+      <ol id="setup-steps" class="mt-2 list-decimal space-y-2 pl-5 text-sm leading-relaxed text-gray-300">
+        <li>Create a project in Google Cloud Console.</li>
+        <li>Enable the Google Drive API and the Google Picker API.</li>
+        <li>Open the OAuth consent screen. Leave it in Testing. Add your Gmail address as a test user.</li>
+        <li>Create an OAuth client ID. Choose Web application. Under Authorised JavaScript origins, add the Netlify URL for this site, with no path on the end.</li>
+        <li>Create an API key for the Picker. You can restrict it to the Google Picker API and to that same Netlify URL.</li>
+        <li>Paste the client ID and the API key above, sign in, and choose the folder.</li>
+      </ol>
+      <p class="mt-3 text-sm leading-relaxed text-gray-300">
+        Shop customers cannot sign in until you publish that consent screen. While it is in Testing, only the test users you added can sign in.
+      </p>
+      <p class="mt-3 text-sm leading-relaxed text-gray-300">
+        Each upload is its own batch. When the week is finished, copy the upload folder to your archive and empty the upload folder. Claude reads whatever is in the upload folder. This scanner does not move or delete those files.
+      </p>
+    </details>
+
+    <section class="mb-4 rounded-2xl bg-gray-800 p-4">
+      <label class="block text-sm font-medium text-gray-200" for="child-name">Child's name</label>
+      <input id="child-name" class="mt-1 w-full rounded-xl border border-gray-600 bg-gray-900 px-3 py-3 text-base text-white" type="text" maxlength="80" autocomplete="off" required>
+      <label class="mt-3 block text-sm font-medium text-gray-200" for="subject">Subject, if you want one</label>
+      <input id="subject" class="mt-1 w-full rounded-xl border border-gray-600 bg-gray-900 px-3 py-3 text-base text-white" type="text" maxlength="80" autocomplete="off" placeholder="Maths">
+      <p class="mt-3 text-xs uppercase tracking-wide text-gray-400">Next file</p>
+      <p id="next-name" class="text-sm text-white">Add the child's name. It goes in every file name.</p>
+      <p class="mt-2 text-xs uppercase tracking-wide text-gray-400">Packing list</p>
+      <p id="packing-name" class="text-sm text-white">Add the child's name before a packing list can be named.</p>
+    </section>
+
+    <section id="scanner" class="mb-4">
+      <div id="stage" class="relative aspect-[3/4] max-h-[46vh] overflow-hidden rounded-2xl bg-black">
+        <video id="video" class="absolute inset-0 h-full w-full object-contain" playsinline autoplay muted></video>
+        <canvas id="overlay" class="pointer-events-none absolute inset-0 h-full w-full"></canvas>
+        <p id="status" class="absolute bottom-3 left-3 right-3 rounded-full bg-gray-900/80 px-3 py-2 text-center text-sm text-white" role="status">Loading the scanner.</p>
+        <button id="start-camera" class="absolute inset-0 items-center justify-center bg-gray-900/80 px-6 text-lg font-semibold text-white" style="display:flex" type="button">Start camera</button>
+      </div>
+    </section>
+
+    <section class="mb-4 rounded-2xl bg-gray-800 p-4">
+      <p id="colour-hint" class="text-sm leading-relaxed text-gray-300">Black and white is the normal scan, for handwriting. Colour is for paintings and diagrams. The choice applies to the next photo.</p>
+      <div class="mt-3 grid grid-cols-2 gap-2" role="group" aria-label="Scan colour">
+        <button id="mode-bw" class="min-h-12 rounded-xl px-3 py-3 text-sm font-semibold" type="button" aria-pressed="true">Black and white</button>
+        <button id="mode-colour" class="min-h-12 rounded-xl px-3 py-3 text-sm font-semibold" type="button" aria-pressed="false">Colour</button>
+      </div>
+      <label class="mt-4 flex min-h-12 items-center gap-3 text-base" for="auto-shutter">
+        <input id="auto-shutter" class="h-5 w-5 accent-emerald-500" type="checkbox" checked>
+        <span>Auto shutter</span>
+      </label>
+      <p class="mt-1 text-sm text-gray-400">Takes the photo when the green corners stay still for 1.5 seconds. The round button always takes a photo as well.</p>
+      <div class="mt-4 flex justify-center">
+        <div id="shutter-ring" class="rounded-full p-1.5">
+          <button id="shutter" class="block h-20 w-20 rounded-full bg-white disabled:opacity-40" type="button" aria-label="Take photo"></button>
+        </div>
+      </div>
+    </section>
+
+    <p id="batch-note" class="mb-3 text-sm text-gray-300"></p>
+    <div class="grid grid-cols-1 gap-2">
+      <button id="review" class="min-h-12 rounded-xl bg-gray-800 px-4 py-3 text-base font-semibold text-white" type="button">Review <span id="page-count">0</span></button>
+      <button id="upload" class="min-h-14 rounded-2xl bg-emerald-500 px-4 py-4 text-lg font-semibold text-gray-900 disabled:opacity-40" type="button">Upload to Drive</button>
+      <button id="download-zip" class="min-h-12 rounded-2xl border border-emerald-500 px-4 py-3 text-base font-semibold text-emerald-300 disabled:opacity-40" type="button">Download zip</button>
+    </div>
+    <p id="message" class="mt-3 min-h-6 text-sm text-amber-100" role="status"></p>
+    <p class="mt-6 text-sm leading-relaxed text-gray-500">Needs a connection for the camera tools and for Google. It does not work offline, and it does not work from a file in Downloads.</p>
+  </main>
+
+  <div id="review-modal" class="fixed inset-0 z-30 hidden items-end justify-center bg-black/70 p-3">
+    <div id="review-panel" class="flex max-h-[92vh] w-full max-w-lg flex-col overflow-hidden rounded-2xl bg-gray-800" role="dialog" aria-modal="true" aria-labelledby="review-title">
+      <div class="flex items-center justify-between gap-3 px-4 py-3">
+        <h2 id="review-title" class="text-lg font-semibold text-white">This batch</h2>
+        <button id="close-review" class="min-h-11 rounded-xl bg-gray-700 px-4 py-2 text-base" type="button">Close</button>
+      </div>
+      <div id="review-list" class="grid gap-3 overflow-y-auto px-4 pb-4"></div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'wattlewood-smart-scanner';
+    const DRIVE_SCOPE = 'https://www.googleapis.com/auth/drive.file';
+    const AUTO_HOLD_MS = 1500;
+    const PROCESS_WIDTH = 480;
+
+    const clientIdInput = document.getElementById('client-id');
+    const apiKeyInput = document.getElementById('api-key');
+    const childInput = document.getElementById('child-name');
+    const subjectInput = document.getElementById('subject');
+    const folderLabel = document.getElementById('folder-label');
+    const authLabel = document.getElementById('auth-label');
+    const projectHint = document.getElementById('project-hint');
+    const originHint = document.getElementById('origin-hint');
+    const nextName = document.getElementById('next-name');
+    const packingName = document.getElementById('packing-name');
+    const statusLine = document.getElementById('status');
+    const messageLine = document.getElementById('message');
+    const batchNote = document.getElementById('batch-note');
+    const pageCount = document.getElementById('page-count');
+    const libraryWarning = document.getElementById('library-warning');
+    const video = document.getElementById('video');
+    const overlay = document.getElementById('overlay');
+    const startButton = document.getElementById('start-camera');
+    const shutterButton = document.getElementById('shutter');
+    const shutterRing = document.getElementById('shutter-ring');
+    const modeBw = document.getElementById('mode-bw');
+    const modeColour = document.getElementById('mode-colour');
+    const autoShutter = document.getElementById('auto-shutter');
+    const reviewModal = document.getElementById('review-modal');
+    const reviewPanel = document.getElementById('review-panel');
+    const reviewList = document.getElementById('review-list');
+    const uploadButton = document.getElementById('upload');
+    const zipButton = document.getElementById('download-zip');
+    const chooseFolderButton = document.getElementById('choose-folder');
+    const signOutButton = document.getElementById('sign-out');
+
+    const detectCanvas = document.createElement('canvas');
+    const pages = [];
+    let pageSeq = 0;
+    let settings = {
+      clientId: '',
+      apiKey: '',
+      folderId: '',
+      folderName: '',
+      childName: ''
+    };
+    let accessToken = '';
+    let tokenExpiresAt = 0;
+    let colourMode = false;
+    let cameraOn = false;
+    let cvReady = false;
+    let capturing = false;
+    let uploading = false;
+    let reviewOpen = false;
+    let lastDetect = 0;
+    let cooldownUntil = 0;
+    let steadySince = null;
+    let lastCorners = null;
+    let loopStarted = false;
+
+    function cleanLabel(value) {
+      return String(value || '')
+        .replace(/[\\/:*?"<>|]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    function todayParts(date) {
+      const when = date instanceof Date ? date : new Date();
+      const month = String(when.getMonth() + 1).padStart(2, '0');
+      const day = String(when.getDate()).padStart(2, '0');
+      return {
+        date: when.getFullYear() + '-' + month + '-' + day,
+        day: when.toLocaleDateString('en-AU', { weekday: 'long' })
+      };
+    }
+
+    function batchStem(date, childName, subject) {
+      return subject
+        ? date + ' - ' + childName + ' - ' + subject
+        : date + ' - ' + childName;
+    }
+
+    function pageFileName(date, childName, subject, page) {
+      return batchStem(date, childName, subject) + ' p' + page + '.jpg';
+    }
+
+    function jsonFileName(date, childName, subject) {
+      return batchStem(date, childName, subject) + '.json';
+    }
+
+    function zipFileName(date, childName, subject) {
+      return batchStem(date, childName, subject) + '.zip';
+    }
+
+    function packingList(batch) {
+      return {
+        date: batch.date,
+        day: batch.day,
+        child_name: batch.childName,
+        subject_override: batch.subject || '',
+        total_pages: batch.fileNames.length,
+        files: batch.fileNames.slice()
+      };
+    }
+
+    function describeBatch(pageTotal, meta) {
+      const fileNames = [];
+      for (let index = 1; index <= pageTotal; index += 1) {
+        fileNames.push(pageFileName(meta.date, meta.childName, meta.subject, index));
+      }
+      const list = packingList({
+        date: meta.date,
+        day: meta.day,
+        childName: meta.childName,
+        subject: meta.subject,
+        fileNames: fileNames
+      });
+      return {
+        fileNames: fileNames,
+        list: list,
+        jsonName: jsonFileName(meta.date, meta.childName, meta.subject),
+        jsonText: JSON.stringify(list, null, 2) + '\n',
+        zipName: zipFileName(meta.date, meta.childName, meta.subject)
+      };
+    }
+
+    function readMeta(now) {
+      const parts = todayParts(now || new Date());
+      return {
+        date: parts.date,
+        day: parts.day,
+        childName: cleanLabel(childInput.value),
+        subject: cleanLabel(subjectInput.value)
+      };
+    }
+
+    function distance(a, b) {
+      const dx = a.x - b.x;
+      const dy = a.y - b.y;
+      return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    function cornersWithin(previous, current, threshold) {
+      if (!previous || !current || previous.length !== 4 || current.length !== 4) return false;
+      for (let index = 0; index < 4; index += 1) {
+        if (distance(previous[index], current[index]) > threshold) return false;
+      }
+      return true;
+    }
+
+    function nextSteady(state) {
+      const current = state.current;
+      const auto = Boolean(state.auto);
+      const holdMs = state.holdMs;
+      if (!current) {
+        return { previous: null, since: null, progress: 0, shutter: false, status: 'looking' };
+      }
+      const matched = cornersWithin(state.previous, current, state.threshold);
+      if (!matched) {
+        return {
+          previous: current,
+          since: auto ? state.now : null,
+          progress: 0,
+          shutter: false,
+          status: 'found'
+        };
+      }
+      if (!auto) {
+        return { previous: state.previous, since: null, progress: 0, shutter: false, status: 'found' };
+      }
+      const started = state.since == null ? state.now : state.since;
+      const elapsed = state.now - started;
+      if (elapsed >= holdMs) {
+        return { previous: current, since: null, progress: 0, shutter: true, status: 'steady' };
+      }
+      return {
+        previous: state.previous,
+        since: started,
+        progress: elapsed / holdMs,
+        shutter: false,
+        status: 'steady'
+      };
+    }
+
+    function orderCorners(points) {
+      if (!points || points.length !== 4) return null;
+      const sums = points.map((point) => point.x + point.y);
+      const diffs = points.map((point) => point.x - point.y);
+      const ordered = [
+        points[sums.indexOf(Math.min.apply(null, sums))],
+        points[diffs.indexOf(Math.max.apply(null, diffs))],
+        points[sums.indexOf(Math.max.apply(null, sums))],
+        points[diffs.indexOf(Math.min.apply(null, diffs))]
+      ];
+      const seen = {};
+      for (let index = 0; index < ordered.length; index += 1) {
+        const key = ordered[index].x + ',' + ordered[index].y;
+        if (seen[key]) return null;
+        seen[key] = true;
+      }
+      return ordered;
+    }
+
+    function looksLikePage(corners) {
+      const width = (distance(corners[0], corners[1]) + distance(corners[3], corners[2])) / 2;
+      const height = (distance(corners[0], corners[3]) + distance(corners[1], corners[2])) / 2;
+      if (width < 40 || height < 40) return false;
+      const ratio = Math.max(width, height) / Math.min(width, height);
+      return ratio >= 1.15 && ratio <= 2.2;
+    }
+
+    function pointFromApprox(approx, index) {
+      if (approx.data32S && approx.data32S.length >= (index + 1) * 2) {
+        return {
+          x: approx.data32S[index * 2],
+          y: approx.data32S[index * 2 + 1]
+        };
+      }
+      const point = approx.intPtr(index, 0);
+      return { x: point[0], y: point[1] };
+    }
+
+    function findPageCorners(sourceCanvas) {
+      const src = cv.imread(sourceCanvas);
+      const gray = new cv.Mat();
+      const blur = new cv.Mat();
+      const edges = new cv.Mat();
+      const contours = new cv.MatVector();
+      const hierarchy = new cv.Mat();
+      const found = [];
+      try {
+        cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY);
+        cv.GaussianBlur(gray, blur, new cv.Size(5, 5), 0);
+        cv.Canny(blur, edges, 75, 200);
+        cv.findContours(edges, contours, hierarchy, cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE);
+        const minArea = sourceCanvas.width * sourceCanvas.height * 0.1;
+        for (let index = 0; index < contours.size(); index += 1) {
+          const contour = contours.get(index);
+          const area = cv.contourArea(contour);
+          if (area < minArea) {
+            contour.delete();
+            continue;
+          }
+          const approx = new cv.Mat();
+          const peri = cv.arcLength(contour, true);
+          cv.approxPolyDP(contour, approx, 0.02 * peri, true);
+          let convex = true;
+          if (approx.rows === 4 && cv.isContourConvex) {
+            try {
+              convex = cv.isContourConvex(approx);
+            } catch (error) {
+              convex = true;
+            }
+          }
+          if (approx.rows === 4 && convex) {
+            const points = [];
+            for (let row = 0; row < 4; row += 1) points.push(pointFromApprox(approx, row));
+            const ordered = orderCorners(points);
+            if (ordered && looksLikePage(ordered)) found.push({ area: area, corners: ordered });
+          }
+          approx.delete();
+          contour.delete();
+        }
+        found.sort((a, b) => b.area - a.area);
+        return found.length ? found[0].corners : null;
+      } finally {
+        src.delete();
+        gray.delete();
+        blur.delete();
+        edges.delete();
+        contours.delete();
+        hierarchy.delete();
+      }
+    }
+
+    function warpPage(src, corners) {
+      const width = Math.max(
+        1,
+        Math.round(Math.max(distance(corners[0], corners[1]), distance(corners[3], corners[2])))
+      );
+      const height = Math.max(
+        1,
+        Math.round(Math.max(distance(corners[0], corners[3]), distance(corners[1], corners[2])))
+      );
+      const srcPts = cv.matFromArray(4, 1, cv.CV_32FC2, [
+        corners[0].x, corners[0].y,
+        corners[1].x, corners[1].y,
+        corners[2].x, corners[2].y,
+        corners[3].x, corners[3].y
+      ]);
+      const dstPts = cv.matFromArray(4, 1, cv.CV_32FC2, [
+        0, 0,
+        width - 1, 0,
+        width - 1, height - 1,
+        0, height - 1
+      ]);
+      const transform = cv.getPerspectiveTransform(srcPts, dstPts);
+      const dst = new cv.Mat();
+      cv.warpPerspective(src, dst, transform, new cv.Size(width, height));
+      srcPts.delete();
+      dstPts.delete();
+      transform.delete();
+      return dst;
+    }
+
+    function limitLongEdge(mat, maxEdge) {
+      const longEdge = Math.max(mat.cols, mat.rows);
+      if (longEdge <= maxEdge) return mat;
+      const scale = maxEdge / longEdge;
+      const dst = new cv.Mat();
+      cv.resize(
+        mat,
+        dst,
+        new cv.Size(
+          Math.max(1, Math.round(mat.cols * scale)),
+          Math.max(1, Math.round(mat.rows * scale))
+        ),
+        0,
+        0,
+        cv.INTER_AREA
+      );
+      mat.delete();
+      return dst;
+    }
+
+    function toMono(src) {
+      const gray = new cv.Mat();
+      const bw = new cv.Mat();
+      const rgba = new cv.Mat();
+      try {
+        cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY);
+        if (Math.min(gray.cols, gray.rows) > 40) {
+          cv.adaptiveThreshold(gray, bw, 255, cv.ADAPTIVE_THRESH_GAUSSIAN_C, cv.THRESH_BINARY, 31, 12);
+        } else {
+          cv.threshold(gray, bw, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU);
+        }
+        cv.cvtColor(bw, rgba, cv.COLOR_GRAY2RGBA);
+        return rgba;
+      } finally {
+        gray.delete();
+        bw.delete();
+        src.delete();
+      }
+    }
+
+    function matToJpegBlob(mat, quality) {
+      const canvas = document.createElement('canvas');
+      try {
+        cv.imshow(canvas, mat);
+      } finally {
+        mat.delete();
+      }
+      return new Promise((resolve, reject) => {
+        canvas.toBlob((blob) => {
+          if (blob) resolve(blob);
+          else reject(new Error('The photo could not be saved as a JPEG.'));
+        }, 'image/jpeg', quality);
+      });
+    }
+
+    function scaledCanvas(source, maxWidth) {
+      const width = source.videoWidth || source.width;
+      const height = source.videoHeight || source.height;
+      const scale = Math.min(1, maxWidth / width);
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.max(1, Math.round(width * scale));
+      canvas.height = Math.max(1, Math.round(height * scale));
+      canvas.getContext('2d', { willReadFrequently: true }).drawImage(source, 0, 0, canvas.width, canvas.height);
+      return canvas;
+    }
+
+    async function processStill(source, colour) {
+      const full = document.createElement('canvas');
+      full.width = source.videoWidth || source.width;
+      full.height = source.videoHeight || source.height;
+      full.getContext('2d', { willReadFrequently: true }).drawImage(source, 0, 0);
+      const small = scaledCanvas(full, PROCESS_WIDTH);
+      const smallCorners = findPageCorners(small);
+      let mat = cv.imread(full);
+      if (smallCorners) {
+        const sx = full.width / small.width;
+        const sy = full.height / small.height;
+        const corners = smallCorners.map((point) => ({ x: point.x * sx, y: point.y * sy }));
+        const warped = warpPage(mat, corners);
+        mat.delete();
+        mat = warped;
+      }
+      mat = limitLongEdge(mat, 2000);
+      if (!colour) mat = toMono(mat);
+      const blob = await matToJpegBlob(mat, 0.92);
+      return { blob: blob, foundPage: Boolean(smallCorners) };
+    }
+
+    async function buildZip(blobs, meta) {
+      const described = describeBatch(blobs.length, meta);
+      const zip = new JSZip();
+      blobs.forEach((blob, index) => {
+        zip.file(described.fileNames[index], blob);
+      });
+      zip.file(described.jsonName, described.jsonText);
+      const zipBlob = await zip.generateAsync({ type: 'blob' });
+      return {
+        zipBlob: zipBlob,
+        zipName: described.zipName,
+        list: described.list,
+        fileNames: described.fileNames,
+        jsonName: described.jsonName
+      };
+    }
+
+    function loadSettings() {
+      try {
+        const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+        settings = {
+          clientId: typeof stored.clientId === 'string' ? stored.clientId : '',
+          apiKey: typeof stored.apiKey === 'string' ? stored.apiKey : '',
+          folderId: typeof stored.folderId === 'string' ? stored.folderId : '',
+          folderName: typeof stored.folderName === 'string' ? stored.folderName : '',
+          childName: typeof stored.childName === 'string' ? stored.childName : ''
+        };
+      } catch (error) {
+        settings.childName = '';
+      }
+    }
+
+    function saveSettings() {
+      settings.clientId = clientIdInput.value.trim();
+      settings.apiKey = apiKeyInput.value.trim();
+      settings.childName = childInput.value;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
+    }
+
+    function projectNumberFromClientId(clientId) {
+      const match = /^(\d+)-.+\.apps\.googleusercontent\.com$/i.exec(String(clientId || '').trim());
+      return match ? match[1] : '';
+    }
+
+    function setMessage(text) {
+      messageLine.textContent = text || '';
+    }
+
+    function setStatus(text) {
+      statusLine.textContent = text;
+    }
+
+    function setLibraryWarning(show) {
+      libraryWarning.classList.toggle('hidden', !show);
+    }
+
+    function setProgress(progress) {
+      shutterRing.style.setProperty('--p', String(Math.max(0, Math.min(1, progress || 0))));
+    }
+
+    function statusText(code) {
+      if (code === 'steady') return 'Hold steady.';
+      if (code === 'found') return 'Page found. Hold steady.';
+      return 'Looking for the page.';
+    }
+
+    function paintModeButtons() {
+      const selected = 'bg-emerald-500 text-gray-900';
+      const idle = 'bg-gray-900 text-gray-100';
+      modeBw.className = 'min-h-12 rounded-xl px-3 py-3 text-sm font-semibold ' + (colourMode ? idle : selected);
+      modeColour.className = 'min-h-12 rounded-xl px-3 py-3 text-sm font-semibold ' + (colourMode ? selected : idle);
+      modeBw.setAttribute('aria-pressed', colourMode ? 'false' : 'true');
+      modeColour.setAttribute('aria-pressed', colourMode ? 'true' : 'false');
+    }
+
+    function renderReview() {
+      reviewList.replaceChildren();
+      const meta = readMeta();
+      if (!pages.length) {
+        const empty = document.createElement('p');
+        empty.className = 'text-sm text-gray-300';
+        empty.textContent = 'No pages yet. Photograph a page to start this batch.';
+        reviewList.appendChild(empty);
+        return;
+      }
+      pages.forEach((page, index) => {
+        const card = document.createElement('article');
+        card.className = 'rounded-xl bg-gray-900 p-3';
+        const image = document.createElement('img');
+        image.src = page.url;
+        image.alt = 'Page ' + (index + 1);
+        image.className = 'max-h-64 w-full rounded-lg bg-black object-contain';
+        const name = document.createElement('p');
+        name.className = 'mt-2 break-all text-sm text-white';
+        name.textContent = meta.childName
+          ? pageFileName(meta.date, meta.childName, meta.subject, index + 1)
+          : 'Page ' + (index + 1);
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'mt-2 min-h-11 rounded-xl bg-gray-700 px-4 py-2 text-base';
+        button.textContent = 'Delete';
+        button.addEventListener('click', () => deletePage(page.id));
+        card.append(image, name, button);
+        reviewList.appendChild(card);
+      });
+    }
+
+    function render() {
+      folderLabel.textContent = settings.folderName
+        ? 'Folder: ' + settings.folderName
+        : 'Folder: not chosen yet';
+      authLabel.textContent = accessToken ? 'Signed in with Google' : 'Not signed in';
+      const appId = projectNumberFromClientId(clientIdInput.value);
+      if (!clientIdInput.value.trim()) projectHint.textContent = '';
+      else if (appId) projectHint.textContent = 'Picker project number: ' + appId + '. Taken from the start of the client ID.';
+      else projectHint.textContent = 'This client ID should look like 1234567890-abc.apps.googleusercontent.com.';
+      if (location.protocol === 'http:' || location.protocol === 'https:') {
+        originHint.textContent = 'Authorised JavaScript origin: ' + location.origin;
+      } else {
+        originHint.textContent = 'Open the Netlify site in the browser. Camera, install, and Google sign-in do not work from a downloaded file.';
+      }
+      const meta = readMeta();
+      if (!meta.childName) {
+        nextName.textContent = "Add the child's name. It goes in every file name.";
+        packingName.textContent = "Add the child's name before a packing list can be named.";
+      } else {
+        nextName.textContent = pageFileName(meta.date, meta.childName, meta.subject, pages.length + 1);
+        packingName.textContent = jsonFileName(meta.date, meta.childName, meta.subject);
+      }
+      pageCount.textContent = pages.length === 1 ? '1 page' : pages.length + ' pages';
+      paintModeButtons();
+      chooseFolderButton.disabled = !accessToken;
+      shutterButton.disabled = !cvReady || !cameraOn || capturing;
+      uploadButton.disabled = uploading || !pages.length;
+      zipButton.disabled = uploading || !pages.length;
+      uploadButton.textContent = uploading ? 'Uploading…' : 'Upload to Drive';
+      if (!meta.childName) batchNote.textContent = "Add the child's name before uploading or downloading.";
+      else if (!pages.length) batchNote.textContent = 'Photograph a page to start this batch.';
+      else if (!settings.folderId) batchNote.textContent = 'Choose an upload folder. Download zip still works without Drive.';
+      else if (!accessToken) batchNote.textContent = 'Sign in with Google to upload. Download zip still works if Drive is unavailable.';
+      else batchNote.textContent = 'Upload sends this batch to the folder. Download zip keeps a copy if Drive fails.';
+      if (reviewOpen) renderReview();
+    }
+
+    function rememberPage(blob) {
+      pageSeq += 1;
+      pages.push({
+        id: pageSeq,
+        blob: blob,
+        url: URL.createObjectURL(blob)
+      });
+      render();
+    }
+
+    function deletePage(id) {
+      const index = pages.findIndex((page) => page.id === id);
+      if (index < 0) return;
+      URL.revokeObjectURL(pages[index].url);
+      pages.splice(index, 1);
+      render();
+    }
+
+    function clearPages() {
+      pages.forEach((page) => URL.revokeObjectURL(page.url));
+      pages.splice(0, pages.length);
+      render();
+    }
+
+    function openReview() {
+      reviewOpen = true;
+      reviewModal.classList.remove('hidden');
+      reviewModal.classList.add('flex');
+      renderReview();
+      document.getElementById('close-review').focus();
+    }
+
+    function closeReview() {
+      reviewOpen = false;
+      reviewModal.classList.add('hidden');
+      reviewModal.classList.remove('flex');
+    }
+
+    function signInMessage(code) {
+      if (code === 'popup_closed') return 'Sign-in was closed before it finished.';
+      if (code === 'access_denied') return 'Google did not grant access. If the consent screen is still in Testing, your Gmail address needs to be a test user.';
+      if (code === 'popup_failed_to_open') return 'The sign-in window was blocked. Allow pop-ups for this site and try again.';
+      return 'Sign in with Google, then choose a folder.';
+    }
+
+    function ensureToken() {
+      return new Promise((resolve, reject) => {
+        if (accessToken && tokenExpiresAt - Date.now() > 60000) {
+          resolve(accessToken);
+          return;
+        }
+        const clientId = clientIdInput.value.trim();
+        if (!clientId) {
+          reject(new Error('missing-client'));
+          return;
+        }
+        if (!window.google || !google.accounts || !google.accounts.oauth2) {
+          reject(new Error('google-missing'));
+          return;
+        }
+        const client = google.accounts.oauth2.initTokenClient({
+          client_id: clientId,
+          scope: DRIVE_SCOPE,
+          callback: (response) => {
+            if (!response || response.error) {
+              reject(new Error(response && response.error ? response.error : 'access_denied'));
+              return;
+            }
+            accessToken = response.access_token;
+            tokenExpiresAt = Date.now() + (Number(response.expires_in) || 3600) * 1000;
+            render();
+            resolve(accessToken);
+          }
+        });
+        client.requestAccessToken({ prompt: 'select_account' });
+      });
+    }
+
+    async function signIn() {
+      saveSettings();
+      if (!projectNumberFromClientId(clientIdInput.value)) {
+        setMessage('Paste the OAuth client ID first. It should start with your Cloud project number.');
+        clientIdInput.focus();
+        return;
+      }
+      try {
+        await ensureToken();
+        setMessage('Signed in with Google. Choose the upload folder next.');
+      } catch (error) {
+        const code = error && error.message ? error.message : '';
+        if (code === 'google-missing') setMessage('Google sign-in did not load. Check your connection.');
+        else setMessage(signInMessage(code));
+      }
+    }
+
+    function signOut() {
+      const token = accessToken;
+      accessToken = '';
+      tokenExpiresAt = 0;
+      render();
+      setMessage('Signed out on this page. The saved folder is still on this device.');
+      if (token && window.google && google.accounts && google.accounts.oauth2 && google.accounts.oauth2.revoke) {
+        google.accounts.oauth2.revoke(token, function () {});
+      }
+    }
+
+    function openPicker(token, apiKey, appId) {
+      const view = new google.picker.DocsView(google.picker.ViewId.FOLDERS)
+        .setIncludeFolders(true)
+        .setSelectFolderEnabled(true)
+        .setMimeTypes('application/vnd.google-apps.folder');
+      const picker = new google.picker.PickerBuilder()
+        .setTitle('Choose the upload folder')
+        .setOAuthToken(token)
+        .setDeveloperKey(apiKey)
+        .setAppId(appId)
+        .addView(view)
+        .setCallback((data) => {
+          if (!data || data.action !== google.picker.Action.PICKED || !data.docs || !data.docs[0]) return;
+          settings.folderId = data.docs[0].id;
+          settings.folderName = data.docs[0].name || 'Chosen folder';
+          saveSettings();
+          render();
+          setMessage('Upload folder: ' + settings.folderName + '.');
+        })
+        .build();
+      picker.setVisible(true);
+    }
+
+    async function chooseFolder() {
+      saveSettings();
+      const apiKey = apiKeyInput.value.trim();
+      const appId = projectNumberFromClientId(clientIdInput.value);
+      if (!apiKey) {
+        setMessage('Paste the Picker API key first.');
+        apiKeyInput.focus();
+        return;
+      }
+      if (!appId) {
+        setMessage('Paste the OAuth client ID first. It should start with your Cloud project number.');
+        return;
+      }
+      let token = accessToken;
+      if (!token || tokenExpiresAt - Date.now() < 60000) {
+        try {
+          token = await ensureToken();
+        } catch (error) {
+          setMessage('Sign in with Google before choosing a folder.');
+          return;
+        }
+      }
+      if (!window.gapi) {
+        setMessage('The Google Picker did not load. Check your connection.');
+        return;
+      }
+      gapi.load('picker', {
+        callback: function () {
+          openPicker(token, apiKey, appId);
+        },
+        onerror: function () {
+          setMessage('The Google Picker did not load. Check your connection.');
+        }
+      });
+    }
+
+    function uploadFailure(error) {
+      if (!error) return 'Drive did not take the whole batch.';
+      if (error.status === 401) return 'Google signed you out. Sign in again, then upload.';
+      if (error.status === 403 || error.status === 404) {
+        return 'Drive refused this folder. Choose the folder again so this scanner is allowed to write to it.';
+      }
+      if (error instanceof TypeError) return 'Drive could not be reached. Check your connection, or download the zip.';
+      const code = error.message || '';
+      if (code === 'missing-client' || code === 'google-missing' || code === 'popup_closed' || code === 'access_denied' || code === 'popup_failed_to_open') {
+        return signInMessage(code === 'missing-client' || code === 'google-missing' ? code : code);
+      }
+      return 'Drive did not take the whole batch.';
+    }
+
+    async function readError(response) {
+      try {
+        const data = await response.json();
+        if (data && data.error && data.error.message) return data.error.message;
+      } catch (error) {
+        return '';
+      }
+      return '';
+    }
+
+    async function uploadDriveFile(token, folderId, name, blob, mime) {
+      const boundary = 'wattlewood_' + Math.random().toString(16).slice(2);
+      const metadata = { name: name, mimeType: mime, parents: [folderId] };
+      const head = '--' + boundary + '\r\n' +
+        'Content-Type: application/json; charset=UTF-8\r\n\r\n' +
+        JSON.stringify(metadata) + '\r\n' +
+        '--' + boundary + '\r\n' +
+        'Content-Type: ' + mime + '\r\n\r\n';
+      const tail = '\r\n--' + boundary + '--';
+      const response = await fetch(
+        'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,name',
+        {
+          method: 'POST',
+          headers: {
+            Authorization: 'Bearer ' + token,
+            'Content-Type': 'multipart/related; boundary=' + boundary
+          },
+          body: new Blob([head, blob, tail])
+        }
+      );
+      if (!response.ok) {
+        const detail = await readError(response);
+        const error = new Error(detail || ('Drive returned ' + response.status));
+        error.status = response.status;
+        throw error;
+      }
+      return response.json();
+    }
+
+    async function uploadBatch() {
+      if (uploading) return;
+      const meta = readMeta();
+      if (!meta.childName) {
+        setMessage("Add the child's name before uploading.");
+        childInput.focus();
+        return;
+      }
+      if (!pages.length) {
+        setMessage('Photograph a page before uploading.');
+        return;
+      }
+      if (!settings.folderId || !accessToken) {
+        const setup = document.getElementById('setup');
+        setup.open = true;
+        setup.scrollIntoView({ block: 'start' });
+        setMessage(accessToken
+          ? 'Choose the upload folder first.'
+          : 'Sign in with Google and choose a folder first.');
+        return;
+      }
+      uploading = true;
+      render();
+      const described = describeBatch(pages.length, meta);
+      try {
+        const token = await ensureToken();
+        for (let index = 0; index < pages.length; index += 1) {
+          setMessage('Uploading ' + (index + 1) + ' of ' + (pages.length + 1) + '…');
+          await uploadDriveFile(token, settings.folderId, described.fileNames[index], pages[index].blob, 'image/jpeg');
+        }
+        setMessage('Uploading ' + (pages.length + 1) + ' of ' + (pages.length + 1) + '…');
+        await uploadDriveFile(
+          token,
+          settings.folderId,
+          described.jsonName,
+          new Blob([described.jsonText], { type: 'application/json' }),
+          'application/json'
+        );
+        const count = pages.length;
+        const folderName = settings.folderName || 'the folder';
+        clearPages();
+        setMessage(count === 1
+          ? '1 page is in ' + folderName + '.'
+          : count + ' pages are in ' + folderName + '.');
+      } catch (error) {
+        setMessage(uploadFailure(error) + ' The pages are still on this screen. Download the zip if you need the whole batch. A page that already uploaded may already be in the folder.');
+      } finally {
+        uploading = false;
+        render();
+      }
+    }
+
+    async function downloadZip() {
+      const meta = readMeta();
+      if (!meta.childName) {
+        setMessage("Add the child's name before downloading.");
+        childInput.focus();
+        return;
+      }
+      if (!pages.length) {
+        setMessage('Photograph a page before downloading.');
+        return;
+      }
+      if (typeof JSZip === 'undefined') {
+        setMessage('The zip library did not load. Check your connection.');
+        return;
+      }
+      const built = await buildZip(pages.map((page) => page.blob), meta);
+      const url = URL.createObjectURL(built.zipBlob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = built.zipName;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 4000);
+      setMessage('Zip downloaded. It has the same pages and the same packing list as an upload.');
+    }
+
+    function drawOverlay(videoCorners) {
+      const rect = overlay.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      const width = Math.max(1, Math.round(rect.width * dpr));
+      const height = Math.max(1, Math.round(rect.height * dpr));
+      if (overlay.width !== width || overlay.height !== height) {
+        overlay.width = width;
+        overlay.height = height;
+      }
+      const ctx = overlay.getContext('2d');
+      ctx.clearRect(0, 0, width, height);
+      if (!videoCorners || !video.videoWidth) return;
+      const scale = Math.min(width / video.videoWidth, height / video.videoHeight);
+      const dx = (width - video.videoWidth * scale) / 2;
+      const dy = (height - video.videoHeight * scale) / 2;
+      ctx.beginPath();
+      videoCorners.forEach((point, index) => {
+        const x = point.x * scale + dx;
+        const y = point.y * scale + dy;
+        if (index === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      });
+      ctx.closePath();
+      ctx.lineWidth = Math.max(3, 4 * dpr);
+      ctx.strokeStyle = '#10B981';
+      ctx.stroke();
+      ctx.fillStyle = 'rgba(16, 185, 129, 0.16)';
+      ctx.fill();
+    }
+
+    async function captureCurrentFrame() {
+      if (capturing || !cvReady || !video.videoWidth) return;
+      capturing = true;
+      steadySince = null;
+      lastCorners = null;
+      setProgress(0);
+      render();
+      try {
+        const result = await processStill(video, colourMode);
+        rememberPage(result.blob);
+        cooldownUntil = performance.now() + 1200;
+        setStatus(result.foundPage
+          ? 'Saved to this batch.'
+          : 'Saved the whole frame. No page outline was found.');
+      } catch (error) {
+        setStatus('That photo could not be processed.');
+      } finally {
+        capturing = false;
+        render();
+      }
+    }
+
+    function loop(now) {
+      requestAnimationFrame(loop);
+      if (!cameraOn || !cvReady || !video.videoWidth || capturing) return;
+      if (now - lastDetect < 140) return;
+      lastDetect = now;
+      let corners = null;
+      try {
+        const small = scaledCanvas(video, PROCESS_WIDTH);
+        const found = findPageCorners(small);
+        if (found) {
+          const sx = video.videoWidth / small.width;
+          const sy = video.videoHeight / small.height;
+          corners = found.map((point) => ({ x: point.x * sx, y: point.y * sy }));
+        }
+      } catch (error) {
+        corners = null;
+      }
+      drawOverlay(corners);
+      if (now < cooldownUntil || reviewOpen) {
+        if (reviewOpen) {
+          steadySince = null;
+          lastCorners = null;
+          setProgress(0);
+        }
+        return;
+      }
+      const decision = nextSteady({
+        previous: lastCorners,
+        current: corners,
+        since: steadySince,
+        now: now,
+        threshold: Math.max(12, video.videoWidth * 0.012),
+        holdMs: AUTO_HOLD_MS,
+        auto: autoShutter.checked
+      });
+      lastCorners = decision.previous;
+      steadySince = decision.since;
+      setProgress(decision.progress);
+      setStatus(statusText(decision.status));
+      if (decision.shutter) captureCurrentFrame();
+    }
+
+    async function startCamera() {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        setMessage('This browser has no camera API. Open the Netlify site in Chrome or Safari.');
+        return;
+      }
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: false,
+          video: {
+            facingMode: { ideal: 'environment' },
+            width: { ideal: 1920 },
+            height: { ideal: 1080 }
+          }
+        });
+        video.srcObject = stream;
+        await video.play();
+        cameraOn = true;
+        startButton.style.display = 'none';
+        setStatus(cvReady ? 'Looking for the page.' : 'Loading the scanner.');
+        render();
+      } catch (error) {
+        cameraOn = false;
+        setStatus('The camera did not start.');
+        setMessage('Allow the camera for this site. Use the rear camera if the phone asks.');
+      }
+    }
+
+    function markCvReady() {
+      if (!window.cv || !window.cv.Mat) return;
+      cvReady = true;
+      setLibraryWarning(false);
+      if (!cameraOn) setStatus('Start the camera to scan a page.');
+      render();
+    }
+
+    window.onOpenCvReady = function () {
+      const current = window.cv;
+      if (current && typeof current.then === 'function') {
+        current.then((ready) => {
+          window.cv = ready;
+          markCvReady();
+        }).catch(() => setLibraryWarning(true));
+      } else if (current && current.Mat) {
+        markCvReady();
+      } else if (current) {
+        current.onRuntimeInitialized = markCvReady;
+      }
+    };
+
+    window.onOpenCvError = function () {
+      setLibraryWarning(true);
+      setStatus('The scanner libraries did not load.');
+    };
+
+    clientIdInput.addEventListener('input', () => {
+      saveSettings();
+      render();
+    });
+    apiKeyInput.addEventListener('input', () => {
+      saveSettings();
+      render();
+    });
+    childInput.addEventListener('input', () => {
+      saveSettings();
+      render();
+    });
+    subjectInput.addEventListener('input', render);
+    modeBw.addEventListener('click', () => {
+      colourMode = false;
+      render();
+    });
+    modeColour.addEventListener('click', () => {
+      colourMode = true;
+      render();
+    });
+    autoShutter.addEventListener('change', () => setProgress(0));
+    startButton.addEventListener('click', startCamera);
+    shutterButton.addEventListener('click', captureCurrentFrame);
+    document.getElementById('review').addEventListener('click', openReview);
+    document.getElementById('close-review').addEventListener('click', closeReview);
+    reviewModal.addEventListener('click', closeReview);
+    reviewPanel.addEventListener('click', (event) => event.stopPropagation());
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && reviewOpen) closeReview();
+    });
+    document.getElementById('sign-in').addEventListener('click', signIn);
+    signOutButton.addEventListener('click', signOut);
+    chooseFolderButton.addEventListener('click', chooseFolder);
+    uploadButton.addEventListener('click', uploadBatch);
+    zipButton.addEventListener('click', downloadZip);
+
+    loadSettings();
+    clientIdInput.value = settings.clientId;
+    apiKeyInput.value = settings.apiKey;
+    childInput.value = settings.childName;
+    if (settings.clientId && settings.apiKey && settings.folderId && cleanLabel(settings.childName)) {
+      document.getElementById('setup').open = false;
+    }
+    render();
+    requestAnimationFrame(loop);
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js').catch(() => {});
+      });
+    }
+
+    setTimeout(() => {
+      if (!cvReady) setLibraryWarning(true);
+    }, 25000);
+
+    window.WattlewoodScanner = {
+      AUTO_HOLD_MS: AUTO_HOLD_MS,
+      DRIVE_SCOPE: DRIVE_SCOPE,
+      cleanLabel: cleanLabel,
+      todayParts: todayParts,
+      pageFileName: pageFileName,
+      jsonFileName: jsonFileName,
+      zipFileName: zipFileName,
+      packingList: packingList,
+      describeBatch: describeBatch,
+      nextSteady: nextSteady,
+      cornersWithin: cornersWithin,
+      findPageCorners: findPageCorners,
+      processStill: processStill,
+      buildZip: buildZip,
+      readMeta: readMeta,
+      rememberPage: rememberPage,
+      deletePage: deletePage,
+      isReady: function () { return cvReady; },
+      pageCount: function () { return pages.length; },
+      colourMode: function () { return colourMode; }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/@techstark/opencv-js@4.11.0-release.1/dist/opencv.js" onload="onOpenCvReady()" onerror="onOpenCvError()"></script>
+</body>
+</html>
