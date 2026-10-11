@@ -374,3 +374,23 @@ section { padding: 80px 0; }
     color: var(--walnut);
   }
 }
+
+/* Founding offer for Wattlewood Complete, runs until 31 Oct 2026.
+   To remove on 1 Nov: delete this block and every element with a founder-banner or founder-badge class. */
+.founder-banner { background: var(--walnut-dark); color: var(--parchment-light); border-bottom: 4px solid var(--brass); }
+.founder-banner-inner { max-width: 1180px; margin: 0 auto; padding: 18px 28px; display: flex; align-items: center; gap: 22px; flex-wrap: wrap; }
+.founder-badge { display: inline-flex; align-items: center; justify-content: center; background: var(--brass); color: var(--walnut-dark); font-family: var(--font-display); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; line-height: 1; border-radius: 999px; white-space: nowrap; }
+.founder-banner .founder-badge { font-size: 26px; padding: 14px 24px; border: 3px solid var(--parchment); box-shadow: 0 3px 0 var(--brass-dark); transform: rotate(-3deg); }
+.founder-banner-text { flex: 1 1 320px; margin: 0; font-family: var(--font-display); font-size: 22px; font-weight: 600; line-height: 1.35; color: var(--parchment-light); }
+.founder-banner-text strong { color: #E8C877; }
+.founder-banner .founder-cta { display: inline-block; background: var(--brass); color: var(--walnut-dark); font-family: var(--font-body); font-weight: 700; font-size: 16px; padding: 12px 22px; border-radius: 8px; text-decoration: none; white-space: nowrap; transition: background .15s ease, transform .15s ease; }
+.founder-banner .founder-cta:hover { background: #E8C877; transform: translateY(-1px); }
+.founder-banner .founder-cta:focus-visible { outline: 3px solid var(--parchment); outline-offset: 3px; }
+.card .founder-badge { align-self: flex-start; font-size: 13px; padding: 6px 12px; margin-bottom: 8px; }
+@media (max-width: 700px) {
+  .founder-banner-inner { padding: 16px 20px; gap: 14px; }
+  .founder-banner .founder-badge { font-size: 20px; padding: 10px 18px; }
+  .founder-banner-text { font-size: 18px; flex-basis: 100%; }
+  .founder-banner .founder-cta { width: 100%; text-align: center; }
+}
+@media print { .founder-banner { display: none !important; } }
