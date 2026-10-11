@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://aussie-homeschooling-hub.netlify.app/sitemap.xml
+Sitemap: https://aussiehomeschoolinghub.com.au/sitemap.xml
