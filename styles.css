@@ -224,6 +224,9 @@ section { padding: 80px 0; }
 .prose li { margin-bottom: 8px; }
 .prose a, .link-inline { color: var(--walnut-dark); text-decoration: underline; text-underline-offset: 3px; font-weight: 600; }
 .prose a:hover, .link-inline:hover { color: var(--walnut); }
+.prose a.btn { text-decoration: none; }
+.prose a.btn-primary { color: var(--parchment-light); }
+.prose a.btn-primary:hover { color: var(--parchment-light); }
 .prose h2 { font-size: 26px; margin: 36px 0 12px; }
 .prose h3 { font-size: 20px; margin: 24px 0 8px; }
 .faq-group { margin-top: 40px; }
