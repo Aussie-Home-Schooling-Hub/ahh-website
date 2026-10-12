@@ -53,6 +53,7 @@ label.field{display:block;font-weight:700;margin:0 0 12px}
 input[type=text],input[type=date],select,textarea{display:block;width:100%;margin-top:4px;border:2px solid var(--walnut-dark);border-radius:12px;padding:10px;min-height:48px;background:#fff;color:var(--walnut-deep)}
 textarea{min-height:96px;resize:vertical}
 .print-value{display:none;font-weight:400;white-space:pre-wrap}
+.print-only{display:none}
 .entry{border:2px solid var(--brass);border-radius:16px;padding:14px;margin:0 0 14px;background:var(--parchment)}
 .entry-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
 #rows{counter-reset:entry}
@@ -78,10 +79,25 @@ textarea{min-height:96px;resize:vertical}
   .foot{padding:8px 0 0}
   .js .state-panel{display:none!important}
   .js .state-panel.is-on{display:block!important}
-  .js .print-need-state{display:block}
+  .js .print-need-state{display:block!important;font-weight:700;margin:8px 0 16px}
   .js.has-state .print-need-state{display:none!important}
-  .card:not(.state-panel),ol.steps>li,.entry,h2,h3{break-inside:avoid;page-break-inside:avoid}
-  h2,h3{break-after:avoid;page-break-after:avoid}
+  #states>h2,#states>h2+p,.print-need-state{break-after:avoid;page-break-after:avoid}
+  .print-need-state{break-before:avoid;page-break-before:avoid}
+  .card:not(.state-panel),ol.steps>li,.entry,h2,h3,.log-keep{break-inside:avoid;page-break-inside:avoid}
+  h2,h3,.log-keep{break-after:avoid;page-break-after:avoid}
+  .log-keep+.entry{break-before:avoid;page-break-before:avoid}
+  .entry:has(+ .log-end){break-after:avoid;page-break-after:avoid}
+  .log-end{break-before:avoid;page-break-before:avoid;break-inside:avoid;page-break-inside:avoid}
+  .print-only{display:block!important}
+  .export-row,.hint,.status:empty,#save-status{display:none!important}
+  .status{min-height:0}
+  #log{font-size:15px;line-height:1.3}
+  #log p{margin:0 0 4px}
+  #log label.field{margin:0 0 2px}
+  #log .entry{margin:0 0 8px;padding-top:4px}
+  .print-value{display:block;min-height:1.15em;border-bottom:1px solid #000;margin:0;padding:0}
+  .print-value.lines{min-height:2.3em;border-bottom:0;line-height:1.15em;background-image:linear-gradient(to bottom,transparent calc(1.15em - 1px),#000 calc(1.15em - 1px));background-size:100% 1.15em;background-repeat:repeat-y}
+  .entry{border-top:1px solid #000;padding-top:8px}
   a{text-decoration:none;color:#000}
 }
 </style>
@@ -140,7 +156,7 @@ textarea{min-height:96px;resize:vertical}
       <button type="button" class="chip" data-state="act" aria-pressed="false">Australian Capital Territory</button>
       <button type="button" class="chip" data-state="nt" aria-pressed="false">Northern Territory</button>
     </div>
-    <p class="print-need-state">Choose a state or territory on screen before printing if you want a single checklist.</p>
+    <p class="print-need-state">No state is selected. Choose your state or territory on the screen, then print again. The steps for that state will appear here.</p>
 
     <article class="card state-panel" data-state="qld" id="panel-qld">
       <h3>Queensland</h3>
@@ -428,6 +444,8 @@ textarea{min-height:96px;resize:vertical}
   </section>
 
   <section id="log">
+    <div id="rows">
+    <div class="log-keep">
     <h2>Learning log</h2>
     <p>One child. First name only. Nothing is sent anywhere unless you later import the file into Wattlewood yourself. Entries stay in this browser until you clear them.</p>
     <p id="save-status" class="status" aria-live="polite"></p>
@@ -437,7 +455,11 @@ textarea{min-height:96px;resize:vertical}
       <input type="text" id="child-name" maxlength="60" autocomplete="off" placeholder="First name only">
       <span class="print-value"></span>
     </label>
-    <div id="rows"></div>
+    </div>
+    <div class="log-end" id="log-end">
+      <p class="privacy print-only">This file contains your child's first name and learning notes. Store it somewhere private.</p>
+    </div>
+    </div>
     <p class="no-print"><button type="button" class="btn" id="add-row">Add an entry</button></p>
     <div class="export-row">
       <button type="button" class="btn primary" id="export-btn">Export evidence file</button>
@@ -475,17 +497,17 @@ textarea{min-height:96px;resize:vertical}
     <label class="field">Description
       <span class="hint">What happened, in plain words.</span>
       <textarea class="js-description" maxlength="2000" placeholder="What happened, in plain words"></textarea>
-      <span class="print-value"></span>
+      <span class="print-value lines"></span>
     </label>
     <label class="field">Summary
       <span class="hint">Third person, past tense, first name, what they did and what learning it showed.</span>
       <textarea class="js-summary" maxlength="2000" placeholder="Third person, past tense, first name, what they did and what it showed"></textarea>
-      <span class="print-value"></span>
+      <span class="print-value lines"></span>
     </label>
     <label class="field">Child's reflection
       <span class="hint">The child's own words, or leave this empty.</span>
       <textarea class="js-reflection" maxlength="1000" placeholder="The child's own words, or leave empty"></textarea>
-      <span class="print-value"></span>
+      <span class="print-value lines"></span>
     </label>
     <label class="field">Learning area
       <select class="js-area">
@@ -655,7 +677,8 @@ textarea{min-height:96px;resize:vertical}
       fillStrands(node.querySelector(".js-strand"), "", "");
     }
     toggleLanguage(node);
-    rows.appendChild(node);
+    var logEnd = document.getElementById("log-end");
+    rows.insertBefore(node, logEnd);
     return node;
   }
 
