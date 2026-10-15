@@ -1,0 +1,1643 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<!--
+Fact register
+The twelve word lists are the lists supplied for this puzzle. No words were added.
+A hyphen in a supplied word is shown as a space and is not placed in the grid.
+Theme names are the supplied names. The list plan, focus, adapt, remember, pause, reflect, organise, decide, persist, check, think, notice is named Thinking Words.
+The on-screen name, the sheet header and the footer lines are the lines supplied for Aussie Activity Club.
+No health claim is made.
+Directions, shared by the screen and the printed sheets: Large Print and Easy place words left to right only. Medium also places words downward. Hard also places words on both diagonal slopes, forward and back. Extra places words in all eight directions.
+Large Print filler letters use the reduced set A B C D E F G H K L M N P R S T U W Y.
+-->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="format-detection" content="telephone=no">
+<title>Aussie Activity Club · Word Search</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23F7F1E1'/%3E%3Cpath d='M16 3c2.4 5 7 9 7.6 14.2C24.4 23.6 20.8 29 16 29S7.6 23.6 8.4 17.2C9 12 13.6 8 16 3z' fill='%232F6B34'/%3E%3Cpath d='M16 8v16M16 13c2.2.8 3.6 1 4.6.6M16 17c-2.4.8-3.8.9-5 .4' stroke='%23F7F1E1' stroke-width='1.1' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+<style>
+:root {
+  --ink: #1F2A44;
+  --brown: #3B2A1A;
+  --paper: #F7F1E1;
+  --panel: #FFFDF8;
+  --red: #A23B2A;
+  --mustard: #C9962B;
+  --found: #E8C46A;
+  --hint: #F6E3A1;
+  --line: #C4B79A;
+  --font-display: Georgia, "Times New Roman", serif;
+  --font-body: Arial, Helvetica, sans-serif;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 18px;
+  line-height: 1.45;
+}
+body.contrast { background: #fff; color: #000; }
+#screen { max-width: 1100px; margin: 0 auto; padding: 16px 16px 32px; }
+.mast {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 4px double var(--ink);
+  padding-bottom: 12px;
+  margin-bottom: 16px;
+}
+body.contrast .mast { border-bottom-color: #000; }
+.mast-brand { display: flex; gap: 12px; align-items: center; min-width: 0; }
+.mast-brand > div { min-width: 0; }
+.leaf { width: 48px; height: 64px; flex: none; }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 700; line-height: 1.2; margin: 0; }
+h1 { font-size: 32px; color: var(--brown); }
+body.contrast h1, body.contrast h2 { color: #000; }
+.tagline { margin: 8px 0 0; max-width: 40rem; }
+.mast-actions, .actions, .dialog-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+button, select, input[type="text"], input[type="date"], textarea {
+  font-family: var(--font-body);
+  font-size: 18px;
+}
+button {
+  min-height: 48px;
+  padding: 12px 16px;
+  font-weight: 700;
+  background: var(--red);
+  color: #fff;
+  border: 3px solid var(--ink);
+  border-radius: 8px;
+  cursor: pointer;
+}
+button.quiet { background: var(--panel); color: var(--ink); }
+button.mustard { background: var(--mustard); color: var(--ink); }
+body.contrast button { background: #000; color: #fff; border-color: #000; }
+body.contrast button.quiet { background: #fff; color: #000; }
+button:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible, summary:focus-visible {
+  outline: 3px solid var(--red);
+  outline-offset: 2px;
+}
+body.contrast button:focus-visible, body.contrast select:focus-visible, body.contrast input:focus-visible, body.contrast textarea:focus-visible {
+  outline-color: #000;
+}
+.panel {
+  background: var(--panel);
+  border: 4px double var(--ink);
+  padding: 16px;
+  margin: 16px 0;
+}
+body.contrast .panel { background: #fff; border-color: #000; }
+.controls { display: grid; gap: 12px; }
+@media (min-width: 800px) {
+  .controls { grid-template-columns: 1fr 1fr 1fr; }
+}
+label.field { display: flex; flex-direction: column; gap: 6px; font-weight: 700; }
+select, input[type="text"], input[type="date"], textarea {
+  min-height: 48px;
+  padding: 10px 12px;
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--ink);
+  width: 100%;
+}
+textarea { min-height: 96px; resize: vertical; }
+.note { font-weight: 400; margin: 8px 0 0; }
+#status { min-height: 1.45em; font-weight: 700; }
+.timer { font-variant-numeric: tabular-nums; font-weight: 700; margin: 8px 0; }
+.play { display: grid; gap: 16px; align-items: start; }
+@media (min-width: 1100px) {
+  body:not(.lv-large) .play { grid-template-columns: minmax(0, 1fr) minmax(240px, 320px); }
+}
+.board { width: min(100%, 760px); margin: 0 auto; }
+body.lv-large .board { width: min(100%, 1100px); }
+.grid {
+  display: grid;
+  width: 100%;
+  aspect-ratio: 1;
+  border: 3px solid var(--ink);
+  background: #fff;
+  touch-action: none;
+  user-select: none;
+}
+body.contrast .grid { border-color: #000; }
+button.cell {
+  min-height: 0;
+  min-width: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border-radius: 0;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--ink);
+  font-weight: 800;
+  font-size: clamp(16px, 4.2vw, 36px);
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+body.lv-large button.cell { font-size: clamp(28px, 7.2vw, 64px); }
+body.big button.cell { font-size: clamp(20px, 5vw, 44px); }
+body.lv-large.big button.cell { font-size: clamp(32px, 8vw, 72px); }
+button.cell.found { background: var(--found); }
+button.cell.draft { box-shadow: inset 0 0 0 4px var(--red); }
+button.cell.anchor { box-shadow: inset 0 0 0 4px var(--ink); }
+button.cell.hint { background: var(--hint); box-shadow: inset 0 0 0 4px var(--red); }
+body.contrast button.cell { color: #000; border-color: #000; background: #fff; }
+body.contrast button.cell.found { background: #000; color: #fff; }
+body.contrast button.cell.hint { background: #fff; box-shadow: inset 0 0 0 5px #000; }
+body.contrast button.cell.draft, body.contrast button.cell.anchor { box-shadow: inset 0 0 0 4px #000; }
+.words { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+@media (min-width: 700px) {
+  body:not(.lv-large) .words { grid-template-columns: 1fr 1fr; }
+}
+.words li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  font-size: 22px;
+}
+body.lv-large .words li { font-size: 28px; }
+body.big .words li { font-size: 26px; }
+body.lv-large.big .words li { font-size: 34px; }
+.vh {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.tick {
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--ink);
+  border-radius: 4px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  line-height: 1;
+  background: #fff;
+}
+body.contrast .tick { border-color: #000; }
+.words li.found .tick { background: var(--found); }
+body.contrast .words li.found .tick { background: #000; color: #fff; }
+.print-note { margin: 0 0 8px; }
+.banner {
+  position: fixed;
+  left: 12px;
+  right: 12px;
+  top: 12px;
+  z-index: 60;
+  background: #fff;
+  color: #000;
+  border: 3px solid #000;
+  padding: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+}
+.dialog-back {
+  position: fixed;
+  inset: 0;
+  background: rgba(31, 42, 68, 0.55);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 30;
+}
+#confirm-back { z-index: 50; }
+#done-back { z-index: 40; }
+#print-back, #prec-back { z-index: 35; }
+.dialog-back.open { display: flex; }
+.dialog {
+  background: var(--panel);
+  color: var(--ink);
+  border: 4px double var(--ink);
+  width: min(640px, 100%);
+  max-height: 90vh;
+  overflow: auto;
+  padding: 20px;
+}
+body.contrast .dialog { background: #fff; color: #000; border-color: #000; }
+.dialog h2 { font-size: 32px; margin-bottom: 10px; }
+.dialog ol { margin: 0 0 16px; padding-left: 1.3em; }
+.dialog li { margin: 8px 0; }
+.dialog .sub { margin-top: 0; }
+.checkline { display: flex; align-items: center; gap: 12px; font-weight: 700; min-height: 48px; }
+.checkline input { width: 28px; height: 28px; }
+.person-row, .record {
+  border-top: 2px solid var(--ink);
+  padding: 12px 0;
+}
+body.contrast .person-row, body.contrast .record { border-top-color: #000; }
+.person-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.person-row strong { flex: 1 1 140px; font-size: 20px; }
+.count { font-weight: 400; }
+.site-foot {
+  margin-top: 28px;
+  padding-top: 12px;
+  border-top: 4px double var(--ink);
+  font-size: 18px;
+}
+body.contrast .site-foot { border-top-color: #000; }
+.site-foot a { color: var(--red); font-weight: 700; }
+body.contrast .site-foot a { color: #000; }
+body.big { font-size: 22px; }
+body.big h1 { font-size: 40px; }
+body.big button, body.big select, body.big input, body.big textarea, body.big summary { font-size: 22px; }
+summary {
+  font-weight: 700;
+  font-size: 20px;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+details.panel { padding: 8px 16px 16px; }
+.rename-box { display: flex; flex-wrap: wrap; gap: 8px; width: 100%; }
+.rename-box input { flex: 1 1 160px; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+@media (forced-colors: active) {
+  button.cell { border: 1px solid CanvasText; }
+  button.cell.found { background: Highlight; color: HighlightText; }
+}
+#sheet, #record-print { display: none; }
+.ws-sheet {
+  width: 180mm;
+  min-height: 250mm;
+  margin: 0 auto;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #000;
+  break-after: page;
+  page-break-after: always;
+  padding-top: 2mm;
+}
+.ws-end { break-after: auto; page-break-after: auto; }
+.ws-sheet header { text-align: center; margin-bottom: 4mm; }
+.ws-brand { font-size: 11pt; letter-spacing: 0.04em; font-weight: 700; }
+.ws-sheet h2 { font-family: Georgia, "Times New Roman", serif; font-size: 22pt; margin: 1mm 0; color: #000; }
+.ws-meta { font-size: 12pt; }
+.ws-grid { border-collapse: collapse; margin: 0 auto 5mm; border: 2px solid #000; }
+.ws-grid td {
+  border: 1px solid #000;
+  text-align: center;
+  font-weight: 700;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #000;
+  line-height: 1;
+}
+.s8 td { width: 16mm; height: 16mm; font-size: 20pt; }
+.s10 td { width: 13.2mm; height: 13.2mm; font-size: 16pt; }
+.s12 td { width: 11.2mm; height: 11.2mm; font-size: 14pt; }
+.s14 td { width: 9.6mm; height: 9.6mm; font-size: 12pt; }
+.ws-large .ws-grid { border-width: 3px; }
+.ws-large .ws-grid td { width: 18mm; height: 18mm; font-size: 28pt; border-width: 1.5px; }
+.ws-large h2 { font-size: 28pt; }
+.ws-large .ws-meta, .ws-large .ws-brand { font-size: 14pt; }
+.ws-find { width: 100%; max-width: 170mm; }
+.ws-find h3 { font-family: Georgia, "Times New Roman", serif; font-size: 14pt; margin: 0 0 2mm; text-align: center; }
+.ws-find ul { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 2mm 8mm; }
+.ws-find li { font-size: 13pt; font-weight: 700; letter-spacing: 0.04em; display: flex; align-items: center; gap: 3mm; }
+.ws-find .box { width: 5mm; height: 5mm; border: 1.5px solid #000; flex: none; }
+.ws-large .ws-find h3 { font-size: 18pt; }
+.ws-large .ws-find li { font-size: 20pt; }
+.ws-large .ws-find .box { width: 8mm; height: 8mm; border-width: 2px; }
+.ws-sheet footer { margin-top: auto; text-align: center; padding-top: 4mm; font-size: 12pt; }
+.ws-large footer { font-size: 14pt; }
+.ws-club { font-size: 9pt; margin: 1mm 0 0; }
+.ws-large .ws-club { font-size: 11pt; }
+.ws-answers { width: 180mm; margin: 0 auto; color: #000; font-family: Arial, Helvetica, sans-serif; }
+.ws-answers h2 { font-family: Georgia, "Times New Roman", serif; text-align: center; font-size: 18pt; margin: 0 0 4mm; }
+.ws-answers .wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm 6mm; }
+.ws-ans { break-inside: avoid; page-break-inside: avoid; text-align: center; }
+.ws-ans-t { font-size: 9pt; font-weight: 700; margin-bottom: 1mm; }
+.ws-grid.mini { margin: 0 auto; }
+.ws-grid.mini td { width: 4.6mm !important; height: 4.6mm !important; font-size: 7pt !important; border: 0.4px solid #bbb; color: #555; }
+.ws-grid.mini td.on { background: #F3D98B; color: #000; font-weight: 700; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.record-sheet { font-family: Arial, Helvetica, sans-serif; color: #000; }
+.record-sheet h1 { font-family: Georgia, "Times New Roman", serif; font-size: 22pt; margin: 0 0 4mm; }
+.record-sheet table { width: 100%; border-collapse: collapse; margin-top: 4mm; }
+.record-sheet th, .record-sheet td { border: 1px solid #000; padding: 2mm; text-align: left; vertical-align: top; font-size: 11pt; }
+.record-sheet .sign { margin-top: 14mm; font-size: 12pt; }
+.record-sheet .record-foot { margin-top: 8mm; font-size: 10pt; }
+@media print {
+  @page { size: A4; margin: 12mm 15mm 10mm 15mm; }
+  html, body { background: #fff !important; }
+  .dialog-back { display: none !important; }
+  body.print-puzzles #app { display: none !important; }
+  body.print-puzzles #sheet { display: block !important; }
+  body.print-record #app { display: none !important; }
+  body.print-record #record-print { display: block !important; }
+}
+</style>
+</head>
+<body>
+<div id="save-note" class="banner" role="alert" hidden>
+  <span>Couldn't save this time. Your puzzle still works. Try printing your record to keep a copy.</span>
+  <button type="button" id="save-note-close" class="quiet">Close</button>
+</div>
+<div id="app">
+  <div id="screen">
+    <header class="mast">
+      <div class="mast-brand">
+        <svg class="leaf" viewBox="0 0 64 96" aria-hidden="true">
+          <path d="M32 4c6 14 18 26 20 42 2 18-8 42-20 46C20 88 10 64 12 46 14 30 26 18 32 4z" fill="#2F6B34"/>
+          <path d="M32 18v58M32 32c6 3 12 4 16 2M32 46c-8 3-14 3-18 1M32 58c7 2 12 2 16 0" stroke="#F7F1E1" stroke-width="2" fill="none" stroke-linecap="round"/>
+        </svg>
+        <div>
+          <h1>Aussie Activity Club · Word Search</h1>
+          <p class="tagline">Large print, suitable for seniors. Calm and clear. Familiar Aussie words. No timer, no pressure.</p>
+        </div>
+      </div>
+      <div class="mast-actions">
+        <button type="button" id="help-btn" class="quiet">Help</button>
+        <button type="button" id="settings-btn" class="quiet">Settings</button>
+      </div>
+    </header>
+    <section class="panel">
+      <div class="controls">
+        <label class="field" for="theme">Theme
+          <select id="theme"></select>
+        </label>
+        <label class="field" for="level">Level
+          <select id="level"></select>
+        </label>
+        <label class="field" for="who">Who's doing the puzzle?
+          <select id="who"></select>
+        </label>
+      </div>
+      <p id="level-note" class="note"></p>
+      <div class="actions" style="margin-top:12px">
+        <button type="button" id="new-btn">New puzzle</button>
+        <button type="button" id="hint-btn" class="mustard">Hint</button>
+        <button type="button" id="clear-btn" class="quiet">Clear selection</button>
+      </div>
+    </section>
+    <p id="timer" class="timer" hidden>Time 0:00</p>
+    <p id="status" role="status" aria-live="polite">Tap the first letter, then the last letter.</p>
+    <h2 id="theme-name"></h2>
+    <div class="play">
+      <div class="board">
+        <div id="grid" class="grid" role="grid" aria-label="Letter grid"></div>
+      </div>
+      <div>
+        <h3>Find these words</h3>
+        <ul id="words" class="words"></ul>
+      </div>
+    </div>
+    <section class="panel">
+      <p class="print-note">Print as many as you need.</p>
+      <div class="actions">
+        <button type="button" id="print-puzzles-btn" class="quiet">🖨 Print puzzles</button>
+        <button type="button" id="print-large-btn">🔍 Large print</button>
+        <button type="button" id="print-record-btn" class="mustard">Print record</button>
+      </div>
+    </section>
+    <details id="record-panel" class="panel">
+      <summary>Activity record</summary>
+      <div id="record-list"></div>
+    </details>
+    <footer class="site-foot">
+      From the team at Aussie Homeschooling Hub · <a href="https://aussiehomeschoolinghub.com.au">aussiehomeschoolinghub.com.au</a>
+    </footer>
+  </div>
+
+  <div class="dialog-back" id="help-back" role="dialog" aria-modal="true" aria-labelledby="help-title" aria-hidden="true">
+    <div class="dialog">
+      <h2 id="help-title">Help</h2>
+      <ol>
+        <li>Pick a theme and a level. Large Print is the easiest.</li>
+        <li>Tap the first letter of a word, then tap the last letter.</li>
+        <li>Words go across in Large Print and Easy. Harder levels go other ways too.</li>
+        <li>Stuck? Tap Hint.</li>
+        <li>You can print puzzles to do on paper.</li>
+      </ol>
+      <button type="button" id="help-close">Close</button>
+    </div>
+  </div>
+
+  <div class="dialog-back" id="settings-back" role="dialog" aria-modal="true" aria-labelledby="settings-title" aria-hidden="true">
+    <div class="dialog">
+      <h2 id="settings-title">Settings</h2>
+      <label class="field" for="set-level">Default level
+        <select id="set-level"></select>
+      </label>
+      <label class="checkline"><input type="checkbox" id="set-timer"> Show timer</label>
+      <label class="checkline"><input type="checkbox" id="set-big"> Bigger text</label>
+      <label class="checkline"><input type="checkbox" id="set-contrast"> High contrast</label>
+      <h3 style="margin-top:16px">People</h3>
+      <p class="note">First name or initials. Add a name here if several people share this tablet.</p>
+      <div class="actions">
+        <label class="field" for="person-name" style="flex:1 1 180px">Name
+          <input id="person-name" type="text" maxlength="40" autocomplete="off">
+        </label>
+        <button type="button" id="person-add" style="align-self:end">Add</button>
+      </div>
+      <div id="people-list"></div>
+      <p id="people-msg" class="note" role="status"></p>
+      <p>Your records stay on this device. Nothing is sent anywhere.</p>
+      <div class="dialog-actions">
+        <button type="button" id="clear-records" class="quiet">Clear all records</button>
+        <button type="button" id="settings-close">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="dialog-back" id="print-back" role="dialog" aria-modal="true" aria-labelledby="print-title" aria-hidden="true">
+    <div class="dialog">
+      <h2 id="print-title">Print puzzles</h2>
+      <p id="print-msg" class="note" role="status"></p>
+      <div id="print-body"></div>
+    </div>
+  </div>
+
+  <div class="dialog-back" id="prec-back" role="dialog" aria-modal="true" aria-labelledby="prec-title" aria-hidden="true">
+    <div class="dialog">
+      <h2 id="prec-title">Print record</h2>
+      <p id="prec-msg" class="note" role="status"></p>
+      <label class="field" for="pr-who">Who
+        <select id="pr-who"></select>
+      </label>
+      <label class="field" for="pr-from">From
+        <input id="pr-from" type="date">
+      </label>
+      <label class="field" for="pr-to">To
+        <input id="pr-to" type="date">
+      </label>
+      <div class="dialog-actions" style="margin-top:16px">
+        <button type="button" id="prec-cancel" class="quiet">Cancel</button>
+        <button type="button" id="prec-go">Print</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="dialog-back" id="done-back" role="dialog" aria-modal="true" aria-labelledby="done-title" aria-hidden="true">
+    <div class="dialog">
+      <h2 id="done-title">All found! Well done.</h2>
+      <div class="dialog-actions">
+        <button type="button" id="done-new">New puzzle</button>
+        <button type="button" id="done-keep" class="quiet">Keep looking at the grid</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="dialog-back" id="confirm-back" role="dialog" aria-modal="true" aria-labelledby="confirm-text" aria-hidden="true">
+    <div class="dialog">
+      <h2 id="confirm-text"></h2>
+      <div class="dialog-actions">
+        <button type="button" id="confirm-cancel" class="quiet">Cancel</button>
+        <button type="button" id="confirm-ok">Remove</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="sheet"></div>
+<div id="record-print"></div>
+<script>
+(function () {
+  var KEY = "aac-wordsearch-state";
+  var THEMES = [
+    { id: "bush-animals", label: "Bush Animals", words: ["wallaby", "echidna", "possum", "cockatoo", "wombat", "turtle", "platypus", "kookaburra", "dugong", "bandicoot", "quokka", "lorikeet"] },
+    { id: "bush-plants", label: "Bush Plants", words: ["wattle", "eucalypt", "bottlebrush", "grevillea", "banksia", "tea-tree", "lillypilly", "waratah", "acacia", "melaleuca", "spinifex", "kangaroo-paw"] },
+    { id: "caring", label: "Caring for Country", words: ["country", "respect", "elder", "story", "track", "water", "fire", "wind", "listen", "care", "learn", "share"] },
+    { id: "sustainability", label: "Sustainability", words: ["repair", "reuse", "compost", "recycle", "restore", "conserve", "reduce", "mend", "upcycle", "grow", "save", "earth"] },
+    { id: "weather", label: "Weather & Seasons", words: ["rain", "wind", "sun", "cloud", "storm", "frost", "mist", "rainbow", "thunder", "drought", "breeze", "season"] },
+    { id: "thinking", label: "Thinking Words", words: ["plan", "focus", "adapt", "remember", "pause", "reflect", "organise", "decide", "persist", "check", "think", "notice"] },
+    { id: "outdoor", label: "Outdoor Skills", words: ["compass", "shelter", "water", "fire", "map", "track", "knot", "rope", "whistle", "first-aid", "tent", "lantern"] },
+    { id: "water-life", label: "Water Life", words: ["river", "creek", "billabong", "wetland", "dam", "estuary", "mangrove", "tide", "lagoon", "waterhole", "spring", "rockpool"] },
+    { id: "night-sky", label: "Night Sky", words: ["stars", "moon", "planet", "comet", "milky-way", "galaxy", "meteor", "orbit", "eclipse", "constellation", "nebula", "satellite"] },
+    { id: "community", label: "Community", words: ["family", "neighbour", "helper", "volunteer", "care", "kindness", "share", "listen", "support", "together", "belong", "welcome"] },
+    { id: "tools", label: "Tools & Repair", words: ["hammer", "pliers", "tape", "brush", "screw", "saw", "drill", "level", "clamp", "file", "chisel", "spanner"] },
+    { id: "happy", label: "Happy Words", words: ["curious", "kind", "brave", "patient", "helpful", "grateful", "calm", "joyful", "gentle", "hopeful", "steady", "bright"] }
+  ];
+  var LEVELS = {
+    large: { label: "Large Print", size: 8, count: 5, dirs: [[0, 1]], note: "Words go across only, left to right.", large: true, maxLen: 8 },
+    easy: { label: "Easy", size: 8, count: 6, dirs: [[0, 1]], note: "Words go across only, left to right.", maxLen: 8 },
+    medium: { label: "Medium", size: 10, count: 8, dirs: [[0, 1], [1, 0]], note: "Words go across and down.", maxLen: 10 },
+    hard: { label: "Hard", size: 12, count: 10, dirs: [[0, 1], [1, 0], [1, 1], [1, -1], [-1, 1], [-1, -1]], note: "Words go across, down, and on diagonals both ways.", maxLen: 12 },
+    extra: { label: "Extra", size: 14, count: 12, dirs: [[0, 1], [1, 0], [1, 1], [-1, 1], [0, -1], [-1, 0], [-1, -1], [1, -1]], note: "Words can go in any direction.", maxLen: 14 }
+  };
+  var LEVEL_ORDER = ["large", "easy", "medium", "hard", "extra"];
+  var FILL = "ABCDEFGHIJKLMNOPRSTUVWY";
+  var FILL_LARGE = "ABCDEFGHKLMNPRSTUWY";
+  var state = blank();
+  var anchor = null;
+  var draft = [];
+  var press = null;
+  var cursor = [0, 0];
+  var hintCell = null;
+  var hintTimer = 0;
+  var clockTimer = 0;
+  var confirmAction = null;
+  var printMode = "std";
+  var lastFocus = null;
+
+  function blank() {
+    return {
+      levelId: "large",
+      themeId: "random",
+      showTimer: false,
+      biggerText: false,
+      highContrast: false,
+      helpSeen: false,
+      people: [],
+      activePersonId: "",
+      records: [],
+      puzzle: null
+    };
+  }
+  function themeById(id) {
+    for (var i = 0; i < THEMES.length; i++) if (THEMES[i].id === id) return THEMES[i];
+    return null;
+  }
+  function pad(n) { return (n < 10 ? "0" : "") + n; }
+  function el(tag, attrs) {
+    var node = document.createElement(tag);
+    if (attrs) {
+      Object.keys(attrs).forEach(function (k) {
+        if (k === "text") node.textContent = attrs[k];
+        else if (k === "class") node.className = attrs[k];
+        else node.setAttribute(k, attrs[k]);
+      });
+    }
+    for (var i = 2; i < arguments.length; i++) {
+      var c = arguments[i];
+      if (c == null) continue;
+      node.append(c.nodeType ? c : document.createTextNode(String(c)));
+    }
+    return node;
+  }
+  function empty(node) { node.innerHTML = ""; }
+  function rng(seed) {
+    var s = seed >>> 0 || 1;
+    return function () {
+      s ^= s << 13; s >>>= 0;
+      s ^= s >>> 17;
+      s ^= s << 5; s >>>= 0;
+      return s / 4294967296;
+    };
+  }
+  function clean(w) { return String(w).toUpperCase().replace(/[^A-Z]/g, ""); }
+  function shuffle(a, r) {
+    a = a.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(r() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+  function make(themeId, levelId, seed) {
+    var theme = themeById(themeId) || THEMES[0];
+    var L = LEVELS[levelId] || LEVELS.easy;
+    for (var attempt = 0; attempt < 60; attempt++) {
+      var r = rng((seed + attempt * 7919) >>> 0);
+      var pool = shuffle(theme.words.map(function (w) {
+        return { show: w.toUpperCase().replace(/-/g, " "), key: clean(w) };
+      }).filter(function (w) {
+        return w.key.length >= 2 && w.key.length <= Math.min(L.maxLen, L.size);
+      }), r);
+      var n = L.size;
+      var grid = [];
+      for (var i = 0; i < n; i++) {
+        var row = [];
+        for (var j = 0; j < n; j++) row.push("");
+        grid.push(row);
+      }
+      var placed = [];
+      for (var k = 0; k < pool.length && placed.length < L.count; k++) {
+        var word = pool[k].key;
+        var ok = false;
+        for (var tries = 0; tries < 200 && !ok; tries++) {
+          var d = L.dirs[Math.floor(r() * L.dirs.length)];
+          var row0 = Math.floor(r() * n);
+          var col0 = Math.floor(r() * n);
+          var er = row0 + d[0] * (word.length - 1);
+          var ec = col0 + d[1] * (word.length - 1);
+          if (er < 0 || er >= n || ec < 0 || ec >= n) continue;
+          var fits = true;
+          for (var c = 0; c < word.length; c++) {
+            var g = grid[row0 + d[0] * c][col0 + d[1] * c];
+            if (g && g !== word.charAt(c)) { fits = false; break; }
+          }
+          if (!fits) continue;
+          var cells = [];
+          for (var c2 = 0; c2 < word.length; c2++) {
+            var rr = row0 + d[0] * c2;
+            var cc = col0 + d[1] * c2;
+            grid[rr][cc] = word.charAt(c2);
+            cells.push([rr, cc]);
+          }
+          placed.push({ show: pool[k].show, key: word, cells: cells, found: false });
+          ok = true;
+        }
+      }
+      if (placed.length < L.count) continue;
+      var fill = L.large ? FILL_LARGE : FILL;
+      for (var a = 0; a < n; a++) {
+        for (var b = 0; b < n; b++) {
+          if (!grid[a][b]) grid[a][b] = fill.charAt(Math.floor(r() * fill.length));
+        }
+      }
+      placed.sort(function (x, y) { return x.show < y.show ? -1 : x.show > y.show ? 1 : 0; });
+      return { themeId: theme.id, themeLabel: theme.label, levelId: levelId, grid: grid, words: placed, seed: seed >>> 0 };
+    }
+    return null;
+  }
+  function esc(s) {
+    return String(s).replace(/[&<>]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]; });
+  }
+  function sheetHTML(p, num, isLast) {
+    var L = LEVELS[p.levelId];
+    var n = p.grid.length;
+    var rows = p.grid.map(function (r) {
+      return "<tr>" + r.map(function (ch) { return "<td>" + esc(ch) + "</td>"; }).join("") + "</tr>";
+    }).join("");
+    var list = p.words.map(function (w) { return '<li><span class="box"></span>' + esc(w.show) + "</li>"; }).join("");
+    return '<section class="ws-sheet' + (L.large ? " ws-large" : "") + (isLast ? " ws-end" : "") + '">' +
+      "<header><div class=\"ws-brand\">AUSSIE ACTIVITY CLUB · WORD SEARCH · NO. " + num + "</div>" +
+      "<h2>" + esc(p.themeLabel) + "</h2><div class=\"ws-meta\">" + esc(L.label) + " · " + esc(L.note) + "</div></header>" +
+      '<table class="ws-grid s' + n + '">' + rows + "</table>" +
+      '<div class="ws-find"><h3>Find these words</h3><ul>' + list + "</ul></div>" +
+      "<footer><div>Take your time. Tick each word when you find it.</div>" +
+      '<div class="ws-club">Aussie Activity Club · From the team at Aussie Homeschooling Hub</div></footer></section>';
+  }
+  function answerHTML(p, num) {
+    var n = p.grid.length;
+    var mark = {};
+    p.words.forEach(function (w) { w.cells.forEach(function (c) { mark[c[0] + "," + c[1]] = 1; }); });
+    var rows = p.grid.map(function (r, i) {
+      return "<tr>" + r.map(function (ch, j) {
+        return "<td" + (mark[i + "," + j] ? ' class="on"' : "") + ">" + esc(ch) + "</td>";
+      }).join("") + "</tr>";
+    }).join("");
+    var L = LEVELS[p.levelId];
+    return '<div class="ws-ans"><div class="ws-ans-t">NO. ' + num + " · " + esc(p.themeLabel) + " · " + esc(L.label) +
+      '</div><table class="ws-grid mini s' + n + '">' + rows + "</table></div>";
+  }
+  function buildSheets(themeSel, levelId, n, answers) {
+    var ids = THEMES.map(function (t) { return t.id; });
+    var start = Math.floor(Math.random() * ids.length);
+    var seed = (Date.now() % 1000000007) >>> 0;
+    var parts = [];
+    var keys = "";
+    var made = 0;
+    for (var i = 0; i < n; i++) {
+      var tid = themeSel === "mix" ? ids[(start + i) % ids.length] : themeSel;
+      var p = make(tid, levelId, (seed + i * 101) >>> 0);
+      if (!p) continue;
+      made += 1;
+      parts.push(p);
+      keys += answerHTML(p, made);
+    }
+    if (!made) return "";
+    var html = parts.map(function (p, idx) {
+      return sheetHTML(p, idx + 1, !answers && idx === parts.length - 1);
+    }).join("");
+    if (answers) {
+      html += '<section class="ws-answers"><h2>Answers</h2><div class="wrap">' + keys + "</div>" +
+        '<p class="ws-club">Aussie Activity Club · From the team at Aussie Homeschooling Hub</p></section>';
+    }
+    return html;
+  }
+  function showSaveNote() {
+    document.getElementById("save-note").hidden = false;
+  }
+  function persist() {
+    try {
+      localStorage.setItem(KEY, JSON.stringify(state));
+      return true;
+    } catch (e) {
+      showSaveNote();
+      return false;
+    }
+  }
+  function revivePuzzle(p) {
+    if (!p || !LEVELS[p.levelId] || !themeById(p.themeId)) return null;
+    var L = LEVELS[p.levelId];
+    if (!Array.isArray(p.grid) || p.grid.length !== L.size) return null;
+    for (var i = 0; i < p.grid.length; i++) {
+      if (!Array.isArray(p.grid[i]) || p.grid[i].length !== L.size) return null;
+      for (var j = 0; j < p.grid[i].length; j++) {
+        if (typeof p.grid[i][j] !== "string" || p.grid[i][j].length !== 1) return null;
+      }
+    }
+    if (!Array.isArray(p.words) || p.words.length !== L.count) return null;
+    var words = [];
+    for (var k = 0; k < p.words.length; k++) {
+      var w = p.words[k];
+      if (!w || typeof w.show !== "string" || typeof w.key !== "string" || !Array.isArray(w.cells)) return null;
+      if (w.cells.length !== w.key.length) return null;
+      var cells = [];
+      for (var c = 0; c < w.cells.length; c++) {
+        var cell = w.cells[c];
+        if (!cell || cell.length < 2) return null;
+        var r0 = +cell[0], c0 = +cell[1];
+        if (r0 < 0 || c0 < 0 || r0 >= L.size || c0 >= L.size) return null;
+        cells.push([r0, c0]);
+      }
+      words.push({ show: w.show, key: w.key, cells: cells, found: w.found === true });
+    }
+    var theme = themeById(p.themeId);
+    return {
+      themeId: p.themeId,
+      themeLabel: theme.label,
+      levelId: p.levelId,
+      grid: p.grid,
+      words: words,
+      seed: typeof p.seed === "number" ? p.seed : 1,
+      elapsedMs: typeof p.elapsedMs === "number" && p.elapsedMs >= 0 ? p.elapsedMs : 0,
+      runningSince: null,
+      logged: p.logged === true
+    };
+  }
+  function load() {
+    var readOk = true;
+    var data = null;
+    try {
+      var raw = localStorage.getItem(KEY);
+      if (raw) data = JSON.parse(raw);
+    } catch (e) {
+      readOk = false;
+    }
+    if (!readOk) showSaveNote();
+    if (!data || typeof data !== "object") return;
+    if (LEVELS[data.levelId]) state.levelId = data.levelId;
+    if (data.themeId === "random" || themeById(data.themeId)) state.themeId = data.themeId;
+    state.showTimer = data.showTimer === true;
+    state.biggerText = data.biggerText === true;
+    state.highContrast = data.highContrast === true;
+    state.helpSeen = data.helpSeen === true;
+    if (Array.isArray(data.people)) {
+      data.people.forEach(function (p) {
+        if (!p || typeof p.id !== "string" || typeof p.name !== "string") return;
+        var name = cleanName(p.name);
+        if (!name || !hasLetter(name)) return;
+        state.people.push({ id: p.id.slice(0, 40), name: name });
+      });
+    }
+    if (typeof data.activePersonId === "string" && state.people.some(function (p) { return p.id === data.activePersonId; })) {
+      state.activePersonId = data.activePersonId;
+    }
+    if (Array.isArray(data.records)) {
+      data.records.forEach(function (r) {
+        if (!r || typeof r.id !== "string" || typeof r.at !== "string") return;
+        state.records.push({
+          id: r.id.slice(0, 80),
+          at: r.at.slice(0, 40),
+          personId: typeof r.personId === "string" ? r.personId.slice(0, 40) : "",
+          name: typeof r.name === "string" && r.name.trim() ? r.name.trim().slice(0, 40) : "No name",
+          theme: typeof r.theme === "string" ? r.theme.slice(0, 80) : "",
+          level: typeof r.level === "string" ? r.level.slice(0, 40) : "",
+          words: typeof r.words === "string" ? r.words.slice(0, 20) : "",
+          seconds: typeof r.seconds === "number" && isFinite(r.seconds) && r.seconds >= 0 ? Math.round(r.seconds) : null,
+          notes: typeof r.notes === "string" ? r.notes.slice(0, 300) : ""
+        });
+      });
+    }
+    state.puzzle = revivePuzzle(data.puzzle);
+    if (state.puzzle) state.levelId = state.puzzle.levelId;
+  }
+  function cleanName(s) {
+    return String(s).replace(/[\u0000-\u001F]/g, "").replace(/\s+/g, " ").trim().slice(0, 40);
+  }
+  function hasLetter(s) { return /\p{L}/u.test(s); }
+  function uid(prefix) {
+    return prefix + Date.now().toString(36) + Math.floor(Math.random() * 1e6).toString(36);
+  }
+  function isoLocal(d) {
+    var off = -d.getTimezoneOffset();
+    var sign = off >= 0 ? "+" : "-";
+    var abs = Math.abs(off);
+    return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()) +
+      "T" + pad(d.getHours()) + ":" + pad(d.getMinutes()) + ":" + pad(d.getSeconds()) +
+      sign + pad(Math.floor(abs / 60)) + ":" + pad(abs % 60);
+  }
+  function formatWhen(iso) {
+    var d = new Date(iso);
+    if (isNaN(d.getTime())) return "";
+    return new Intl.DateTimeFormat("en-AU", {
+      day: "numeric", month: "short", year: "numeric", hour: "numeric", minute: "2-digit"
+    }).format(d);
+  }
+  function localDay(iso) {
+    var d = new Date(iso);
+    if (isNaN(d.getTime())) return "";
+    return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate());
+  }
+  function prettyDay(isoDate) {
+    var p = isoDate.split("-");
+    var d = new Date(+p[0], +p[1] - 1, +p[2]);
+    return new Intl.DateTimeFormat("en-AU", { day: "numeric", month: "short", year: "numeric" }).format(d);
+  }
+  function formatClock(ms) {
+    var s = Math.max(0, Math.floor(ms / 1000));
+    var h = Math.floor(s / 3600);
+    var m = Math.floor((s % 3600) / 60);
+    var sec = s % 60;
+    if (h > 0) return h + ":" + pad(m) + ":" + pad(sec);
+    return m + ":" + pad(sec);
+  }
+  function elapsed() {
+    if (!state.puzzle) return 0;
+    var extra = state.puzzle.runningSince ? Date.now() - state.puzzle.runningSince : 0;
+    return state.puzzle.elapsedMs + extra;
+  }
+  function freeze() {
+    if (!state.puzzle || !state.puzzle.runningSince) return;
+    state.puzzle.elapsedMs += Date.now() - state.puzzle.runningSince;
+    state.puzzle.runningSince = null;
+  }
+  function resume() {
+    if (!state.puzzle || puzzleDone()) return;
+    if (!state.puzzle.runningSince) state.puzzle.runningSince = Date.now();
+  }
+  function puzzleDone() {
+    return !!(state.puzzle && state.puzzle.words.every(function (w) { return w.found; }));
+  }
+  function setStatus(text) {
+    document.getElementById("status").textContent = text;
+  }
+  function applyChrome() {
+    document.body.classList.toggle("big", state.biggerText);
+    document.body.classList.toggle("contrast", state.highContrast);
+    document.body.classList.remove("lv-large", "lv-easy", "lv-medium", "lv-hard", "lv-extra");
+    document.body.classList.add("lv-" + (state.puzzle ? state.puzzle.levelId : state.levelId));
+    var timer = document.getElementById("timer");
+    timer.hidden = !state.showTimer;
+    if (state.showTimer) timer.textContent = "Time " + formatClock(elapsed());
+    var L = LEVELS[state.puzzle ? state.puzzle.levelId : state.levelId];
+    document.getElementById("level-note").textContent = L.note;
+    if (state.puzzle) document.getElementById("theme-name").textContent = state.puzzle.themeLabel;
+  }
+  function fillLevelSelect(sel, value) {
+    empty(sel);
+    LEVEL_ORDER.forEach(function (id) {
+      var L = LEVELS[id];
+      sel.append(el("option", { value: id, text: L.label + " — " + L.note }));
+    });
+    sel.value = value;
+  }
+  function fillThemeSelect() {
+    var sel = document.getElementById("theme");
+    empty(sel);
+    sel.append(el("option", { value: "random", text: "Random (new theme each time)" }));
+    THEMES.forEach(function (t) { sel.append(el("option", { value: t.id, text: t.label })); });
+    sel.value = state.themeId;
+  }
+  function fillWho() {
+    var sel = document.getElementById("who");
+    var current = state.activePersonId || "";
+    empty(sel);
+    sel.append(el("option", { value: "", text: "No name" }));
+    state.people.forEach(function (p) { sel.append(el("option", { value: p.id, text: p.name })); });
+    var ok = state.people.some(function (p) { return p.id === current; });
+    sel.value = ok ? current : "";
+    state.activePersonId = sel.value;
+  }
+  function renderGrid() {
+    var gridEl = document.getElementById("grid");
+    empty(gridEl);
+    if (!state.puzzle) return;
+    var n = state.puzzle.grid.length;
+    gridEl.style.gridTemplateColumns = "repeat(" + n + ", 1fr)";
+    for (var r = 0; r < n; r++) {
+      for (var c = 0; c < n; c++) {
+        gridEl.append(el("button", {
+          type: "button",
+          class: "cell",
+          role: "gridcell",
+          "data-r": String(r),
+          "data-c": String(c),
+          text: state.puzzle.grid[r][c]
+        }));
+      }
+    }
+    cursor = [0, 0];
+    paint();
+  }
+  function cellKey(r, c) { return r + "," + c; }
+  function paint() {
+    if (!state.puzzle) return;
+    var found = {};
+    state.puzzle.words.forEach(function (w) {
+      if (!w.found) return;
+      w.cells.forEach(function (c) { found[cellKey(c[0], c[1])] = 1; });
+    });
+    var draftMap = {};
+    draft.forEach(function (c) { draftMap[cellKey(c[0], c[1])] = 1; });
+    var buttons = document.getElementById("grid").querySelectorAll("button");
+    buttons.forEach(function (b) {
+      var r = +b.getAttribute("data-r");
+      var c = +b.getAttribute("data-c");
+      var key = cellKey(r, c);
+      var isFound = !!found[key];
+      var isDraft = !!draftMap[key];
+      var isAnchor = anchor && anchor[0] === r && anchor[1] === c;
+      var isHint = hintCell && hintCell[0] === r && hintCell[1] === c;
+      b.className = "cell" + (isFound ? " found" : "") + (isDraft ? " draft" : "") + (isAnchor ? " anchor" : "") + (isHint ? " hint" : "");
+      var name = state.puzzle.grid[r][c];
+      if (isFound) name += ", ticked";
+      if (isHint) name += ", marked";
+      b.setAttribute("aria-label", name);
+      b.tabIndex = (r === cursor[0] && c === cursor[1]) ? 0 : -1;
+    });
+    var list = document.getElementById("words");
+    empty(list);
+    state.puzzle.words.forEach(function (w) {
+      var box = el("span", { class: "tick", "aria-hidden": "true", text: w.found ? "✓" : "" });
+      var item = el("li", { class: w.found ? "found" : "" }, box, w.show);
+      if (w.found) item.append(el("span", { class: "vh", text: ", ticked" }));
+      list.append(item);
+    });
+  }
+  function sameCells(a, b) {
+    if (!a || !b || a.length !== b.length) return false;
+    for (var i = 0; i < a.length; i++) {
+      if (a[i][0] !== b[i][0] || a[i][1] !== b[i][1]) return false;
+    }
+    return true;
+  }
+  function exactPath(r1, c1, r2, c2) {
+    var dr = r2 - r1, dc = c2 - c1;
+    var adr = Math.abs(dr), adc = Math.abs(dc);
+    if (dr !== 0 && dc !== 0 && adr !== adc) return null;
+    var steps = Math.max(adr, adc);
+    var sr = dr === 0 ? 0 : dr / adr;
+    var sc = dc === 0 ? 0 : dc / adc;
+    var cells = [];
+    for (var i = 0; i <= steps; i++) cells.push([r1 + sr * i, c1 + sc * i]);
+    return cells;
+  }
+  function snapPath(r1, c1, r2, c2, n) {
+    var dr = r2 - r1, dc = c2 - c1;
+    if (!dr && !dc) return [[r1, c1]];
+    var ang = Math.atan2(dr, dc);
+    var dir = Math.round(ang / (Math.PI / 4));
+    var sr = Math.round(Math.sin(dir * Math.PI / 4));
+    var sc = Math.round(Math.cos(dir * Math.PI / 4));
+    var steps = sr && sc ? Math.min(Math.abs(dr), Math.abs(dc)) : Math.max(Math.abs(dr), Math.abs(dc));
+    if (steps < 1) steps = 1;
+    var cells = [];
+    for (var i = 0; i <= steps; i++) {
+      var r = r1 + sr * i, c = c1 + sc * i;
+      if (r < 0 || c < 0 || r >= n || c >= n) break;
+      cells.push([r, c]);
+    }
+    return cells;
+  }
+  function tryPath(path) {
+    if (!state.puzzle || !path || path.length < 2) {
+      setStatus("Tap the first letter, then the last letter.");
+      return;
+    }
+    var match = null;
+    for (var i = 0; i < state.puzzle.words.length; i++) {
+      if (sameCells(state.puzzle.words[i].cells, path)) { match = state.puzzle.words[i]; break; }
+    }
+    if (!match) {
+      setStatus("That's not one of the words.");
+      return;
+    }
+    if (match.found) {
+      setStatus(match.show + " is already ticked.");
+      return;
+    }
+    match.found = true;
+    var got = state.puzzle.words.filter(function (w) { return w.found; }).length;
+    setStatus("Found " + match.show + ". " + got + " of " + state.puzzle.words.length + ".");
+    if (got === state.puzzle.words.length) finish();
+    else persist();
+  }
+  function finish() {
+    freeze();
+    hintCell = null;
+    if (!state.puzzle.logged) {
+      var who = currentPerson();
+      var rec = {
+        id: uid("r"),
+        at: isoLocal(new Date()),
+        personId: who.id,
+        name: who.name,
+        theme: state.puzzle.themeLabel,
+        level: LEVELS[state.puzzle.levelId].label,
+        words: state.puzzle.words.length + " of " + state.puzzle.words.length,
+        seconds: state.showTimer ? Math.max(0, Math.round(elapsed() / 1000)) : null,
+        notes: ""
+      };
+      state.records.push(rec);
+      state.puzzle.logged = true;
+    }
+    persist();
+    renderRecords();
+    setStatus("All found! Well done.");
+    openDialog("done-back");
+  }
+  function currentPerson() {
+    if (!state.activePersonId) return { id: "", name: "No name" };
+    for (var i = 0; i < state.people.length; i++) {
+      if (state.people[i].id === state.activePersonId) return { id: state.people[i].id, name: state.people[i].name };
+    }
+    return { id: "", name: "No name" };
+  }
+  function newPuzzle() {
+    var chosen = state.themeId;
+    if (chosen === "random") {
+      var i = Math.floor(Math.random() * THEMES.length);
+      if (state.puzzle && THEMES.length > 1 && THEMES[i].id === state.puzzle.themeId) i = (i + 1) % THEMES.length;
+      chosen = THEMES[i].id;
+    }
+    var seed = (Date.now() % 1000000007) >>> 0;
+    var made = null;
+    for (var n = 0; n < 8 && !made; n++) made = make(chosen, state.levelId, (seed + n * 997) >>> 0);
+    anchor = null;
+    draft = [];
+    hintCell = null;
+    clearTimeout(hintTimer);
+    closeDialog("done-back");
+    if (!made) {
+      state.puzzle = null;
+      setStatus("Couldn't make a puzzle. Press New puzzle to try again.");
+      applyChrome();
+      persist();
+      return;
+    }
+    state.puzzle = {
+      themeId: made.themeId,
+      themeLabel: made.themeLabel,
+      levelId: made.levelId,
+      grid: made.grid,
+      words: made.words,
+      seed: made.seed,
+      elapsedMs: 0,
+      runningSince: Date.now(),
+      logged: false
+    };
+    setStatus("Tap the first letter, then the last letter.");
+    applyChrome();
+    renderGrid();
+    persist();
+  }
+  function showHint() {
+    if (!state.puzzle) return;
+    var pending = state.puzzle.words.filter(function (w) { return !w.found; });
+    if (!pending.length) {
+      setStatus("All the words are found.");
+      return;
+    }
+    hintCell = pending[0].cells[0].slice();
+    setStatus("A first letter is marked.");
+    clearTimeout(hintTimer);
+    hintTimer = setTimeout(function () { hintCell = null; paint(); }, 4000);
+    paint();
+  }
+  function clearSelection() {
+    anchor = null;
+    draft = [];
+    paint();
+    if (puzzleDone()) setStatus("All found! Well done.");
+    else setStatus("Tap the first letter, then the last letter.");
+  }
+  function tapCell(r, c) {
+    if (!anchor) {
+      anchor = [r, c];
+      draft = [[r, c]];
+      setStatus("Now tap the last letter.");
+      return;
+    }
+    if (anchor[0] === r && anchor[1] === c) {
+      anchor = null;
+      draft = [];
+      setStatus("Tap the first letter, then the last letter.");
+      return;
+    }
+    var path = exactPath(anchor[0], anchor[1], r, c);
+    anchor = null;
+    draft = [];
+    if (!path) {
+      setStatus("Those letters are not in a straight line.");
+      return;
+    }
+    tryPath(path);
+  }
+  function cellAt(x, y) {
+    var node = document.elementFromPoint(x, y);
+    if (!node || !node.closest) return null;
+    var cell = node.closest("button[data-r]");
+    var gridEl = document.getElementById("grid");
+    if (!cell || !gridEl.contains(cell)) return null;
+    return [+cell.getAttribute("data-r"), +cell.getAttribute("data-c")];
+  }
+  function onPointerDown(e) {
+    var cell = e.target.closest && e.target.closest("button[data-r]");
+    if (!cell || !document.getElementById("grid").contains(cell) || press) return;
+    press = { id: e.pointerId, r: +cell.getAttribute("data-r"), c: +cell.getAttribute("data-c"), x: e.clientX, y: e.clientY, moved: false };
+    try { document.getElementById("grid").setPointerCapture(e.pointerId); } catch (err) {}
+    draft = [[press.r, press.c]];
+    paint();
+  }
+  function onPointerMove(e) {
+    if (!press || e.pointerId !== press.id || !state.puzzle) return;
+    if (Math.abs(e.clientX - press.x) > 10 || Math.abs(e.clientY - press.y) > 10) press.moved = true;
+    if (!press.moved) return;
+    var cell = cellAt(e.clientX, e.clientY);
+    if (!cell) return;
+    draft = snapPath(press.r, press.c, cell[0], cell[1], state.puzzle.grid.length);
+    paint();
+  }
+  function onPointerUp(e) {
+    if (!press || e.pointerId !== press.id) return;
+    var startR = press.r, startC = press.c, moved = press.moved;
+    var path = draft.map(function (c) { return [c[0], c[1]]; });
+    press = null;
+    if (moved && path.length > 1) {
+      anchor = null;
+      draft = [];
+      tryPath(path);
+    } else {
+      draft = [];
+      tapCell(startR, startC);
+    }
+    paint();
+  }
+  function onGridKey(e) {
+    if (!state.puzzle) return;
+    var n = state.puzzle.grid.length;
+    var r = cursor[0], c = cursor[1];
+    if (e.key === "ArrowRight") c = Math.min(n - 1, c + 1);
+    else if (e.key === "ArrowLeft") c = Math.max(0, c - 1);
+    else if (e.key === "ArrowDown") r = Math.min(n - 1, r + 1);
+    else if (e.key === "ArrowUp") r = Math.max(0, r - 1);
+    else if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      tapCell(cursor[0], cursor[1]);
+      paint();
+      return;
+    } else return;
+    e.preventDefault();
+    cursor = [r, c];
+    paint();
+    var btn = document.getElementById("grid").querySelector('[data-r="' + r + '"][data-c="' + c + '"]');
+    if (btn) btn.focus();
+  }
+  function anyDialog() { return !!document.querySelector(".dialog-back.open"); }
+  function openDialog(id) {
+    if (!anyDialog()) lastFocus = document.activeElement;
+    document.getElementById("screen").setAttribute("inert", "");
+    var back = document.getElementById(id);
+    back.classList.add("open");
+    back.setAttribute("aria-hidden", "false");
+    var focus = back.querySelector("button, select, input, textarea");
+    if (focus) focus.focus();
+  }
+  function closeDialog(id) {
+    var back = document.getElementById(id);
+    if (!back.classList.contains("open")) return;
+    back.classList.remove("open");
+    back.setAttribute("aria-hidden", "true");
+    if (anyDialog()) {
+      var open = document.querySelector(".dialog-back.open");
+      var focus = open.querySelector("button, select, input, textarea");
+      if (focus) focus.focus();
+      return;
+    }
+    document.getElementById("screen").removeAttribute("inert");
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+  function closeHelp() {
+    state.helpSeen = true;
+    persist();
+    closeDialog("help-back");
+  }
+  function ask(message, okLabel, action) {
+    document.getElementById("confirm-text").textContent = message;
+    document.getElementById("confirm-ok").textContent = okLabel;
+    confirmAction = action;
+    openDialog("confirm-back");
+  }
+  function renderPeople() {
+    var box = document.getElementById("people-list");
+    empty(box);
+    state.people.forEach(function (p) {
+      var row = el("div", { class: "person-row" });
+      row.append(el("strong", { text: p.name }));
+      var rename = el("button", { type: "button", class: "quiet", text: "Rename" });
+      var remove = el("button", { type: "button", class: "quiet", text: "Remove" });
+      rename.addEventListener("click", function () { startRename(p, row); });
+      remove.addEventListener("click", function () {
+        ask("Remove " + p.name + "? Their records will be removed too.", "Remove", function () {
+          state.people = state.people.filter(function (x) { return x.id !== p.id; });
+          state.records = state.records.filter(function (r) { return r.personId !== p.id; });
+          if (state.activePersonId === p.id) state.activePersonId = "";
+          persist();
+          fillWho();
+          renderPeople();
+          renderRecords();
+        });
+      });
+      row.append(rename, remove);
+      box.append(row);
+    });
+  }
+  function startRename(p, row) {
+    var box = el("div", { class: "rename-box" });
+    var input = el("input", { type: "text", maxlength: "40", value: p.name });
+    input.value = p.name;
+    var save = el("button", { type: "button", text: "Save name" });
+    var cancel = el("button", { type: "button", class: "quiet", text: "Cancel" });
+    save.addEventListener("click", function () {
+      var name = cleanName(input.value);
+      if (!hasLetter(name)) { peopleMsg("Type a first name or initials."); return; }
+      var dup = state.people.some(function (x) { return x.id !== p.id && x.name.toLowerCase() === name.toLowerCase(); });
+      if (dup) { peopleMsg("That name is already in the list."); return; }
+      p.name = name;
+      state.records.forEach(function (r) { if (r.personId === p.id) r.name = name; });
+      persist();
+      fillWho();
+      renderPeople();
+      renderRecords();
+    });
+    cancel.addEventListener("click", renderPeople);
+    box.append(input, save, cancel);
+    empty(row);
+    row.append(box);
+    input.focus();
+  }
+  function peopleMsg(text) {
+    document.getElementById("people-msg").textContent = text;
+  }
+  function addPerson() {
+    var name = cleanName(document.getElementById("person-name").value);
+    if (!hasLetter(name)) { peopleMsg("Type a first name or initials."); return; }
+    if (state.people.length >= 60) { peopleMsg("The list is full."); return; }
+    var dup = state.people.some(function (x) { return x.name.toLowerCase() === name.toLowerCase(); });
+    if (dup) { peopleMsg("That name is already in the list."); return; }
+    var person = { id: uid("p"), name: name };
+    state.people.push(person);
+    state.activePersonId = person.id;
+    document.getElementById("person-name").value = "";
+    persist();
+    fillWho();
+    renderPeople();
+    peopleMsg(name + " is ready for the next puzzle.");
+  }
+  function renderRecords() {
+    var box = document.getElementById("record-list");
+    empty(box);
+    if (!state.records.length) {
+      box.append(el("p", { text: "No records yet. A finished puzzle is added here." }));
+      return;
+    }
+    var list = state.records.slice().sort(function (a, b) { return a.at < b.at ? 1 : a.at > b.at ? -1 : 0; });
+    list.forEach(function (rec) {
+      var card = el("article", { class: "record" });
+      card.append(el("p", { text: formatWhen(rec.at) }));
+      card.append(el("p", { text: rec.name + " · " + rec.theme + " · " + rec.level + " · " + rec.words }));
+      if (rec.seconds != null) card.append(el("p", { text: "Time taken: " + formatClock(rec.seconds * 1000) }));
+      var ta = el("textarea", { id: "note-" + rec.id, maxlength: "300" });
+      ta.value = rec.notes;
+      var count = el("p", { class: "count", text: rec.notes.length + " / 300" });
+      ta.addEventListener("input", function () {
+        rec.notes = ta.value.slice(0, 300);
+        count.textContent = rec.notes.length + " / 300";
+        persist();
+      });
+      var lab = el("label", { class: "field", for: "note-" + rec.id, text: "Notes" });
+      card.append(lab, ta, count);
+      var del = el("button", { type: "button", class: "quiet", text: "Delete record" });
+      del.addEventListener("click", function () {
+        ask("Delete this record?", "Delete", function () {
+          state.records = state.records.filter(function (r) { return r.id !== rec.id; });
+          persist();
+          renderRecords();
+        });
+      });
+      card.append(del);
+      box.append(card);
+    });
+  }
+  function optionList(select, pairs, value) {
+    empty(select);
+    pairs.forEach(function (pair) { select.append(el("option", { value: pair[0], text: pair[1] })); });
+    if (value != null) select.value = value;
+  }
+  function openPrint(mode) {
+    printMode = mode;
+    var large = mode === "large";
+    document.getElementById("print-title").textContent = large ? "Large print" : "Print puzzles";
+    document.getElementById("print-msg").textContent = "";
+    var box = document.getElementById("print-body");
+    empty(box);
+    box.append(el("p", {
+      class: "sub",
+      text: large
+        ? "Big, clear letters. 5 familiar words per page, all going across. One puzzle per A4 page."
+        : "One puzzle per A4 page. Print as many as you need."
+    }));
+    var themes = [["mix", "Mixed"]];
+    THEMES.forEach(function (t) { themes.push([t.id, t.label]); });
+    var themeLabel = el("label", { class: "field", for: "p-theme", text: "Theme" });
+    var themeSel = el("select", { id: "p-theme" });
+    optionList(themeSel, themes);
+    themeLabel.append(themeSel);
+    box.append(themeLabel);
+    if (!large) {
+      var levelLabel = el("label", { class: "field", for: "p-level", text: "Level" });
+      var levelSel = el("select", { id: "p-level" });
+      optionList(levelSel, LEVEL_ORDER.filter(function (id) { return id !== "large"; }).map(function (id) {
+        return [id, LEVELS[id].label + " — " + LEVELS[id].note];
+      }));
+      levelLabel.append(levelSel);
+      box.append(levelLabel);
+    }
+    var pagesLabel = el("label", { class: "field", for: "p-pages", text: "How many pages" });
+    var pages = el("select", { id: "p-pages" });
+    optionList(pages, [["1", "1"], ["2", "2"], ["4", "4"], ["6", "6"], ["8", "8"], ["12", "12"]], large ? "4" : "2");
+    pagesLabel.append(pages);
+    box.append(pagesLabel);
+    var check = el("label", { class: "checkline" });
+    var cb = el("input", { type: "checkbox", id: "p-answers" });
+    cb.checked = true;
+    check.append(cb, document.createTextNode(" Add an answer page at the end"));
+    box.append(check);
+    var row = el("div", { class: "dialog-actions" });
+    var cancel = el("button", { type: "button", class: "quiet", text: "Cancel" });
+    var go = el("button", { type: "button", text: "Print" });
+    cancel.addEventListener("click", function () { closeDialog("print-back"); });
+    go.addEventListener("click", goPrintPuzzles);
+    row.append(cancel, go);
+    box.append(row);
+    openDialog("print-back");
+  }
+  function goPrintPuzzles() {
+    var theme = document.getElementById("p-theme").value;
+    var level = printMode === "large" ? "large" : document.getElementById("p-level").value;
+    var n = +document.getElementById("p-pages").value;
+    if (!n || n < 1 || n > 12) n = 1;
+    var answers = document.getElementById("p-answers").checked;
+    var html = buildSheets(theme, level, n, answers);
+    if (!html) { document.getElementById("print-msg").textContent = "Couldn't make those puzzles. Try again."; return; }
+    document.getElementById("sheet").innerHTML = html;
+    document.getElementById("record-print").innerHTML = "";
+    closeDialog("print-back");
+    document.body.classList.remove("print-record");
+    document.body.classList.add("print-puzzles");
+    setTimeout(function () { window.print(); }, 50);
+  }
+  function fillPrintWho() {
+    var sel = document.getElementById("pr-who");
+    var pairs = [["all", "Everyone"], ["none", "No name"]];
+    state.people.forEach(function (p) { pairs.push([p.id, p.name]); });
+    optionList(sel, pairs, "all");
+  }
+  function recordsForPrint() {
+    var who = document.getElementById("pr-who").value;
+    var from = document.getElementById("pr-from").value;
+    var to = document.getElementById("pr-to").value;
+    if (from && to && from > to) return { error: "The end date is before the start date." };
+    var rows = state.records.filter(function (r) {
+      if (who === "none" && r.personId) return false;
+      if (who !== "all" && who !== "none" && r.personId !== who) return false;
+      var day = localDay(r.at);
+      if (from && day < from) return false;
+      if (to && day > to) return false;
+      return true;
+    });
+    rows.sort(function (a, b) { return a.at < b.at ? -1 : a.at > b.at ? 1 : 0; });
+    if (!rows.length) return { error: "No records in that range." };
+    var whoLabel = "Everyone";
+    if (who === "none") whoLabel = "No name";
+    else if (who !== "all") {
+      var person = state.people.filter(function (p) { return p.id === who; })[0];
+      whoLabel = person ? person.name : "No name";
+    }
+    var range = "All dates";
+    if (from && to) range = prettyDay(from) + " to " + prettyDay(to);
+    else if (from) range = "From " + prettyDay(from);
+    else if (to) range = "To " + prettyDay(to);
+    return { rows: rows, whoLabel: whoLabel, range: range };
+  }
+  function buildRecordPrint(pack) {
+    var root = document.getElementById("record-print");
+    empty(root);
+    var sheet = el("article", { class: "record-sheet" });
+    sheet.append(el("h1", { text: "Aussie Activity Club · Activity Record" }));
+    sheet.append(el("p", { text: "Name: " + pack.whoLabel }));
+    sheet.append(el("p", { text: "Dates: " + pack.range }));
+    var table = el("table");
+    var head = el("tr");
+    ["Date", "Activity", "Theme", "Level", "Words found", "Notes"].forEach(function (h) {
+      head.append(el("th", { text: h }));
+    });
+    table.append(el("thead", null, head));
+    var body = el("tbody");
+    pack.rows.forEach(function (r) {
+      var tr = el("tr");
+      var activity = pack.whoLabel === "Everyone" ? "Word search — " + r.name : "Word search";
+      [formatWhen(r.at), activity, r.theme, r.level, r.words, r.notes].forEach(function (val) {
+        tr.append(el("td", { text: val }));
+      });
+      body.append(tr);
+    });
+    table.append(body);
+    sheet.append(table);
+    sheet.append(el("p", { class: "sign", text: "Recorded by: ____________   Signature: ____________   Date: ________" }));
+    sheet.append(el("p", { class: "record-foot", text: "Aussie Activity Club · Word Search" }));
+    root.append(sheet);
+  }
+  function goPrintRecord() {
+    var pack = recordsForPrint();
+    var msg = document.getElementById("prec-msg");
+    if (pack.error) { msg.textContent = pack.error; return; }
+    msg.textContent = "";
+    buildRecordPrint(pack);
+    document.getElementById("sheet").innerHTML = "";
+    closeDialog("prec-back");
+    document.body.classList.remove("print-puzzles");
+    document.body.classList.add("print-record");
+    setTimeout(function () { window.print(); }, 50);
+  }
+  function syncSettings() {
+    document.getElementById("set-level").value = state.levelId;
+    document.getElementById("set-timer").checked = state.showTimer;
+    document.getElementById("set-big").checked = state.biggerText;
+    document.getElementById("set-contrast").checked = state.highContrast;
+    renderPeople();
+  }
+  function bind() {
+    document.getElementById("help-btn").addEventListener("click", function () { openDialog("help-back"); });
+    document.getElementById("help-close").addEventListener("click", closeHelp);
+    document.getElementById("settings-btn").addEventListener("click", function () {
+      peopleMsg("");
+      syncSettings();
+      openDialog("settings-back");
+    });
+    document.getElementById("settings-close").addEventListener("click", function () { closeDialog("settings-back"); });
+    document.getElementById("new-btn").addEventListener("click", newPuzzle);
+    document.getElementById("done-new").addEventListener("click", newPuzzle);
+    document.getElementById("done-keep").addEventListener("click", function () { closeDialog("done-back"); });
+    document.getElementById("hint-btn").addEventListener("click", showHint);
+    document.getElementById("clear-btn").addEventListener("click", clearSelection);
+    document.getElementById("theme").addEventListener("change", function () {
+      state.themeId = document.getElementById("theme").value;
+      newPuzzle();
+    });
+    document.getElementById("level").addEventListener("change", function () {
+      state.levelId = document.getElementById("level").value;
+      document.getElementById("set-level").value = state.levelId;
+      newPuzzle();
+    });
+    document.getElementById("set-level").addEventListener("change", function () {
+      state.levelId = document.getElementById("set-level").value;
+      document.getElementById("level").value = state.levelId;
+      newPuzzle();
+    });
+    document.getElementById("who").addEventListener("change", function () {
+      state.activePersonId = document.getElementById("who").value;
+      persist();
+    });
+    document.getElementById("set-timer").addEventListener("change", function () {
+      state.showTimer = document.getElementById("set-timer").checked;
+      applyChrome();
+      persist();
+    });
+    document.getElementById("set-big").addEventListener("change", function () {
+      state.biggerText = document.getElementById("set-big").checked;
+      applyChrome();
+      persist();
+    });
+    document.getElementById("set-contrast").addEventListener("change", function () {
+      state.highContrast = document.getElementById("set-contrast").checked;
+      applyChrome();
+      persist();
+    });
+    document.getElementById("person-add").addEventListener("click", addPerson);
+    document.getElementById("person-name").addEventListener("keydown", function (e) {
+      if (e.key === "Enter") { e.preventDefault(); addPerson(); }
+    });
+    document.getElementById("clear-records").addEventListener("click", function () {
+      ask("Clear all records on this device?", "Clear all records", function () {
+        state.records = [];
+        persist();
+        renderRecords();
+      });
+    });
+    document.getElementById("print-puzzles-btn").addEventListener("click", function () { openPrint("std"); });
+    document.getElementById("print-large-btn").addEventListener("click", function () { openPrint("large"); });
+    document.getElementById("print-record-btn").addEventListener("click", function () {
+      document.getElementById("prec-msg").textContent = "";
+      fillPrintWho();
+      openDialog("prec-back");
+    });
+    document.getElementById("prec-cancel").addEventListener("click", function () { closeDialog("prec-back"); });
+    document.getElementById("prec-go").addEventListener("click", goPrintRecord);
+    document.getElementById("confirm-cancel").addEventListener("click", function () {
+      confirmAction = null;
+      closeDialog("confirm-back");
+    });
+    document.getElementById("confirm-ok").addEventListener("click", function () {
+      var fn = confirmAction;
+      confirmAction = null;
+      closeDialog("confirm-back");
+      if (fn) fn();
+    });
+    document.getElementById("save-note-close").addEventListener("click", function () {
+      document.getElementById("save-note").hidden = true;
+    });
+    var gridEl = document.getElementById("grid");
+    gridEl.addEventListener("pointerdown", onPointerDown);
+    gridEl.addEventListener("pointermove", onPointerMove);
+    gridEl.addEventListener("pointerup", onPointerUp);
+    gridEl.addEventListener("pointercancel", function (e) {
+      if (!press || e.pointerId !== press.id) return;
+      press = null;
+      draft = anchor ? [[anchor[0], anchor[1]]] : [];
+      paint();
+    });
+    gridEl.addEventListener("keydown", onGridKey);
+    document.addEventListener("keydown", function (e) {
+      if (e.key !== "Escape") return;
+      var open = document.querySelectorAll(".dialog-back.open");
+      if (!open.length) return;
+      var top = open[open.length - 1];
+      if (top.id === "confirm-back") {
+        confirmAction = null;
+        closeDialog("confirm-back");
+        return;
+      }
+      if (top.id === "help-back") { closeHelp(); return; }
+      closeDialog(top.id);
+    });
+    document.querySelectorAll(".dialog-back").forEach(function (back) {
+      back.addEventListener("click", function (e) {
+        if (e.target !== back) return;
+        if (back.id === "confirm-back") { confirmAction = null; closeDialog(back.id); return; }
+        if (back.id === "help-back") { closeHelp(); return; }
+        closeDialog(back.id);
+      });
+    });
+    document.addEventListener("visibilitychange", function () {
+      if (document.visibilityState === "hidden") { freeze(); persist(); }
+      else resume();
+    });
+    window.addEventListener("pagehide", function () { freeze(); persist(); });
+    window.addEventListener("afterprint", function () {
+      document.body.classList.remove("print-puzzles", "print-record");
+    });
+    clockTimer = setInterval(function () {
+      if (!state.showTimer || !state.puzzle) return;
+      document.getElementById("timer").textContent = "Time " + formatClock(elapsed());
+    }, 250);
+  }
+  fillLevelSelect(document.getElementById("level"), "large");
+  fillLevelSelect(document.getElementById("set-level"), "large");
+  load();
+  fillThemeSelect();
+  fillLevelSelect(document.getElementById("level"), state.levelId);
+  fillLevelSelect(document.getElementById("set-level"), state.levelId);
+  fillWho();
+  bind();
+  applyChrome();
+  renderRecords();
+  if (!state.puzzle) newPuzzle();
+  else {
+    resume();
+    renderGrid();
+    applyChrome();
+    if (puzzleDone()) setStatus("All found! Well done.");
+  }
+  if (!state.helpSeen) openDialog("help-back");
+})();
+</script>
+</body>
+</html>
