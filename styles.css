@@ -412,6 +412,17 @@ section { padding: 80px 0; }
 .card-shot { display: block; width: 100%; height: 150px; object-fit: cover; object-position: top left; border-radius: 10px; border: 1px solid rgba(201,162,75,.5); margin-bottom: 14px; }
 .card-featured { border: 2.5px solid var(--brass) !important; box-shadow: 0 12px 30px rgba(60,40,20,.14); }
 .featured-label { display: inline-block; background: var(--brass); color: var(--walnut-dark); font-weight: 700; font-size: 13px; padding: 4px 10px; border-radius: 999px; margin-bottom: 10px; }
+.activity-club .group-label { font-size: 20px; margin: 0 0 16px; }
+.activity-club .cards + .group-label { margin-top: 36px; }
+.activity-club .card h3,
+#registered-and-ready h3 { overflow-wrap: break-word; hyphens: manual; }
+#registered-and-ready .payhip-buy-button,
+.activity-club .payhip-buy-button {
+  display: inline-block; max-width: 100%; box-sizing: border-box;
+  text-align: center; line-height: 1.35; white-space: normal;
+}
+.course-offer { margin-top: 28px; max-width: none; }
+.course-offer p { margin-bottom: 16px; }
 .free-strip { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; margin-bottom: 16px; }
 .free-strip .card { padding: 16px 18px; }
 .free-strip .card .grow { font-size: 14px; }
