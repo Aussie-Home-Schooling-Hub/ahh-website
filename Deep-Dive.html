@@ -1,0 +1,1959 @@
+<!DOCTYPE html>
+<!--
+FACT REGISTER
+This app does not state topic facts of its own.
+Concept-card wording lives only in CARD_BANK, including each card's factRegister.
+factRegister is never shown on screen.
+The two cards in CARD_BANK are the brief's placeholders for the engine. They are not customer content.
+Find it out mode does not state facts. The source-checking lines are the brief's own prompts: who wrote it, whether it is a reliable site, and whether two sources agree.
+No statistics, quotes, or Aboriginal and Torres Strait Islander vocabulary are used.
+The worry message is the brief's sentence and names no service.
+-->
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<title>Deep Dive</title>
+<link rel="icon" type="image/png" sizes="32x32" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAABBJJREFUWIW9l9tPVFcUxn/rnDMHGBiZi8wEVG6Kow2mKCGiFSNNrKWpDySNfWprmvapT/1LmjTpU23fmt5i+qAJkmijtTReqlKqBkcuAyoKw8zgCAbOMLP7QLjOGWTGod/T7P2tdb5vzt57rX2EFThW63anTPNLEVqVkiYR/BQASjEhonqV4ppuWV9dDk9NLXKy+OOt3RUdmsgZQaoKIZrVDGosrdRnPaFI15KBtl3+E6LLhc0UXouUSr/XE4p0yZHqco+UFN0TpPL/NKBQY/Mzs/sMKSn+ROC1xE2HTm2Nh9pqHwDh0SjhkThWMpU1R5Aqo7TkYwNF6/JOyA0icLKjkVOdTZimsYqzrHl+Pnub8933USrLAxSt0hYMhAVqchWvqtzCF5+30bCzYt24h4MRvvn2KmNPEzb6jGj5iAOc6mx6pThAw84KTnU22XICNVo+4ocP1nH4YH0O8fW0HNhhy+Vl4NiRnTnnHG8PFs5AVWV5wXLyMuB2lxQsJy8DkcnpnHNGRuOFMzAyGss5Jzxin5OXgXNd90il0huOT6XSXLz8IH8DRrFBIOij1LewjoPDUa7cHN6wge5L/QxneQOG7ewKVO3zU9uyHU1bqNd//3qXIqdJf/IlLXMWriJz3fxobIafzt7OysvRYMC2UusOjeDb9Xh3lOMQxd4yocKEIhRzCBEL/o1Y+BLwwck3bXvBL7/1cq7rbvZekM2Ao8SgsaOBUq8TAY56we3I7FhPxl/y9Xf3MYzcu+EibJcg2F5HqdcJQIVpLw6wLeBkV90WQkMJQgOThAYmAcXhZj/vn96Dz20ST8xx484kf9wYX3kBW0LGJnR6inFXbVkal71il/h9xavGR1oCdL5bQ6W/BNPUCWx1cvJ4Ne2H7K8cGQbmreXXlk6liYWn1oasi0PN9h2y9cBW2/mM/2fNJOn/fQjdoREdec7+Zj/gySo4EZ1dNfaU258KV5ljYwYAJocWyqbL78TcHSCeVHhs9sGjp9MMDK++aLyYTuJ16xmx8eeWrYGshch0OnjjnQZE1+iZmOd6X5RIbJZkMkUkNstftyY48+ND0mvO0K2+qO3z7j2wX0oDpcYRCaxyZWg0djTgKDZQStF3cZj448wrlR2uXH+GYWjs3VWO11NE/LlFaCjBpZ6xzGClxqUt6L8gyImV83UHt7Nt34Kn8M0nPP7n2YbEc4VCdWuSlt61hO5YWMPIUGzTxAEkLb3Susdda6bNO4i4lwgBV6CMF5EZVGqdOvo6UGrK0qz92rX+qXAaPl3NQeLZ9OaJA0rk9LX+qbAOMBqd6d/uc94QoV0Q16apLn+cfvhnaOI8wNKBfRR9OVDvcnyf1nVLhDmlxCVCaUFEFz7Pe5TiB92yPro6GLu7yP0H7m90FlZ4hP0AAAAASUVORK5CYII=">
+<link rel="icon" type="image/svg+xml" sizes="any" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%233E2717'/%3E%3Cpath d='M13 54 Q24 40 36 27' stroke='%237A8B4A' stroke-width='5' stroke-linecap='round' fill='none'/%3E%3Cellipse cx='17' cy='38' rx='9' ry='4' transform='rotate(-40 17 38)' fill='%237A8B4A'/%3E%3Ccircle cx='40' cy='23' r='14' fill='%23E8C877'/%3E%3Ccircle cx='25' cy='42' r='8' fill='%23C9A24B'/%3E%3Ccircle cx='47' cy='45' r='7' fill='%23C9A24B'/%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root {
+  --navy: #1b2a4a;
+  --gold: #e3a823;
+  --cream: #fbf6ec;
+  --teal: #14897e;
+  --ink: #1b2a4a;
+  --ok: #1d6b3a;
+  --ok-bg: #e5f4ea;
+  --again: #8a4b12;
+  --again-bg: #f8e6d4;
+  --line: #e4d7bc;
+  --font-display: "Baloo 2", "Nunito", "Arial Rounded MT Bold", ui-rounded, system-ui, sans-serif;
+  --font-body: "Nunito Sans", "Nunito", system-ui, sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; max-width: 100%; overflow-x: hidden; }
+body {
+  font-family: var(--font-body);
+  color: var(--ink);
+  background: var(--cream);
+  line-height: 1.45;
+  font-size: 1.05rem;
+}
+header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  background: var(--navy);
+  color: var(--cream);
+  padding: 10px 12px;
+}
+.brand { flex: 1 1 180px; min-width: 0; }
+.brand .small { margin: 0; font-size: 0.78rem; letter-spacing: 0.04em; }
+.brand .mod { margin: 0; font-family: var(--font-display); font-size: 1.35rem; }
+.badge, .year-badge { margin: 0; font-size: 0.95rem; }
+header button {
+  background: transparent;
+  color: var(--cream);
+  border: 2px solid var(--gold);
+}
+button, input, textarea, select { font: inherit; max-width: 100%; }
+button {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 2px solid var(--navy);
+  background: var(--navy);
+  color: var(--cream);
+  cursor: pointer;
+}
+button.secondary { background: var(--cream); color: var(--navy); }
+button.teal { background: var(--teal); border-color: var(--teal); color: #fff; }
+button:disabled { opacity: 0.55; cursor: not-allowed; }
+button:focus-visible, input:focus-visible, textarea:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 2px;
+}
+main { padding: 16px 16px 28px; max-width: 760px; margin: 0 auto; }
+h1, h2, h3 { font-family: var(--font-display); line-height: 1.2; margin: 0 0 10px; }
+h1 { font-size: 1.7rem; }
+h1:focus { outline: 3px solid var(--gold); outline-offset: 4px; }
+h2 { font-size: 1.25rem; margin-top: 22px; }
+p { margin: 0 0 12px; overflow-wrap: anywhere; }
+.lead { font-size: 1.08rem; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; }
+.stack { display: flex; flex-direction: column; gap: 8px; align-items: stretch; }
+.stack > button, .row > button { flex: 1 1 auto; }
+label { display: block; font-weight: 700; margin: 8px 0 6px; }
+input[type="text"], textarea {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: 2px solid var(--navy);
+  background: #fff;
+  color: var(--ink);
+}
+textarea { min-height: 120px; resize: vertical; }
+.years, .tracks { display: flex; flex-wrap: wrap; gap: 8px; }
+.years button, .tracks button { min-width: 44px; }
+.years button[aria-pressed="true"], .tracks button[aria-pressed="true"] {
+  background: var(--gold);
+  color: var(--navy);
+  border-color: var(--navy);
+}
+.card {
+  background: #fff;
+  border: 2px solid var(--line);
+  border-radius: 16px;
+  padding: 14px;
+  margin: 10px 0;
+}
+.meter-wrap { margin: 8px 0 14px; }
+.meter {
+  height: 18px;
+  background: #efe4cf;
+  border-radius: 999px;
+  overflow: hidden;
+  border: 2px solid var(--navy);
+}
+.meter > span { display: block; height: 100%; background: var(--teal); width: 0; }
+.note { padding: 12px; border-radius: 12px; background: #fff; border: 2px solid var(--line); margin: 10px 0; }
+.ok { background: var(--ok-bg); border-color: var(--ok); color: var(--ok); }
+.again { background: var(--again-bg); border-color: var(--again); color: var(--again); }
+.hint { font-size: 0.95rem; }
+.bar {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 16px;
+}
+.scene { display: flex; gap: 12px; align-items: center; margin-bottom: 8px; }
+.scene svg { flex: 0 0 auto; }
+.privacy { font-size: 0.95rem; }
+.burst { display: flex; gap: 8px; justify-content: center; margin: 8px 0; }
+.burst i {
+  display: block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--gold);
+  animation: pop 0.7s ease;
+}
+.burst i:nth-child(2) { background: var(--teal); animation-delay: 0.05s; }
+.burst i:nth-child(3) { background: var(--navy); animation-delay: 0.1s; }
+@keyframes pop {
+  from { transform: translateY(10px); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+#print-report { display: none; }
+table { width: 100%; border-collapse: collapse; }
+th, td { border: 1px solid #222; padding: 6px 8px; text-align: left; vertical-align: top; overflow-wrap: anywhere; }
+@media (max-width: 420px) {
+  h1 { font-size: 1.45rem; }
+  main { padding: 12px 12px 24px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+@media print {
+  header, #app { display: none !important; }
+  #print-report {
+    display: block !important;
+    color: #000;
+    background: #fff;
+    padding: 0;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 12pt;
+  }
+  #print-report h1, #print-report h2 { font-family: Georgia, "Times New Roman", serif; }
+  a { color: #000; text-decoration: none; }
+  tr, .keep { break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+<header id="top">
+  <div class="brand">
+    <p class="small">Wattlewood Hollow</p>
+    <p class="mod">Deep Dive</p>
+  </div>
+  <p class="badge" id="badge" hidden></p>
+  <p class="year-badge" id="year-badge" hidden></p>
+  <button type="button" id="menu-btn" hidden>🏠 Menu</button>
+  <button type="button" id="sound-btn" hidden aria-pressed="false">Sound: off</button>
+  <button type="button" id="grown-btn" class="secondary" hidden>For grown-ups</button>
+</header>
+<div id="app">
+  <main id="main"></main>
+</div>
+<article id="print-report"></article>
+<script>
+(function () {
+  "use strict";
+
+  var KEY = "ahh-full-tier-state";
+  var PROGRESS_KEY = "ahh-deep-dive-progress";
+  var PACK_KEY = "ahh-deep-dive-packs";
+  var params = new URLSearchParams(location.search);
+
+  /* ===== CARD BANK START =====
+     Claude replaces this whole array with fact-checked cards.
+     Do not add card wording outside this block.
+     ===== */
+  const CARD_BANK = [
+    {
+      "id": "test-alpha", "type": "concept", "title": "Test Alpha", "subject": "Mathematics",
+      "yearMin": 3, "yearMax": 10,
+      "triggers": ["alpha", "test one"],
+      "answer": "PLACEHOLDER answer for testing.",
+      "followUps": [{ "question": "PLACEHOLDER follow-up?", "options": ["A", "B", "C"], "correct": 0, "tip": "PLACEHOLDER tip." }],
+      "digDeeper": [{ "label": "Go to Test Beta", "cardId": "test-beta" }],
+      "keyIdeas": [{ "id": "a1", "describe": "the alpha idea", "phrases": ["alpha", "first"], "hints": ["PLACEHOLDER hint."] }],
+      "misconceptions": [{ "phrases": ["wrong idea"], "reply": "PLACEHOLDER reply." }],
+      "quickChecks": [],
+      "related": ["test-beta"],
+      "curriculum": [{ "kind": "learningArea", "area": "Mathematics", "path": ["Statistics"], "label": "Mathematics > Statistics" }],
+      "factRegister": ["Placeholder card, no facts."]
+    },
+    {
+      "id": "test-beta", "type": "concept", "title": "Test Beta", "subject": "Mathematics",
+      "yearMin": 7, "yearMax": 10,
+      "triggers": ["beta", "test two"],
+      "answer": "PLACEHOLDER answer for testing (Year 7+ only).",
+      "followUps": [],
+      "digDeeper": [{ "label": "Back to Test Alpha", "cardId": "test-alpha" }],
+      "keyIdeas": [{ "id": "b1", "describe": "the beta idea", "phrases": ["beta", "second"], "hints": ["PLACEHOLDER hint."] }],
+      "misconceptions": [],
+      "quickChecks": [],
+      "related": ["test-alpha"],
+      "curriculum": [{ "kind": "learningArea", "area": "Mathematics", "path": ["Statistics"], "label": "Mathematics > Statistics" }],
+      "factRegister": ["Placeholder card, no facts."]
+    }
+  ];
+  /* ===== CARD BANK END ===== */
+
+  /* Claude can replace this list. It is the brief's examples plus the same words with endings. */
+  var WORRY_WORDS = ["hurt", "hurts", "hurting", "unsafe", "scared", "scare", "scary", "afraid", "frightened", "fright", "fear", "fearful", "worry", "worried", "worrying"];
+  /* The brief asks for rude text to be turned aside, and does not list the words. This short list is provisional. */
+  var RUDE_WORDS = ["damn", "crap", "bloody", "idiot", "stupid", "dumb", "moron", "hell"];
+  var FILLER = {};
+  ["what", "why", "how", "is", "the", "a", "an", "does", "do", "and", "or", "of", "to", "in", "on", "for", "with", "it", "its", "that", "this", "are", "was", "were", "be", "can", "could", "would", "should", "my", "your", "i", "we", "you", "me", "when", "where", "who", "which", "than", "then", "so", "if", "but", "about", "from", "at", "by", "as", "into", "between", "there", "their", "they", "them", "our", "not", "just", "like", "some", "any", "did", "been", "being", "have", "has", "had", "will", "shall", "may", "might", "please", "tell", "explain", "really", "very", "also", "too", "onto", "over", "under", "again", "still", "because", "much", "many", "more", "most", "other", "another", "something", "anything"].forEach(function (w) { FILLER[w] = true; });
+
+  var FIND_QUESTIONS = [
+    "Can you give an example?",
+    "Why do you think that happens?",
+    "What would change if…?",
+    "How is it different from something similar?",
+    "How could you check that's true?"
+  ];
+
+  var PATHS = {
+    "English": ["Language", "Literature", "Literacy"],
+    "Mathematics": ["Number", "Algebra", "Measurement", "Space", "Statistics", "Probability"],
+    "Science": ["Science understanding", "Biological sciences", "Chemical sciences", "Earth and space sciences", "Physical sciences", "Science as a human endeavour", "Science inquiry"],
+    "HASS": ["History", "Geography", "Civics and Citizenship", "Economics and Business"],
+    "Technologies": ["Design and Technologies", "Digital Technologies", "Knowledge and understanding", "Processes and production skills", "Engineering principles and systems", "Food and fibre production", "Food specialisations", "Materials and technologies specialisations"],
+    "The Arts": ["Dance", "Drama", "Media Arts", "Music", "Visual Arts"],
+    "Health and Physical Education": ["Personal, social and community health", "Movement and physical activity"]
+  };
+  var PRIORITIES = ["Aboriginal and Torres Strait Islander Histories and Cultures", "Asia and Australia's Engagement with Asia", "Sustainability"];
+  var CAPABILITIES = ["Critical and Creative Thinking", "Digital Literacy", "Ethical Understanding", "Intercultural Understanding", "Literacy", "Numeracy", "Personal and Social Capability"];
+
+  var child = { name: "", year: 0, track: "", storeId: "" };
+  var trail = null;
+  var screen = "opening";
+  var soundOn = false;
+  var soundCtx = null;
+  var timerId = null;
+  var selectedYear = 0;
+
+  var main = document.getElementById("main");
+  var badge = document.getElementById("badge");
+  var yearBadge = document.getElementById("year-badge");
+  var menuBtn = document.getElementById("menu-btn");
+  var soundBtn = document.getElementById("sound-btn");
+  var grownBtn = document.getElementById("grown-btn");
+
+  function el(tag, props, kids) {
+    var n = document.createElement(tag);
+    if (props) {
+      Object.keys(props).forEach(function (k) {
+        var v = props[k];
+        if (k === "class") n.className = v;
+        else if (k === "text") n.textContent = v == null ? "" : String(v);
+        else if (k === "disabled") n.disabled = !!v;
+        else if (k.slice(0, 2) === "on" && typeof v === "function") n.addEventListener(k.slice(2), v);
+        else if (v != null) n.setAttribute(k, String(v));
+      });
+    }
+    (kids || []).forEach(function (c) {
+      if (c == null) return;
+      n.appendChild(typeof c === "string" ? document.createTextNode(c) : c);
+    });
+    return n;
+  }
+  function clear(node) { while (node.firstChild) node.removeChild(node.firstChild); }
+  function storageGet(key) { try { return localStorage.getItem(key); } catch (e) { return null; } }
+  function storageSet(key, value) { try { localStorage.setItem(key, value); return true; } catch (e) { return false; } }
+  function clone(o) { return JSON.parse(JSON.stringify(o)); }
+  function pad(n) { return (n < 10 ? "0" : "") + n; }
+  function localDate(d) { return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()); }
+  function localStamp(d) {
+    var off = -d.getTimezoneOffset();
+    var sign = off >= 0 ? "+" : "-";
+    var abs = Math.abs(off);
+    return localDate(d) + "T" + pad(d.getHours()) + ":" + pad(d.getMinutes()) + ":" + pad(d.getSeconds()) + sign + pad(Math.floor(abs / 60)) + ":" + pad(abs % 60);
+  }
+  function prettyDate(d) {
+    var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    return d.getDate() + " " + months[d.getMonth()] + " " + d.getFullYear();
+  }
+  function wordCount(text) { return String(text || "").trim().split(/\s+/).filter(Boolean).length; }
+  function tokens(text) {
+    return String(text || "").toLowerCase().replace(/[^a-z0-9\s]/g, " ").replace(/\s+/g, " ").trim().split(" ").filter(Boolean);
+  }
+  function stemWord(w) {
+    var endings = ["ing", "ers", "ies", "es", "ed", "er", "ly", "s", "e"];
+    var bases = [w];
+    for (var i = 0; i < endings.length; i++) {
+      var e = endings[i];
+      if (w.length - e.length >= 3 && w.slice(-e.length) === e) bases.push(w.slice(0, -e.length));
+    }
+    return bases;
+  }
+  function stemsOverlap(a, b) {
+    var as = stemWord(a), bs = stemWord(b);
+    for (var i = 0; i < as.length; i++) {
+      for (var j = 0; j < bs.length; j++) if (as[i] === bs[j]) return true;
+    }
+    return false;
+  }
+  function phraseIn(toks, parts) {
+    if (!parts.length) return false;
+    var start = 0;
+    for (var p = 0; p < parts.length; p++) {
+      var found = -1;
+      for (var t = start; t < toks.length; t++) {
+        if (stemsOverlap(toks[t], parts[p])) { found = t; break; }
+      }
+      if (found < 0) return false;
+      if (p > 0 && found - start > 3) return false;
+      start = found + 1;
+    }
+    return true;
+  }
+  function textHasPhrase(text, phrase) { return phraseIn(tokens(text), tokens(phrase)); }
+  function contentTokens(text) { return tokens(text).filter(function (w) { return !FILLER[w]; }); }
+  function hasListedWord(text, list) {
+    var toks = tokens(text);
+    for (var i = 0; i < toks.length; i++) {
+      for (var j = 0; j < list.length; j++) {
+        if (toks[i] === list[j] || stemsOverlap(toks[i], list[j])) return true;
+      }
+    }
+    return false;
+  }
+  function looksLikePhone(text) {
+    if (/\b\d{8,15}\b/.test(text)) return true;
+    if (/\b(?:\+61|0061)\b/.test(text)) return true;
+    var compact = text.replace(/[().\-\s]/g, "");
+    if (/04\d{8}/.test(compact) || /0\d{9}/.test(compact)) return true;
+    if (/\b04\d{2}[\s-]?\d{3}[\s-]?\d{3}\b/.test(text)) return true;
+    if (/\b\(0\d\)[\s-]?\d{4}[\s-]?\d{4}\b/.test(text)) return true;
+    return false;
+  }
+  function looksPersonal(text) {
+    var t = String(text || "").trim();
+    if (!t) return false;
+    if (/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i.test(t)) return true;
+    if (looksLikePhone(t)) return true;
+    if (/\b\d{1,4}\s+[A-Za-z]+(?:\s+[A-Za-z]+){0,4}\s+(street|st|road|rd|avenue|ave|drive|dr|court|ct|place|pl|lane|ln|crescent|cres|parade|pde|highway|hwy|way|terrace|tce|boulevard|blvd|close|cl|circuit|cct|grove|gr)\b/i.test(t)) return true;
+    if (/^[A-Z][a-z]+(?:-[A-Z][a-z]+)?(?:\s+[A-Z][a-z]+(?:-[A-Z][a-z]+)?){1,2}$/.test(t)) return true;
+    if (/\b(my name is|i am|i'm|this is)\s+[A-Z][a-z]+\s+[A-Z][a-z]+\b/.test(t)) return true;
+    return false;
+  }
+  function gateText(text) {
+    if (looksPersonal(text)) return "Let's keep personal details private. You don't need them here.";
+    if (hasListedWord(text, WORRY_WORDS)) return "If something's worrying you, talk to a grown-up you trust.";
+    if (hasListedWord(text, RUDE_WORDS) || /\bshut\s+up\b/i.test(text)) return "Let's get back to our question!";
+    return "";
+  }
+  function firstNameOk(text) {
+    var t = String(text || "").trim();
+    if (!t || t.length > 60) return false;
+    if (/\s/.test(t)) return false;
+    if (looksPersonal(t)) return false;
+    return /^[A-Za-z][A-Za-z'-]{0,59}$/.test(t);
+  }
+  function trackForYear(year) { return year >= 3 && year <= 6 ? "Little Scientist" : "Field Scientist"; }
+
+  function matchChild(st) {
+    if (!st || !Array.isArray(st.children)) return null;
+    var c = null, pid = params.get("childId");
+    if (pid) c = st.children.find(function (x) { return x && x.id === pid; }) || null;
+    if (!c && st.activeChildId) c = st.children.find(function (x) { return x && x.id === st.activeChildId; }) || null;
+    if (!c && st.children.length === 1) c = st.children[0];
+    return c;
+  }
+  function readState() {
+    var raw = storageGet(KEY);
+    if (!raw) return null;
+    try { return JSON.parse(raw); } catch (e) { return null; }
+  }
+  function yearFromProfile(c) {
+    if (!c) return 0;
+    var fields = [c.year, c.yearLevel, c.schoolYear];
+    for (var i = 0; i < fields.length; i++) {
+      var v = fields[i];
+      if (typeof v === "number" && v >= 3 && v <= 10 && Math.floor(v) === v) return v;
+      if (typeof v === "string") {
+        var m = v.trim().match(/^(?:year\s*)?(\d{1,2})$/i);
+        if (m) {
+          var n = parseInt(m[1], 10);
+          if (n >= 3 && n <= 10) return n;
+        }
+      }
+    }
+    return 0;
+  }
+  function profileFirstName(c) {
+    if (!c || typeof c.name !== "string") return "";
+    var part = c.name.trim().split(/\s+/)[0];
+    return firstNameOk(part) ? part : "";
+  }
+
+  function loadPacks() {
+    var raw = storageGet(PACK_KEY);
+    if (!raw) return [];
+    try {
+      var data = JSON.parse(raw);
+      if (data && Array.isArray(data.packs)) return data.packs;
+      return [];
+    } catch (e) { return []; }
+  }
+  function savePacks(packs) { return storageSet(PACK_KEY, JSON.stringify({ packs: packs })); }
+  function allCards() {
+    var list = [];
+    function add(c) {
+      if (!c || typeof c.id !== "string" || !c.id) return;
+      if (c.id === "__proto__" || c.id === "constructor" || c.id === "prototype") return;
+      list = list.filter(function (x) { return x.id !== c.id; });
+      list.push(c);
+    }
+    CARD_BANK.forEach(add);
+    loadPacks().forEach(function (p) { (p.cards || []).forEach(add); });
+    return list;
+  }
+  function inYear(card, year) {
+    return !!(card && typeof card.yearMin === "number" && typeof card.yearMax === "number" && year >= card.yearMin && year <= card.yearMax);
+  }
+  function getCard(id) {
+    var cards = allCards();
+    for (var i = 0; i < cards.length; i++) if (cards[i].id === id) return cards[i];
+    return null;
+  }
+  function answerFor(card) {
+    if (child.track === "Field Scientist" && typeof card.answerSenior === "string" && card.answerSenior) return card.answerSenior;
+    return card.answer || "";
+  }
+  function scoreTriggers(card, toks) {
+    var score = 0;
+    (card.triggers || []).forEach(function (tr) {
+      if (typeof tr !== "string") return;
+      var parts = tokens(tr);
+      if (!parts.length) return;
+      if (!phraseIn(toks, parts)) return;
+      score += parts.length === 1 ? 2 : 5 * parts.length;
+    });
+    return score;
+  }
+  function matchQuestion(text) {
+    var raw = String(text || "").toLowerCase();
+    var compareQ = raw.indexOf("difference between") >= 0 || /\bversus\b/.test(raw) || /\bvs\b/.test(raw) || /\bcompare\b/.test(raw);
+    var toks = contentTokens(text);
+    var ranked = [];
+    allCards().forEach(function (card) {
+      if (!inYear(card, child.year)) return;
+      var score = scoreTriggers(card, toks);
+      if (compareQ && card.type === "compare" && Array.isArray(card.compares) && card.compares.length === 2) {
+        var a = getCard(card.compares[0]);
+        var b = getCard(card.compares[1]);
+        if (a && b && inYear(a, child.year) && inYear(b, child.year) && scoreTriggers(a, toks) > 0 && scoreTriggers(b, toks) > 0) score += 100;
+      }
+      if (score > 0) ranked.push({ card: card, score: score });
+    });
+    ranked.sort(function (a, b) { return b.score - a.score || a.card.title.localeCompare(b.card.title); });
+    if (!ranked.length) return { type: "none" };
+    var top = ranked[0].score;
+    var close = ranked.filter(function (r) { return r.score >= top * 0.6; });
+    if (close.length === 1) return { type: "one", card: close[0].card };
+    return { type: "many", cards: close.slice(0, 3).map(function (r) { return r.card; }) };
+  }
+  function hiddenTitle(text) {
+    var lower = String(text || "").toLowerCase();
+    var cards = allCards();
+    for (var i = 0; i < cards.length; i++) {
+      if (inYear(cards[i], child.year)) continue;
+      if (cards[i].title && lower.indexOf(String(cards[i].title).toLowerCase()) >= 0) return true;
+    }
+    return false;
+  }
+
+  function loadProgress() {
+    var raw = storageGet(PROGRESS_KEY);
+    if (!raw) return { children: {} };
+    try {
+      var data = JSON.parse(raw);
+      if (!data || typeof data !== "object" || Array.isArray(data)) return { children: {} };
+      if (!data.children || typeof data.children !== "object") data.children = {};
+      return data;
+    } catch (e) { return { children: {} }; }
+  }
+  function recFor(id) {
+    if (!id || id === "__proto__" || id === "constructor" || id === "prototype") return null;
+    var data = loadProgress();
+    if (!Object.prototype.hasOwnProperty.call(data.children, id)) {
+      data.children[id] = { name: "", year: 0, track: "", wonder: [], brain: [], researched: [], sessions: [] };
+    }
+    var rec = data.children[id];
+    if (!Array.isArray(rec.wonder)) rec.wonder = [];
+    if (!Array.isArray(rec.brain)) rec.brain = [];
+    if (!Array.isArray(rec.researched)) rec.researched = [];
+    if (!Array.isArray(rec.sessions)) rec.sessions = [];
+    return { data: data, rec: rec };
+  }
+  function saveRec(bundle) {
+    if (!bundle) return false;
+    return storageSet(PROGRESS_KEY, JSON.stringify(bundle.data));
+  }
+  function brainText(cardId) {
+    var bundle = recFor(child.storeId);
+    if (!bundle) return "";
+    var items = bundle.rec.brain.filter(function (b) { return b && b.cardId === cardId; });
+    if (!items.length) return "";
+    return items[items.length - 1].text || "";
+  }
+
+  function blip(freq) {
+    if (!soundOn) return;
+    try {
+      var Ctx = window.AudioContext || window.webkitAudioContext;
+      if (!Ctx) return;
+      if (!soundCtx) soundCtx = new Ctx();
+      var o = soundCtx.createOscillator();
+      var g = soundCtx.createGain();
+      o.type = "sine";
+      o.frequency.value = freq;
+      g.gain.value = 0.04;
+      o.connect(g);
+      g.connect(soundCtx.destination);
+      o.start();
+      o.stop(soundCtx.currentTime + 0.12);
+    } catch (e) {}
+  }
+  function stopTimer() { if (timerId) { clearInterval(timerId); timerId = null; } }
+  function updateHeader() {
+    var started = screen !== "opening";
+    menuBtn.hidden = !started;
+    soundBtn.hidden = !started;
+    grownBtn.hidden = !started;
+    badge.hidden = !started;
+    yearBadge.hidden = !started;
+    if (started) {
+      badge.textContent = child.track + " " + child.name;
+      yearBadge.textContent = "Year " + child.year;
+    }
+  }
+  function focusHeading() {
+    var h = main.querySelector("h1");
+    if (!h) return;
+    h.setAttribute("tabindex", "-1");
+    h.focus();
+  }
+  function meterNodes() {
+    var steps = trail ? trail.steps : 0;
+    var shown = trail && trail.meterFull ? 10 : steps;
+    var label = "Step " + shown + " of 10";
+    var bar = el("div", { class: "meter", role: "progressbar", "aria-valuemin": "0", "aria-valuemax": "10", "aria-valuenow": String(shown), "aria-label": label }, [
+      el("span", { style: "width:" + (shown * 10) + "%" })
+    ]);
+    return el("div", { class: "meter-wrap" }, [el("p", { id: "step-label", text: label }), bar]);
+  }
+  function toolButtons() {
+    var got = el("button", {
+      type: "button",
+      id: "gotit-btn",
+      class: "teal",
+      disabled: !(trail && trail.explainCount >= 1),
+      onclick: function () {
+        if (!(trail && trail.explainCount >= 1)) return;
+        if (screen === "explain") takeCheckpoint();
+        showFinish();
+      }
+    }, ["I've got it"]);
+    var stuck = el("button", { type: "button", id: "stuck-btn", class: "secondary", onclick: showStuck }, ["I'm stuck"]);
+    var save = el("button", { type: "button", id: "save-later-btn", class: "secondary", onclick: function () { saveForLater(trail ? trail.question : ""); } }, ["Save this for later"]);
+    var wrap = el("div", { class: "bar" }, screen === "finish" ? [stuck, save] : [got, stuck, save]);
+    if (!(trail && trail.explainCount >= 1)) {
+      wrap.appendChild(el("p", { class: "hint", text: "I've got it opens after you explain it back once." }));
+    }
+    return wrap;
+  }
+  function paint(nodes) {
+    stopTimer();
+    clear(main);
+    nodes.forEach(function (n) { if (n) main.appendChild(n); });
+    updateHeader();
+    refreshPrint();
+    focusHeading();
+  }
+  function status(text, kind) {
+    return el("div", { id: "status", class: "note " + (kind || ""), role: "status", text: text || "" });
+  }
+
+  function showOpening() {
+    screen = "opening";
+    trail = null;
+    var matched = matchChild(readState());
+    var preName = profileFirstName(matched);
+    var preYear = yearFromProfile(matched);
+    selectedYear = preYear || 0;
+    var nameInput = el("input", { id: "name-input", type: "text", maxlength: "60", autocomplete: "off", value: preName });
+    nameInput.value = preName;
+    var msg = el("div", { id: "open-msg", class: "note", role: "status" });
+    msg.hidden = true;
+    var yearBox = el("div", { class: "years", id: "year-box" });
+    var trackBox = el("div", { class: "tracks", id: "track-box" });
+    function drawChoices() {
+      clear(yearBox);
+      clear(trackBox);
+      var track = selectedYear ? trackForYear(selectedYear) : "";
+      ["Little Scientist", "Field Scientist"].forEach(function (name) {
+        var band = name === "Little Scientist" ? "Years 3 to 6" : "Years 7 to 10";
+        var min = name === "Little Scientist" ? 3 : 7;
+        var max = name === "Little Scientist" ? 6 : 10;
+        trackBox.appendChild(el("button", {
+          type: "button",
+          "aria-pressed": track === name ? "true" : "false",
+          onclick: function () {
+            if (selectedYear < min || selectedYear > max) selectedYear = 0;
+            drawChoices();
+          }
+        }, [name + " (" + band + ")"]));
+      });
+      for (var y = 3; y <= 10; y++) {
+        (function (year) {
+          yearBox.appendChild(el("button", {
+            type: "button",
+            "aria-pressed": selectedYear === year ? "true" : "false",
+            onclick: function () { selectedYear = year; drawChoices(); }
+          }, ["Year " + year]));
+        })(y);
+      }
+    }
+    drawChoices();
+    var start = el("button", { type: "button", id: "start-btn", onclick: function () {
+      var name = nameInput.value.trim();
+      if (!firstNameOk(name)) {
+        msg.hidden = false;
+        msg.textContent = looksPersonal(name) || /\s/.test(name)
+          ? "Let's keep personal details private. You don't need them here."
+          : "Add a first name to start.";
+        return;
+      }
+      if (selectedYear < 3 || selectedYear > 10) {
+        msg.hidden = false;
+        msg.textContent = "Choose a year from 3 to 10.";
+        return;
+      }
+      var matchedNow = matchChild(readState());
+      child.name = name;
+      child.year = selectedYear;
+      child.track = trackForYear(selectedYear);
+      child.storeId = matchedNow && matchedNow.id ? matchedNow.id : "local-" + name.toLowerCase();
+      var bundle = recFor(child.storeId);
+      if (bundle) {
+        bundle.rec.name = child.name;
+        bundle.rec.year = child.year;
+        bundle.rec.track = child.track;
+        saveRec(bundle);
+      }
+      showHome();
+    } }, ["Start"]);
+    var scene = el("div", { class: "scene" }, [
+      el("svg", { viewBox: "0 0 72 72", width: "72", height: "72", "aria-hidden": "true" }, [
+        el("circle", { cx: "36", cy: "36", r: "34", fill: "#1b2a4a" }),
+        el("path", { d: "M36 10 v18", stroke: "#e3a823", "stroke-width": "4", "stroke-linecap": "round" }),
+        el("circle", { cx: "36", cy: "40", r: "8", fill: "#14897e" }),
+        el("path", { d: "M36 48 v12", stroke: "#fbf6ec", "stroke-width": "4", "stroke-linecap": "round" })
+      ])
+    ]);
+    paint([
+      scene,
+      el("h1", { text: "Deep Dive" }),
+      el("p", { class: "lead", text: "You are a scientist. Bring a question, and we'll dig into it one step at a time." }),
+      el("label", { for: "name-input", text: "First name" }),
+      nameInput,
+      msg,
+      el("h2", { text: "Track" }),
+      el("p", { text: "Little Scientist is Years 3 to 6. Field Scientist is Years 7 to 10. The year you pick sets the track, and it decides which topics you can open." }),
+      trackBox,
+      el("h2", { text: "Year" }),
+      yearBox,
+      el("div", { class: "bar" }, [start])
+    ]);
+  }
+
+  function showHome() {
+    screen = "home";
+    trail = null;
+    var ask = el("textarea", { id: "ask-text", maxlength: "300" });
+    var homeMsg = el("div", { id: "home-msg", class: "note", role: "status" });
+    homeMsg.hidden = true;
+    function setMsg(text) { homeMsg.hidden = !text; homeMsg.textContent = text || ""; }
+    var browse = el("div", { id: "browse", class: "stack" });
+    var groups = {};
+    allCards().filter(function (c) { return inYear(c, child.year); }).forEach(function (c) {
+      var subject = c.subject || "Topics";
+      if (!groups[subject]) groups[subject] = [];
+      groups[subject].push(c);
+    });
+    var subjects = Object.keys(groups).sort();
+    if (!subjects.length) browse.appendChild(el("p", { text: "No topics for this year yet." }));
+    subjects.forEach(function (subject) {
+      browse.appendChild(el("h3", { text: subject }));
+      groups[subject].sort(function (a, b) { return String(a.title).localeCompare(String(b.title)); }).forEach(function (c) {
+        browse.appendChild(el("button", { type: "button", class: "secondary", onclick: function () { startCardTrail(c.title, c); } }, [c.title]));
+      });
+    });
+    var wonder = el("div", { id: "wonder", class: "stack" });
+    var brain = el("div", { id: "brain", class: "stack" });
+    var bundle = recFor(child.storeId);
+    var wonders = bundle ? bundle.rec.wonder.filter(function (w) {
+      if (!w || !w.text) return false;
+      if (w.cardId && !inYear(getCard(w.cardId), child.year)) return false;
+      if (hiddenTitle(w.text)) return false;
+      return true;
+    }) : [];
+    if (!wonders.length) wonder.appendChild(el("p", { text: "Questions you save for later will wait here." }));
+    wonders.forEach(function (w) {
+      wonder.appendChild(el("button", { type: "button", class: "secondary", onclick: function () { askQuestion(w.text); } }, [w.text]));
+    });
+    var brains = bundle ? bundle.rec.brain.filter(function (b) { return b && inYear(getCard(b.cardId), child.year) && !hiddenTitle(b.text) && !hiddenTitle(b.question); }) : [];
+    var researched = bundle ? bundle.rec.researched.filter(function (r) { return r && r.question && !hiddenTitle(r.question) && !hiddenTitle(r.text); }) : [];
+    if (!brains.length && !researched.length) brain.appendChild(el("p", { text: "Finished summaries will be kept here." }));
+    brains.forEach(function (b) {
+      var block = el("div", { class: "card" });
+      block.appendChild(el("p", { text: b.question || "" }));
+      block.appendChild(el("p", { text: b.text || "" }));
+      block.appendChild(el("button", { type: "button", onclick: function () { askQuestion(b.question); } }, ["Dive in again"]));
+      brain.appendChild(block);
+    });
+    researched.forEach(function (r) {
+      var block = el("div", { class: "card" });
+      block.appendChild(el("p", { text: "Researched with a grown-up" }));
+      block.appendChild(el("p", { text: r.question }));
+      block.appendChild(el("p", { text: r.text || "" }));
+      block.appendChild(el("button", { type: "button", class: "secondary", onclick: function () { askQuestion(r.question); } }, ["Dive in again"]));
+      brain.appendChild(block);
+    });
+    paint([
+      el("h1", { text: "Ask a question" }),
+      el("p", { text: "Type a question, or choose a topic to start." }),
+      el("label", { for: "ask-text", text: "Your question" }),
+      ask,
+      homeMsg,
+      el("div", { class: "bar" }, [
+        el("button", { type: "button", id: "ask-go", onclick: function () { askQuestion(ask.value); } }, ["Start this Deep Dive"]),
+        el("button", { type: "button", class: "secondary", onclick: function () {
+          var text = ask.value.trim();
+          if (!text) { setMsg("Type a question first."); return; }
+          var g = gateText(text);
+          if (g) { setMsg(g); return; }
+          if (!saveForLater(text)) return;
+          setMsg("Saved on your Wonder Wall.");
+          var list = document.getElementById("wonder");
+          if (list && !Array.prototype.some.call(list.querySelectorAll("button"), function (b) { return b.textContent === text; })) {
+            var empty = list.querySelector("p");
+            if (empty) empty.remove();
+            list.appendChild(el("button", { type: "button", class: "secondary", onclick: function () { askQuestion(text); } }, [text]));
+          }
+        } }, ["Save this for later"])
+      ]),
+      el("h2", { text: "Browse" }),
+      browse,
+      el("h2", { text: "Wonder Wall" }),
+      wonder,
+      el("h2", { text: "My Brain Bank" }),
+      brain
+    ]);
+  }
+
+  function saveForLater(text, cardId) {
+    var value = String(text || "").trim();
+    if (!value) return false;
+    var g = gateText(value);
+    if (g) {
+      var box = document.getElementById("status");
+      if (box) { box.hidden = false; box.textContent = g; }
+      else {
+        var note = status(g, "again");
+        main.appendChild(note);
+      }
+      return false;
+    }
+    var bundle = recFor(child.storeId);
+    if (!bundle) return false;
+    var key = value.toLowerCase();
+    var exists = bundle.rec.wonder.some(function (w) { return w && String(w.text).toLowerCase() === key; });
+    if (!exists) {
+      bundle.rec.wonder.push({ id: "w_" + Date.now(), text: value, cardId: cardId || "", savedAt: localStamp(new Date()) });
+      if (!saveRec(bundle)) {
+        var fail = status("Couldn't save — this device's storage may be full.", "again");
+        main.appendChild(fail);
+        return false;
+      }
+    }
+    blip(520);
+    return true;
+  }
+
+  function askQuestion(text) {
+    var q = String(text || "").trim();
+    var g = gateText(q);
+    if (!q) return;
+    if (g) {
+      var box = document.getElementById("home-msg") || document.getElementById("status");
+      if (box) { box.hidden = false; box.textContent = g; box.className = "note again"; }
+      return;
+    }
+    var match = matchQuestion(q);
+    if (match.type === "none") startFind(q);
+    else if (match.type === "one") startCardTrail(q, match.card);
+    else showDidYouMean(q, match.cards);
+  }
+
+  function showDidYouMean(question, cards) {
+    screen = "choose";
+    var buttons = el("div", { class: "stack", id: "did-you-mean" });
+    cards.forEach(function (c) {
+      if (!inYear(c, child.year)) return;
+      buttons.appendChild(el("button", { type: "button", onclick: function () { startCardTrail(question, c); } }, [c.title]));
+    });
+    buttons.appendChild(el("button", { type: "button", class: "secondary", onclick: function () { startFind(question); } }, ["None of these"]));
+    paint([
+      el("h1", { text: "Did you mean…" }),
+      el("p", { text: question }),
+      buttons
+    ]);
+  }
+
+  function initTrail(question, mode) {
+    var now = Date.now();
+    trail = {
+      question: question,
+      mode: mode,
+      startCardId: "",
+      sessionStartTime: now,
+      profileEntryId: "deepdive_" + now,
+      evidenceEntryId: "deep-dive:e_" + now,
+      startedAt: now,
+      steps: 0,
+      explainCount: 0,
+      lastExplain: "",
+      currentId: "",
+      visited: [],
+      recallSeen: {},
+      followAnswered: false,
+      visitCounts: {},
+      chain: [],
+      fullLog: [],
+      explanations: [],
+      hints: [],
+      ideaTries: {},
+      revealed: {},
+      accepted: {},
+      findIndex: 0,
+      explainDue: false,
+      finishDue: false,
+      meterFull: false,
+      resume: null,
+      checkpoint: null,
+      summary: "",
+      createdAt: "",
+      updatedAt: "",
+      finished: false,
+      researched: mode === "findout",
+      ideas: []
+    };
+  }
+  function markStep(entry) {
+    trail.steps += 1;
+    entry.step = trail.steps;
+    trail.chain.push(entry);
+    trail.fullLog.push(entry);
+    trail.explainDue = trail.steps % 3 === 0 && trail.steps < 10;
+    trail.finishDue = trail.steps >= 10;
+  }
+  function proceed(action) {
+    trail.resume = action;
+    if (trail.finishDue) { showFinish(); return; }
+    if (trail.explainDue) { showExplain("mid"); return; }
+    runAction(action);
+  }
+  function runAction(action) {
+    if (!action) return;
+    if (action.kind === "followup") showFollowup();
+    else if (action.kind === "dig") showDig();
+    else if (action.kind === "enter") beginCard(action.cardId);
+    else if (action.kind === "find-question") showFindQuestion();
+    else if (action.kind === "find-found") showFindFound();
+    else if (action.kind === "find-intro") showFindIntro();
+  }
+  function relatedSet() {
+    var set = {};
+    trail.visited.forEach(function (id) {
+      var c = getCard(id);
+      (c && c.related || []).forEach(function (r) { set[r] = true; });
+    });
+    return set;
+  }
+
+  function startCardTrail(question, card) {
+    if (!card || !inYear(card, child.year)) { startFind(question); return; }
+    initTrail(question, "card");
+    trail.startCardId = card.id;
+    beginCard(card.id);
+  }
+  function beginCard(id) {
+    var card = getCard(id);
+    if (!card || !inYear(card, child.year)) { showDig(); return; }
+    trail.currentId = id;
+    if (trail.visited.indexOf(id) < 0) trail.visited.push(id);
+    var prior = brainText(id);
+    if (prior && !trail.recallSeen[id] && !hiddenTitle(prior)) {
+      trail.recallSeen[id] = true;
+      showRecall(card, prior);
+      return;
+    }
+    showCardAnswer(card);
+  }
+  function showRecall(card, prior) {
+    screen = "trail";
+    paint([
+      recapBanner(),
+      el("h1", { text: "You explained this before" }),
+      meterNodes(),
+      el("p", { text: "You explained this before. Here's what you wrote: " + prior + " Does it help with this question?" }),
+      el("div", { class: "bar" }, [
+        el("button", { type: "button", id: "recall-yes", onclick: function () {
+          markStep({ kind: "recalled", cardId: card.id, cardTitle: card.title, prompt: card.title, childText: prior });
+          proceed({ kind: "dig" });
+        } }, ["Yes, it helps"]),
+        el("button", { type: "button", id: "recall-again", class: "secondary", onclick: function () { showCardAnswer(card); } }, ["Let's look again"])
+      ]),
+      toolButtons()
+    ]);
+  }
+  function showCardAnswer(card) {
+    screen = "trail";
+    trail.currentId = card.id;
+    trail.followAnswered = false;
+    if (trail.visited.indexOf(card.id) < 0) trail.visited.push(card.id);
+    var text = answerFor(card);
+    markStep({ kind: "answer", cardId: card.id, cardTitle: card.title, prompt: card.title, detail: text });
+    var banner = recapBanner();
+    paint([
+      banner,
+      el("h1", { text: card.title }),
+      meterNodes(),
+      el("p", { class: "lead", text: trail.question }),
+      el("div", { class: "card", id: "answer-text" }, [el("p", { text: text })]),
+      el("div", { class: "bar" }, [
+        el("button", { type: "button", id: "answer-next", onclick: function () {
+          if (card.followUps && card.followUps.length && !trail.followAnswered) proceed({ kind: "followup" });
+          else proceed({ kind: "dig" });
+        } }, ["Next"])
+      ]),
+      toolButtons()
+    ]);
+  }
+  function showFollowup() {
+    screen = "trail";
+    var card = getCard(trail.currentId);
+    if (!card || !card.followUps || !card.followUps.length) { showDig(); return; }
+    var index = (trail.visitCounts[card.id] || 0) % card.followUps.length;
+    var follow = card.followUps[index];
+    var options = (follow.options || []).map(function (text, i) { return { text: text, correct: i === follow.correct }; });
+    for (var i = options.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = options[i]; options[i] = options[j]; options[j] = tmp;
+    }
+    var box = el("div", { class: "stack", id: "follow-options" });
+    var feedback = el("div", { id: "feedback", role: "status" });
+    var next = el("button", { type: "button", id: "follow-next", onclick: function () { proceed({ kind: "dig" }); } }, ["Next"]);
+    next.hidden = true;
+    options.forEach(function (opt) {
+      box.appendChild(el("button", { type: "button", class: "secondary", onclick: function () {
+        if (trail.followAnswered) return;
+        trail.followAnswered = true;
+        trail.visitCounts[card.id] = (trail.visitCounts[card.id] || 0) + 1;
+        var correctText = "";
+        options.forEach(function (o) { if (o.correct) correctText = o.text; });
+        var outcome = opt.correct ? "That's it." : "Let's look again.";
+        markStep({ kind: "followup", cardId: card.id, cardTitle: card.title, prompt: follow.question, childText: opt.text, tip: follow.tip, outcome: outcome });
+        clear(feedback);
+        var p = el("p", { text: opt.correct ? "That's it. " + (follow.tip || "") : "Let's look again. A better answer is: " + correctText + " " + (follow.tip || "") });
+        feedback.className = "note " + (opt.correct ? "ok" : "again");
+        feedback.appendChild(p);
+        Array.prototype.forEach.call(box.querySelectorAll("button"), function (b) { b.disabled = true; });
+        next.hidden = false;
+        if (opt.correct) blip(660); else blip(330);
+      } }, [opt.text]));
+    });
+    paint([
+      recapBanner(),
+      el("h1", { text: "Follow-up" }),
+      meterNodes(),
+      el("p", { class: "lead", id: "follow-question", text: follow.question || "" }),
+      box,
+      feedback,
+      el("div", { class: "bar" }, [next]),
+      toolButtons()
+    ]);
+  }
+  function showDig() {
+    screen = "trail";
+    var card = getCard(trail.currentId);
+    var box = el("div", { class: "stack", id: "dig-box" });
+    var links = (card && card.digDeeper || []).filter(function (d) {
+      var target = getCard(d.cardId);
+      return d && target && inYear(target, child.year);
+    });
+    links.forEach(function (d) {
+      var row = el("div", { class: "stack" });
+      row.appendChild(el("button", { type: "button", onclick: function () { chooseDig(d.cardId, d.label); } }, [d.label]));
+      row.appendChild(el("button", { type: "button", class: "secondary", onclick: function () {
+        if (!saveForLater(d.label, d.cardId)) return;
+        var s = document.getElementById("status");
+        if (s) { s.hidden = false; s.textContent = "Saved on your Wonder Wall."; }
+      } }, ["Save this for later"]));
+      box.appendChild(row);
+    });
+    if (!links.length) {
+      box.appendChild(el("button", { type: "button", id: "keep-going", onclick: function () {
+        markStep({ kind: "dig", cardId: trail.currentId, cardTitle: card ? card.title : "", prompt: "Kept going on this idea" });
+        proceed({ kind: "enter", cardId: trail.currentId });
+      } }, ["Keep going on this idea"]));
+    }
+    var own = el("textarea", { id: "own-question", maxlength: "300" });
+    var ownMsg = el("div", { id: "status", class: "note", role: "status" });
+    ownMsg.hidden = true;
+    box.appendChild(el("label", { for: "own-question", text: "Ask my own question" }));
+    box.appendChild(own);
+    box.appendChild(ownMsg);
+    box.appendChild(el("button", { type: "button", id: "own-go", class: "secondary", onclick: function () { onOwnQuestion(own.value, ownMsg); } }, ["Ask my own question"]));
+    paint([
+      recapBanner(),
+      el("h1", { text: "Dig deeper" }),
+      meterNodes(),
+      el("p", { text: "Choose another question, or ask your own." }),
+      box,
+      toolButtons()
+    ]);
+  }
+  function chooseDig(cardId, label) {
+    var target = getCard(cardId);
+    if (!target || !inYear(target, child.year)) {
+      var s = document.getElementById("status");
+      if (s) { s.hidden = false; s.textContent = "Let's get back to our question!"; }
+      return;
+    }
+    markStep({ kind: "dig", cardId: cardId, cardTitle: target.title, prompt: label });
+    proceed({ kind: "enter", cardId: cardId });
+  }
+  function onOwnQuestion(text, msg) {
+    var q = String(text || "").trim();
+    var g = gateText(q);
+    if (!q) { msg.hidden = false; msg.textContent = "Type a question to carry on."; return; }
+    if (g) { msg.hidden = false; msg.textContent = g; return; }
+    var match = matchQuestion(q);
+    var related = relatedSet();
+    var picks = [];
+    if (match.type === "one") picks = [match.card];
+    if (match.type === "many") picks = match.cards;
+    picks = picks.filter(function (c) { return c && related[c.id] && inYear(c, child.year); });
+    if (picks.length === 1) { chooseDig(picks[0].id, q); return; }
+    if (picks.length > 1) {
+      msg.hidden = false;
+      msg.textContent = "";
+      clear(msg);
+      msg.appendChild(el("p", { text: "Did you mean…" }));
+      picks.forEach(function (c) {
+        msg.appendChild(el("button", { type: "button", onclick: function () { chooseDig(c.id, q); } }, [c.title]));
+      });
+      msg.hidden = false;
+      return;
+    }
+    msg.hidden = false;
+    msg.textContent = "Let's get back to our question!";
+  }
+
+  function ideasFor(mode) {
+    var ids = mode === "finish" ? [trail.startCardId] : trail.visited.slice();
+    var ideas = [];
+    ids.forEach(function (id) {
+      var card = getCard(id);
+      if (!card || !inYear(card, child.year)) return;
+      (card.keyIdeas || []).forEach(function (idea) {
+        if (idea && idea.id && !ideas.some(function (x) { return x.id === idea.id; })) ideas.push(idea);
+      });
+    });
+    return ideas;
+  }
+  function cardsFor(mode) {
+    var ids = mode === "finish" ? [trail.startCardId] : trail.visited.slice();
+    return ids.map(getCard).filter(function (c) { return c && inYear(c, child.year); });
+  }
+  function ideaFound(text, idea) {
+    if (trail.accepted[idea.id]) return true;
+    return (idea.phrases || []).some(function (p) { return textHasPhrase(text, p); });
+  }
+  function showExplain(kind) {
+    screen = kind === "finish" ? "finish" : "explain";
+    var finish = kind === "finish";
+    var find = trail.mode === "findout";
+    var area = el("textarea", { id: finish ? "finish-text" : "explain-text", maxlength: finish ? "1000" : "2000" });
+    var feedback = el("div", { id: "feedback", role: "status" });
+    var explainedOnce = false;
+    function noteExplained(text) {
+      trail.lastExplain = text;
+      if (finish || explainedOnce) return;
+      explainedOnce = true;
+      trail.explainCount += 1;
+      var got = document.getElementById("gotit-btn");
+      if (got) got.disabled = false;
+      var hint = document.querySelector("#main .bar .hint");
+      if (hint) hint.remove();
+    }
+    var carry = el("button", { type: "button", id: "carry-on", onclick: function () {
+      if (finish) openSummary();
+      else {
+        takeCheckpoint();
+        runAction(trail.resume);
+      }
+    } }, [finish ? "See your summary" : "Carry on"]);
+    carry.hidden = true;
+    function renderFeedback(lines, kindName, allowCarry) {
+      clear(feedback);
+      feedback.className = "note " + (kindName || "");
+      lines.forEach(function (line) { feedback.appendChild(el("p", { text: line })); });
+      carry.hidden = !allowCarry;
+    }
+    function onCheck() {
+      var text = area.value;
+      var g = gateText(text);
+      if (g) { renderFeedback([g], "again", false); return; }
+      if (!String(text).trim()) { renderFeedback(["Type an answer to carry on."], "again", false); return; }
+      if (wordCount(text) < 5) {
+        trail.explanations.push({ kind: kind, text: text, marked: false });
+        renderFeedback(["Can you tell me a bit more?"], "again", false);
+        return;
+      }
+      if (find) {
+        trail.explanations.push({ kind: kind, text: text, marked: true, found: [], hint: "" });
+        noteExplained(text);
+        if (finish) {
+          trail.summary = text.trim();
+          trail.ideas = [];
+          renderFeedback(["Ask your grown-up to read this with you.", "Researched with a grown-up."], "ok", true);
+          blip(720);
+        } else {
+          renderFeedback(["Ask your grown-up to read this with you."], "ok", true);
+        }
+        return;
+      }
+      var ideas = ideasFor(finish ? "finish" : "mid");
+      ideas.forEach(function (idea) {
+        if (trail.revealed[idea.id] && !trail.accepted[idea.id]) trail.accepted[idea.id] = true;
+      });
+      var missing = ideas.filter(function (idea) { return !ideaFound(text, idea); });
+      var revealIdea = null;
+      missing.forEach(function (idea) {
+        if (!trail.revealed[idea.id]) {
+          trail.ideaTries[idea.id] = (trail.ideaTries[idea.id] || 0) + 1;
+          if (trail.ideaTries[idea.id] >= 3) {
+            trail.revealed[idea.id] = true;
+            if (!revealIdea) revealIdea = idea;
+          }
+        }
+      });
+      var found = ideas.filter(function (idea) { return ideaFound(text, idea); });
+      var replies = [];
+      cardsFor(finish ? "finish" : "mid").forEach(function (card) {
+        (card.misconceptions || []).forEach(function (m) {
+          var hit = (m.phrases || []).some(function (p) { return textHasPhrase(text, p); });
+          if (hit && m.reply && replies.indexOf(m.reply) < 0) replies.push(m.reply);
+        });
+      });
+      var lines = replies.slice();
+      found.forEach(function (idea) { lines.push("Nice! You explained " + idea.describe + "."); });
+      var hint = "";
+      var stillMissing = ideas.filter(function (idea) { return !ideaFound(text, idea); });
+      if (revealIdea) {
+        hint = "Here's the piece that was missing: " + revealIdea.describe;
+        lines.push(hint);
+        lines.push("Add it in your own words.");
+        trail.hints.push(hint);
+      } else if (stillMissing.length) {
+        var one = stillMissing[0];
+        if (trail.revealed[one.id]) {
+          hint = "Here's the piece that was missing: " + one.describe;
+          lines.push(hint);
+          lines.push("Add it in your own words.");
+        } else {
+          hint = (one.hints && one.hints[0]) || "Have another go in your own words.";
+          lines.push(hint);
+          trail.hints.push(hint);
+        }
+      }
+      trail.explanations.push({ kind: kind, text: text, marked: true, found: found.map(function (i) { return i.describe; }), hint: hint, replies: replies });
+      var done = stillMissing.length === 0;
+      noteExplained(text);
+      if (finish && done) {
+        trail.summary = text.trim();
+        trail.ideas = found.map(function (i) { return i.describe; });
+        lines.push("You've covered the key ideas!");
+        renderFeedback(lines, "ok", true);
+        blip(720);
+        return;
+      }
+      if (!finish) {
+        renderFeedback(lines, done ? "ok" : "again", true);
+        return;
+      }
+      renderFeedback(lines, "again", false);
+    }
+    var heading = finish ? "Final summary" : "Explain it back";
+    var prompt = finish
+      ? "Write a final summary that answers your question."
+      : "Explain it back in your own words.";
+    var nodes = [
+      el("h1", { text: heading }),
+      meterNodes(),
+      el("p", { class: "lead", text: prompt }),
+      el("p", { text: trail.question })
+    ];
+    if (finish && trail.mode === "card") nodes.push(el("p", { text: "Use your own words for the ideas you have been digging into." }));
+    nodes.push(el("label", { for: area.id, text: finish ? "Your summary" : "Your explanation" }));
+    nodes.push(area);
+    nodes.push(feedback);
+    nodes.push(el("div", { class: "bar" }, [
+      el("button", { type: "button", id: "check-explain", onclick: onCheck }, ["Check"]),
+      carry
+    ]));
+    nodes.push(toolButtons());
+    paint(nodes);
+  }
+  function takeCheckpoint() {
+    trail.checkpoint = {
+      steps: trail.steps,
+      chain: clone(trail.chain),
+      visited: trail.visited.slice(),
+      currentId: trail.currentId,
+      explainCount: trail.explainCount,
+      lastExplain: trail.lastExplain,
+      ideaTries: clone(trail.ideaTries),
+      revealed: clone(trail.revealed),
+      accepted: clone(trail.accepted),
+      followAnswered: trail.followAnswered,
+      findIndex: trail.findIndex,
+      resume: clone(trail.resume)
+    };
+  }
+  function showFinish() {
+    showExplain("finish");
+  }
+  function showStuck() {
+    screen = "stuck";
+    stopTimer();
+    var clock = el("p", { id: "timer-read", text: "" });
+    clock.hidden = true;
+    var left = 5 * 60;
+    function drawTime() {
+      var m = Math.floor(left / 60);
+      var s = left % 60;
+      clock.textContent = m + ":" + pad(s);
+    }
+    paint([
+      el("h1", { text: "I'm stuck" }),
+      el("p", { class: "lead", text: "It's okay to pause. A short break can help. When you come back, we'll carry on from your last explanation." }),
+      clock,
+      el("div", { class: "bar" }, [
+        el("button", { type: "button", id: "start-break", onclick: function () {
+          clock.hidden = false;
+          drawTime();
+          stopTimer();
+          timerId = setInterval(function () {
+            left -= 1;
+            if (left <= 0) {
+              left = 0;
+              drawTime();
+              stopTimer();
+              clock.textContent = "The break is over.";
+            } else drawTime();
+          }, 1000);
+        } }, ["Start a 5-minute break"]),
+        el("button", { type: "button", id: "carry-break", class: "secondary", onclick: resumeAfterBreak }, ["Carry on now"])
+      ])
+    ]);
+  }
+  function recapBanner() {
+    if (!trail || !trail.showRecap) return null;
+    trail.showRecap = false;
+    var text = trail.lastExplain
+      ? "Here's what you explained last time: " + trail.lastExplain
+      : "We'll carry on from the first answer. What you already did is still in your record.";
+    return el("div", { class: "note", id: "recap", text: text });
+  }
+  function resumeAfterBreak() {
+    stopTimer();
+    if (!trail) { showHome(); return; }
+    if (!trail.checkpoint) {
+      trail.fullLog.push({ kind: "break", prompt: "Paused for a break, then carried on from the first answer." });
+      trail.steps = 0;
+      trail.chain = [];
+      trail.visited = [];
+      trail.currentId = trail.startCardId;
+      trail.followAnswered = false;
+      trail.explainDue = false;
+      trail.finishDue = false;
+      trail.findIndex = 0;
+      trail.showRecap = true;
+      if (trail.mode === "findout") showFindIntro();
+      else if (trail.startCardId) showCardAnswer(getCard(trail.startCardId));
+      else showHome();
+      return;
+    }
+    var c = trail.checkpoint;
+    trail.fullLog.push({ kind: "break", prompt: "Paused for a break, then carried on from the last explanation." });
+    trail.steps = c.steps;
+    trail.chain = clone(c.chain);
+    trail.visited = c.visited.slice();
+    trail.currentId = c.currentId;
+    trail.explainCount = c.explainCount;
+    trail.lastExplain = c.lastExplain;
+    trail.ideaTries = clone(c.ideaTries);
+    trail.revealed = clone(c.revealed);
+    trail.accepted = clone(c.accepted);
+    trail.followAnswered = c.followAnswered;
+    trail.findIndex = c.findIndex;
+    trail.explainDue = false;
+    trail.finishDue = false;
+    trail.resume = clone(c.resume);
+    trail.showRecap = true;
+    runAction(trail.resume);
+  }
+
+  function startFind(question) {
+    initTrail(question, "findout");
+    showFindIntro();
+  }
+  function showFindIntro() {
+    screen = "find";
+    paint([
+      recapBanner(),
+      el("h1", { text: "Find it out" }),
+      meterNodes(),
+      el("p", { class: "lead", text: "Great question! Let's find it out together with a grown-up." }),
+      el("div", { class: "card" }, [
+        el("p", { text: "Check who wrote it." }),
+        el("p", { text: "Ask whether it is a reliable site." }),
+        el("p", { text: "See whether two sources agree." })
+      ]),
+      el("p", { text: trail.question }),
+      el("div", { class: "bar" }, [
+        el("button", { type: "button", id: "find-next", onclick: showFindFound }, ["What did you find?"])
+      ]),
+      toolButtons()
+    ]);
+  }
+  function showFindFound() {
+    screen = "find";
+    var area = el("textarea", { id: "found-text", maxlength: "2000" });
+    var feedback = el("div", { id: "feedback", role: "status" });
+    paint([
+      el("h1", { text: "What did you find?" }),
+      meterNodes(),
+      el("p", { text: trail.question }),
+      el("label", { for: "found-text", text: "What you found" }),
+      area,
+      feedback,
+      el("div", { class: "bar" }, [
+        el("button", { type: "button", id: "found-go", onclick: function () {
+          var text = area.value;
+          var g = gateText(text);
+          if (g) { feedback.className = "note again"; feedback.textContent = g; return; }
+          if (!String(text).trim()) { feedback.className = "note again"; feedback.textContent = "Type what you found."; return; }
+          feedback.textContent = "";
+          markStep({ kind: "found", prompt: "What did you find?", childText: text.trim() });
+          proceed({ kind: "find-question" });
+        } }, ["Next"])
+      ]),
+      toolButtons()
+    ]);
+  }
+  function showFindQuestion() {
+    screen = "find";
+    var prompt = FIND_QUESTIONS[trail.findIndex % FIND_QUESTIONS.length];
+    var area = el("textarea", { id: "find-answer", maxlength: "2000" });
+    var feedback = el("div", { id: "feedback", role: "status" });
+    paint([
+      recapBanner(),
+      el("h1", { text: "Dig a bit more" }),
+      meterNodes(),
+      el("p", { class: "lead", id: "find-prompt", text: prompt }),
+      el("label", { for: "find-answer", text: "Your answer" }),
+      area,
+      feedback,
+      el("div", { class: "bar" }, [
+        el("button", { type: "button", id: "find-answer-go", onclick: function () {
+          var text = area.value;
+          var g = gateText(text);
+          if (g) { feedback.className = "note again"; feedback.textContent = g; return; }
+          if (!String(text).trim()) { feedback.className = "note again"; feedback.textContent = "Type an answer to carry on."; return; }
+          markStep({ kind: "deeper", prompt: prompt, childText: text.trim() });
+          trail.findIndex += 1;
+          proceed({ kind: "find-question" });
+        } }, ["Next"])
+      ]),
+      toolButtons()
+    ]);
+  }
+
+  function openSummary() {
+    screen = "summary";
+    trail.finished = true;
+    trail.meterFull = true;
+    var now = new Date();
+    if (!trail.finishedAt) trail.finishedAt = now.getTime();
+    if (!trail.createdAt) {
+      trail.createdAt = localStamp(now);
+      trail.updatedAt = trail.createdAt;
+    }
+    if (!trail.durationMinutes) {
+      var mins = Math.round((trail.finishedAt - trail.startedAt) / 60000);
+      trail.durationMinutes = mins >= 1 && mins <= 600 ? mins : 0;
+    }
+    persistSession();
+    var burst = el("div", { class: "burst", "aria-hidden": "true" }, [el("i"), el("i"), el("i")]);
+    var name = el("input", { id: "summary-name", type: "text", maxlength: "60", value: child.name });
+    name.value = child.name;
+    var msg = el("div", { id: "save-msg", class: "note", role: "status" });
+    msg.hidden = true;
+    function setMsg(text, kind) { msg.hidden = !text; msg.className = "note " + (kind || ""); msg.textContent = text || ""; }
+    name.addEventListener("change", function () {
+      if (!firstNameOk(name.value)) {
+        setMsg(looksPersonal(name.value) || /\s/.test(name.value.trim())
+          ? "Let's keep personal details private. You don't need them here."
+          : "Add a first name.", "again");
+        name.value = child.name;
+        return;
+      }
+      if (name.value.trim() !== child.name) {
+        child.name = name.value.trim();
+        trail.updatedAt = localStamp(new Date());
+        persistSession();
+        updateHeader();
+      }
+    });
+    var nodes = [
+      burst,
+      el("h1", { text: trail.mode === "findout" ? "Your summary is ready to save" : "You've covered the key ideas!" })
+    ];
+    if (trail.mode === "findout") nodes.push(el("p", { text: "Researched with a grown-up." }));
+    nodes.push(el("p", { text: trail.question }));
+    nodes.push(el("div", { class: "card", id: "final-summary" }, [el("p", { text: trail.summary })]));
+    if (trail.ideas && trail.ideas.length) {
+      var list = el("div", { class: "card" });
+      trail.ideas.forEach(function (idea) { list.appendChild(el("p", { text: "Nice! You explained " + idea + "." })); });
+      nodes.push(list);
+    }
+    nodes.push(el("label", { for: "summary-name", text: "First name" }));
+    nodes.push(name);
+    nodes.push(msg);
+    nodes.push(el("div", { class: "bar" }, [
+      el("button", { type: "button", id: "save-profile", onclick: function () {
+        var result = saveToProfile();
+        if (result === "ok") setMsg("✅ Saved to " + savedChildName() + "'s profile.", "ok");
+        else if (result === "write") setMsg("⚠️ Couldn't save — this device's storage may be full. Download the evidence file instead so nothing is lost.", "again");
+        else setMsg("⚠️ Couldn't match this to a child profile — reopen from Wattlewood Hollow with a child selected, then try again.", "again");
+      } }, ["Save to my profile"]),
+      el("button", { type: "button", id: "download-evidence", class: "secondary", onclick: function () { downloadEvidence(setMsg); } }, ["Download evidence file"]),
+      el("button", { type: "button", id: "print-report-btn", class: "secondary", onclick: function () { refreshPrint(); window.print(); } }, ["Print"])
+    ]));
+    nodes.push(el("p", { class: "privacy", text: "The evidence file contains your child's name. Store it somewhere private." }));
+    paint(nodes);
+    blip(780);
+  }
+  function savedChildName() {
+    var matched = matchChild(readState());
+    if (matched && matched.name) return String(matched.name).trim().split(/\s+/)[0];
+    return child.name;
+  }
+  function sessionObject() {
+    return {
+      sessionId: "e_" + trail.sessionStartTime,
+      profileEntryId: trail.profileEntryId,
+      evidenceEntryId: trail.evidenceEntryId,
+      startedAt: localStamp(new Date(trail.startedAt)),
+      finishedAt: localStamp(new Date(trail.finishedAt || Date.now())),
+      createdAt: trail.createdAt,
+      updatedAt: trail.updatedAt,
+      year: child.year,
+      track: child.track,
+      name: child.name,
+      question: trail.question,
+      mode: trail.mode,
+      researched: trail.mode === "findout",
+      chain: trail.fullLog,
+      explanations: trail.explanations,
+      hints: trail.hints,
+      summary: trail.summary,
+      cardIds: trail.visited.slice(),
+      ideas: trail.ideas.slice(),
+      durationMinutes: trail.durationMinutes || 0
+    };
+  }
+  function persistSession() {
+    var bundle = recFor(child.storeId);
+    if (!bundle || !trail) return false;
+    var obj = sessionObject();
+    var at = bundle.rec.sessions.findIndex(function (s) { return s && s.evidenceEntryId === obj.evidenceEntryId; });
+    if (at >= 0) bundle.rec.sessions[at] = obj;
+    else bundle.rec.sessions.push(obj);
+    if (trail.mode === "card") {
+      trail.visited.forEach(function (id) {
+        if (!inYear(getCard(id), child.year)) return;
+        var items = bundle.rec.brain.filter(function (b) { return b && b.cardId !== id; });
+        items.push({ cardId: id, question: trail.question, text: trail.summary, savedAt: trail.updatedAt });
+        bundle.rec.brain = items;
+      });
+    } else {
+      var rest = bundle.rec.researched.filter(function (r) { return r && r.question !== trail.question; });
+      rest.push({ question: trail.question, text: trail.summary, savedAt: trail.updatedAt });
+      bundle.rec.researched = rest;
+    }
+    bundle.rec.name = child.name;
+    bundle.rec.year = child.year;
+    bundle.rec.track = child.track;
+    return saveRec(bundle);
+  }
+  function saveToProfile() {
+    var raw;
+    try { raw = localStorage.getItem(KEY); } catch (e) { return "nochild"; }
+    if (!raw) return "nochild";
+    var st;
+    try { st = JSON.parse(raw); } catch (e) { return "nochild"; }
+    var matched = matchChild(st);
+    if (!matched) return "nochild";
+    var entry = {
+      entryId: trail.profileEntryId,
+      date: new Date().toISOString(),
+      tags: ["Deep Dive", child.track + " session"],
+      note: profileNote(),
+      sourceType: "module",
+      linkedTaskId: params.get("taskId") || null
+    };
+    if (!Array.isArray(matched.moduleEvidence)) matched.moduleEvidence = [];
+    var at = matched.moduleEvidence.findIndex(function (e) { return e && e.entryId === entry.entryId; });
+    if (at > -1) matched.moduleEvidence[at] = entry;
+    else { matched.moduleEvidence.push(entry); matched.entriesLogged = (matched.entriesLogged || 0) + 1; }
+    try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) { return "write"; }
+    return "ok";
+  }
+  function profileNote() {
+    var q = trail.question;
+    if (trail.mode === "findout") {
+      return child.name + " researched the question \"" + q + "\" with a grown-up as a " + child.track + " (Year " + child.year + "). The app did not give an answer. " + child.name + " wrote a summary.";
+    }
+    var ideas = trail.ideas && trail.ideas.length ? trail.ideas.join("; ") : "the ideas on the trail";
+    return child.name + " completed a Deep Dive on \"" + q + "\" as a " + child.track + " (Year " + child.year + "). Key ideas explained: " + ideas + ". " + child.name + " wrote a final summary.";
+  }
+
+  function curriculumLines() {
+    var lines = [];
+    function add(line) {
+      if (!line || !line.kind || !line.area) return;
+      var path = Array.isArray(line.path) ? line.path.filter(function (p) { return typeof p === "string" && p; }) : [];
+      if (!pathOk(line.kind, line.area, path)) return;
+      var label = path.length ? line.area + " > " + path.join(" > ") : line.area;
+      if (lines.some(function (x) { return x.label === label; })) return;
+      if (lines.length >= 10) return;
+      var obj = { kind: line.kind, area: line.area, label: label };
+      if (path.length) obj.path = path;
+      lines.push(obj);
+    }
+    if (trail.mode === "findout") {
+      add({ kind: "generalCapability", area: "Critical and Creative Thinking", label: "Critical and Creative Thinking" });
+      return lines;
+    }
+    trail.visited.forEach(function (id) {
+      var card = getCard(id);
+      if (!card || !inYear(card, child.year)) return;
+      (card.curriculum || []).forEach(add);
+    });
+    return lines;
+  }
+  function pathOk(kind, area, path) {
+    if (kind === "generalCapability") return CAPABILITIES.indexOf(area) >= 0 && path.length === 0;
+    if (kind === "crossCurriculumPriority") return PRIORITIES.indexOf(area) >= 0 && path.length === 0;
+    if (kind !== "learningArea") return false;
+    if (area === "Languages") return path.length === 1 && path[0].length <= 40;
+    var allowed = PATHS[area];
+    if (!allowed) return false;
+    if (area === "HASS") {
+      if (path.indexOf("Civics and Citizenship") >= 0 && child.year < 3) return false;
+      if (path.indexOf("Economics and Business") >= 0 && child.year < 5) return false;
+    }
+    for (var i = 0; i < path.length; i++) if (allowed.indexOf(path[i]) < 0) return false;
+    return true;
+  }
+  function chainText() {
+    var bits = ["Question: " + trail.question];
+    trail.fullLog.forEach(function (item) {
+      var line = "Step " + (item.step || "-") + ". " + (item.prompt || item.kind || "");
+      if (item.detail) line += " " + item.detail;
+      if (item.childText) line += " Child: " + item.childText;
+      if (item.outcome) line += " " + item.outcome;
+      if (item.tip) line += " Tip: " + item.tip;
+      bits.push(line);
+    });
+    var text = bits.join(" ");
+    if (text.length > 2000) text = text.slice(0, 1997) + "...";
+    return text;
+  }
+  function evidenceSummary() {
+    var q = trail.question;
+    if (trail.mode === "findout") {
+      return child.name + " researched the question \"" + q + "\" with a grown-up. No answer was given by the app. " + child.name + " wrote a summary of what they found. Researched with a grown-up.";
+    }
+    var ideas = trail.ideas && trail.ideas.length ? trail.ideas.join("; ") : "the ideas on the cards they visited";
+    return child.name + " investigated the question \"" + q + "\" and explained these key ideas: " + ideas + ".";
+  }
+  function buildEvidence() {
+    var finished = trail.finishedAt ? new Date(trail.finishedAt) : new Date();
+    var entry = {
+      entryId: trail.evidenceEntryId,
+      date: localDate(finished),
+      title: ("Deep Dive: " + trail.question).slice(0, 120),
+      summary: evidenceSummary().slice(0, 2000),
+      description: chainText(),
+      reflection: String(trail.summary || "").slice(0, 1000),
+      curriculum: curriculumLines(),
+      evidenceTypes: [
+        { type: "workSample", note: trail.mode === "findout" ? "Researched with a grown-up" : "Question trail and explanations" },
+        { type: "reflection", note: "Final summary" }
+      ],
+      createdAt: trail.createdAt,
+      updatedAt: trail.updatedAt
+    };
+    if (trail.durationMinutes) entry.durationMinutes = trail.durationMinutes;
+    var file = {
+      format: "wattlewood-evidence",
+      formatVersion: "1.0",
+      exportedAt: localStamp(new Date()),
+      source: { app: "deep-dive", appName: "Deep Dive" },
+      student: { name: child.name },
+      entries: [entry]
+    };
+    var matched = matchChild(readState());
+    if (matched && matched.id) file.student.sourceStudentId = matched.id;
+    return file;
+  }
+  function validateEvidence(file) {
+    var errors = [];
+    if (!file || file.format !== "wattlewood-evidence" || file.formatVersion !== "1.0") errors.push("The evidence file is not ready.");
+    if (!file.source || file.source.app !== "deep-dive" || !/^[a-z0-9-]+$/.test(file.source.app)) errors.push("The evidence source is not ready.");
+    if (!file.student || !file.student.name || file.student.name.length > 60) errors.push("Add a first name before downloading.");
+    if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[+-]\d{2}:\d{2}$/.test(file.exportedAt || "")) errors.push("The evidence time is not ready.");
+    if (!file.entries || file.entries.length !== 1) errors.push("The evidence file is not ready.");
+    var e = file.entries && file.entries[0];
+    if (!e) return errors;
+    if (!e.entryId || e.entryId.indexOf("deep-dive:") !== 0) errors.push("The evidence id is not ready.");
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(e.date || "")) errors.push("The evidence date is not ready.");
+    if (!e.title || e.title.length > 120) errors.push("The title is too long.");
+    if (!e.summary || e.summary.length > 2000) errors.push("The summary is too long.");
+    if (e.description && e.description.length > 2000) errors.push("The description is too long.");
+    if (e.reflection && e.reflection.length > 1000) errors.push("The summary is too long.");
+    if (!e.curriculum || !e.curriculum.length || e.curriculum.length > 10) errors.push("The curriculum lines are not ready.");
+    if (!e.evidenceTypes || e.evidenceTypes.length < 1 || e.evidenceTypes.length > 6) errors.push("The evidence types are not ready.");
+    (e.evidenceTypes || []).forEach(function (t) {
+      if (["workSample", "photo", "observation", "conversation", "reflection", "video", "audio", "other"].indexOf(t.type) < 0) errors.push("The evidence types are not ready.");
+    });
+    if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[+-]\d{2}:\d{2}$/.test(e.createdAt || "")) errors.push("The evidence time is not ready.");
+    if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[+-]\d{2}:\d{2}$/.test(e.updatedAt || "")) errors.push("The evidence time is not ready.");
+    return errors;
+  }
+  function downloadEvidence(setMsg) {
+    var field = document.getElementById("summary-name");
+    if (field && firstNameOk(field.value) && field.value.trim() !== child.name) {
+      child.name = field.value.trim();
+      trail.updatedAt = localStamp(new Date());
+      persistSession();
+    }
+    if (!firstNameOk(child.name)) {
+      setMsg("Add a first name on this screen before downloading.", "again");
+      return;
+    }
+    var file = buildEvidence();
+    var errors = validateEvidence(file);
+    if (errors.length) { setMsg(errors[0], "again"); return; }
+    var json = JSON.stringify(file);
+    if (json.length > 25 * 1024 * 1024) { setMsg("The evidence file is too large.", "again"); return; }
+    var safe = child.name.replace(/[^A-Za-z0-9]/g, "") || "Child";
+    var date = file.entries[0].date;
+    var blob = new Blob([json], { type: "application/json" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = safe + "_deep-dive_" + date + "_to_" + date + ".wwevidence.json";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(function () { try { URL.revokeObjectURL(a.href); } catch (e) {} }, 1000);
+    setMsg("Evidence file ready.", "ok");
+  }
+
+  function refreshPrint() {
+    var report = document.getElementById("print-report");
+    clear(report);
+    report.appendChild(el("p", { text: "Wattlewood Hollow" }));
+    report.appendChild(el("h1", { text: "Deep Dive" }));
+    report.appendChild(el("p", { text: "Student: " + (child.name || "") }));
+    report.appendChild(el("p", { text: "Date: " + prettyDate(new Date()) }));
+    if (child.year) report.appendChild(el("p", { text: "Level: " + child.track + ", Year " + child.year }));
+    if (!trail || !trail.finished) {
+      report.appendChild(el("p", { text: "Nothing finished to report yet." }));
+      return;
+    }
+    var result = trail.mode === "findout" ? "Researched with a grown-up" : "Finish line reached";
+    report.appendChild(el("p", { text: "Result: " + result }));
+    report.appendChild(el("h2", { text: "Question" }));
+    report.appendChild(el("p", { text: trail.question }));
+    report.appendChild(el("h2", { text: "Question chain" }));
+    var table = el("table");
+    var head = el("tr", {}, [el("th", { text: "Step" }), el("th", { text: "What was asked" }), el("th", { text: "Child's words" }), el("th", { text: "Outcome" })]);
+    table.appendChild(el("thead", {}, [head]));
+    var body = el("tbody");
+    trail.fullLog.forEach(function (item) {
+      body.appendChild(el("tr", {}, [
+        el("td", { text: item.step ? String(item.step) : "" }),
+        el("td", { text: (item.prompt || "") + (item.detail ? " " + item.detail : "") }),
+        el("td", { text: item.childText || "" }),
+        el("td", { text: (item.outcome || "") + (item.tip ? " " + item.tip : "") })
+      ]));
+    });
+    table.appendChild(body);
+    report.appendChild(table);
+    report.appendChild(el("h2", { text: "Final summary" }));
+    report.appendChild(el("p", { text: trail.summary || "" }));
+    if (trail.hints && trail.hints.length) {
+      report.appendChild(el("h2", { text: "Hints shown" }));
+      trail.hints.forEach(function (h) { report.appendChild(el("p", { text: h })); });
+    }
+    report.appendChild(el("p", { class: "keep", text: "Parent / home educator sign-off: ___________________________" }));
+  }
+
+  function showParent() {
+    screen = "parent";
+    var bundle = recFor(child.storeId);
+    var sessions = bundle ? bundle.rec.sessions : [];
+    var list = el("div", { id: "parent-sessions" });
+    if (!sessions.length) list.appendChild(el("p", { text: "No finished Deep Dive yet." }));
+    sessions.forEach(function (s) {
+      var block = el("section", { class: "card" });
+      block.appendChild(el("h2", { text: s.question || "Deep Dive" }));
+      block.appendChild(el("p", { text: (s.track || "") + (s.year ? ", Year " + s.year : "") }));
+      if (s.researched) block.appendChild(el("p", { text: "Researched with a grown-up" }));
+      block.appendChild(el("h3", { text: "Question chain" }));
+      (s.chain || []).forEach(function (item) {
+        var line = (item.step ? "Step " + item.step + ". " : "") + (item.prompt || "");
+        if (item.detail) line += " " + item.detail;
+        block.appendChild(el("p", { text: line }));
+        if (item.childText) block.appendChild(el("p", { text: "Child: " + item.childText }));
+        if (item.outcome || item.tip) block.appendChild(el("p", { text: (item.outcome || "") + (item.tip ? " " + item.tip : "") }));
+      });
+      block.appendChild(el("h3", { text: "Explanations" }));
+      (s.explanations || []).forEach(function (ex) {
+        block.appendChild(el("p", { text: ex.text || "" }));
+      });
+      block.appendChild(el("h3", { text: "Hints used" }));
+      if (s.hints && s.hints.length) s.hints.forEach(function (h) { block.appendChild(el("p", { text: h })); });
+      else block.appendChild(el("p", { text: "None" }));
+      block.appendChild(el("h3", { text: "Final summary" }));
+      block.appendChild(el("p", { text: s.summary || "" }));
+      list.appendChild(block);
+    });
+    var packList = el("div", { id: "pack-list" });
+    function drawPacks() {
+      clear(packList);
+      var packs = loadPacks();
+      if (!packs.length) packList.appendChild(el("p", { text: "No topic packs yet." }));
+      packs.forEach(function (p) {
+        packList.appendChild(el("p", { text: (p.packName || p.packId || "Pack") + " (" + ((p.cards && p.cards.length) || 0) + " topics)" }));
+      });
+    }
+    drawPacks();
+    var packMsg = el("div", { id: "pack-status", class: "note", role: "status" });
+    packMsg.hidden = true;
+    var file = el("input", { id: "pack-file", type: "file", accept: ".json,.ddpack.json,application/json" });
+    file.addEventListener("change", function () {
+      var f = file.files && file.files[0];
+      file.value = "";
+      if (!f) return;
+      var reader = new FileReader();
+      reader.onload = function () {
+        var result = importPack(String(reader.result || ""));
+        packMsg.hidden = false;
+        packMsg.textContent = result;
+        drawPacks();
+      };
+      reader.onerror = function () {
+        packMsg.hidden = false;
+        packMsg.textContent = "That file could not be read.";
+      };
+      reader.readAsText(f);
+    });
+    paint([
+      el("h1", { text: "For grown-ups" }),
+      el("p", { text: "This is the record of each finished Deep Dive: the question chain, what was typed, the hints, and the final summary." }),
+      list,
+      el("h2", { text: "Parent Corner" }),
+      el("label", { for: "pack-file", text: "Add a topic pack" }),
+      file,
+      packMsg,
+      packList,
+      el("div", { class: "bar" }, [el("button", { type: "button", class: "secondary", onclick: function () {
+        if (trail && trail.finished) openSummary();
+        else showHome();
+      } }, ["Back"])])
+    ]);
+  }
+  function isStr(v) { return typeof v === "string"; }
+  function strList(arr) { return Array.isArray(arr) && arr.every(isStr); }
+  function validateCard(card) {
+    if (!card || typeof card !== "object" || Array.isArray(card)) return "it is not a topic object";
+    if (!isStr(card.id) || !card.id || card.id.length > 80 || /[<>]/.test(card.id)) return "it needs an id";
+    if (card.id === "__proto__" || card.id === "constructor" || card.id === "prototype") return "it needs an id";
+    if (card.type !== "concept" && card.type !== "compare") return "its type must be concept or compare";
+    if (!isStr(card.title) || !card.title) return "it needs a title";
+    if (!isStr(card.subject) || !card.subject) return "it needs a subject";
+    if (!isStr(card.answer) || !card.answer) return "it needs an answer";
+    if (card.answerSenior != null && !isStr(card.answerSenior)) return "its senior answer must be text";
+    if (typeof card.yearMin !== "number" || typeof card.yearMax !== "number" || card.yearMin > card.yearMax) return "its years are not usable";
+    if (!strList(card.triggers) || !card.triggers.length) return "it needs trigger words";
+    if (!Array.isArray(card.followUps)) return "its follow-up list is missing";
+    for (var i = 0; i < card.followUps.length; i++) {
+      var f = card.followUps[i];
+      if (!f || !isStr(f.question) || !strList(f.options) || f.options.length < 2 || typeof f.correct !== "number" || f.correct < 0 || f.correct >= f.options.length || !isStr(f.tip)) return "a follow-up is incomplete";
+    }
+    if (!Array.isArray(card.digDeeper)) return "its dig deeper list is missing";
+    for (var d = 0; d < card.digDeeper.length; d++) {
+      var dig = card.digDeeper[d];
+      if (!dig || !isStr(dig.label) || !isStr(dig.cardId)) return "a dig deeper link is incomplete";
+    }
+    if (!Array.isArray(card.keyIdeas) || !card.keyIdeas.length) return "it needs key ideas";
+    for (var k = 0; k < card.keyIdeas.length; k++) {
+      var idea = card.keyIdeas[k];
+      if (!idea || !isStr(idea.id) || !isStr(idea.describe) || !strList(idea.phrases) || !idea.phrases.length || !strList(idea.hints)) return "a key idea is incomplete";
+    }
+    if (!Array.isArray(card.misconceptions)) return "its misconception list is missing";
+    for (var m = 0; m < card.misconceptions.length; m++) {
+      var mis = card.misconceptions[m];
+      if (!mis || !strList(mis.phrases) || !isStr(mis.reply)) return "a misconception is incomplete";
+    }
+    if (!Array.isArray(card.quickChecks)) return "its quick check list is missing";
+    for (var q = 0; q < card.quickChecks.length; q++) {
+      var qc = card.quickChecks[q];
+      if (!qc || !isStr(qc.kind) || !isStr(qc.prompt)) return "a quick check is incomplete";
+      if (qc.kind === "choice" && (!strList(qc.options) || qc.options.length < 2 || typeof qc.correct !== "number" || qc.correct < 0 || qc.correct >= qc.options.length || !isStr(qc.tip))) return "a quick check is incomplete";
+    }
+    if (!strList(card.related)) return "its related list is missing";
+    if (!Array.isArray(card.curriculum)) return "its curriculum list is missing";
+    if (!strList(card.factRegister)) return "its fact register is missing";
+    if (card.type === "compare" && (!Array.isArray(card.compares) || card.compares.length !== 2 || !isStr(card.compares[0]) || !isStr(card.compares[1]))) return "a compare topic needs two sides";
+    return "";
+  }
+  function importPack(text) {
+    var data;
+    try { data = JSON.parse(text); } catch (e) { return "That file could not be read."; }
+    if (!data || data.format !== "deep-dive-pack" || !isStr(data.packId) || !data.packId || !Array.isArray(data.cards)) return "That file is not a topic pack.";
+    var good = [];
+    var reasons = [];
+    var seen = {};
+    data.cards.forEach(function (card, index) {
+      var reason = validateCard(card);
+      if (reason) {
+        var titleBit = card && isStr(card.title) ? " (" + card.title.slice(0, 80) + ")" : "";
+        reasons.push("Skipped card " + (index + 1) + titleBit + ": " + reason + ".");
+      }
+      else if (seen[card.id]) reasons.push("Skipped card " + (index + 1) + ": that id is already in this pack.");
+      else { seen[card.id] = true; good.push(card); }
+    });
+    if (!good.length) return (reasons.join(" ") || "No topics were added.");
+    var packs = loadPacks();
+    var item = { packId: data.packId, packName: isStr(data.packName) ? data.packName : data.packId, cards: good };
+    var at = packs.findIndex(function (p) { return p && p.packId === data.packId; });
+    var replaced = at >= 0;
+    if (replaced) packs[at] = item;
+    else packs.push(item);
+    if (!savePacks(packs)) return "Couldn't save — this device's storage may be full.";
+    var lead = replaced ? "Replaced the topic pack. It was not added twice." : "Added the topic pack.";
+    return lead + (reasons.length ? " " + reasons.join(" ") : "");
+  }
+
+  function showLeave() {
+    if (document.getElementById("leave-dialog")) return;
+    var box = el("div", { id: "leave-dialog", class: "card", role: "dialog", "aria-modal": "true" });
+    box.appendChild(el("h2", { text: "Leave this Deep Dive?" }));
+    box.appendChild(el("p", { text: "This trail will not be saved unless you have finished it. Questions already on your Wonder Wall stay there." }));
+    var stay = el("button", { type: "button", id: "stay-btn", onclick: function () { box.remove(); } }, ["Stay"]);
+    var leave = el("button", { type: "button", id: "leave-btn", class: "secondary", onclick: function () { trail = null; showHome(); } }, ["Leave"]);
+    box.appendChild(el("div", { class: "bar" }, [stay, leave]));
+    main.appendChild(box);
+    stay.focus();
+  }
+
+  menuBtn.addEventListener("click", function () {
+    if (trail && screen !== "summary" && screen !== "home" && screen !== "opening" && screen !== "parent") {
+      showLeave();
+      return;
+    }
+    if (screen === "home" || screen === "summary" || screen === "parent") showOpening();
+    else showHome();
+  });
+  soundBtn.addEventListener("click", function () {
+    soundOn = !soundOn;
+    soundBtn.setAttribute("aria-pressed", soundOn ? "true" : "false");
+    soundBtn.textContent = soundOn ? "Sound: on" : "Sound: off";
+    if (soundOn) blip(560);
+  });
+  grownBtn.addEventListener("click", function () {
+    if (trail && screen !== "summary" && screen !== "home" && screen !== "parent") {
+      showLeave();
+      return;
+    }
+    showParent();
+  });
+
+  showOpening();
+})();
+</script>
+<noscript><p>Deep Dive needs JavaScript in this browser.</p></noscript>
+</body>
+</html>
