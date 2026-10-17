@@ -79,21 +79,54 @@ textarea{min-height:88px;resize:vertical}
 .cheat-sheet h4{font-family:"Barlow Semi Condensed","Arial Narrow",sans-serif;margin:16px 0 6px;border-bottom:2px solid #111;padding-bottom:3px}
 .cheat-sheet ul{margin:0;padding-left:1.1rem}
 .cheat-sheet li{margin:.2rem 0}
+.print-card{display:none}
 .locked{opacity:.85}
 @page{size:A4;margin:12mm}
+@page sheet{size:A4 portrait;margin:0}
 @media print{
   .no-print{display:none!important}
   .cheat-sheet{box-shadow:none;border:0;max-width:none;padding:0}
   .cheat-sheet,.cheat-sheet h3,.cheat-sheet h4,.cheat-sheet p,.cheat-sheet li{color:#000!important;background:#fff!important}
   .evidence-report,.evidence-report h3,.evidence-report h4,.evidence-report p,.evidence-report li{color:#000!important}
   .sim-stage,canvas{break-inside:avoid}
-  body[data-print="sheet"] .masthead,
-  body[data-print="sheet"] .tabs,
-  body[data-print="sheet"] footer,
-  body[data-print="sheet"] .page-head,
-  body[data-print="sheet"] .spec-grid,
-  body[data-print="sheet"] .toolrow,
-  body[data-print="sheet"] .safety{display:none!important}
+  body[data-print="sheet"]{page:sheet;background:#fff!important;color:#000!important}
+  body[data-print="sheet"] .shell,
+  body[data-print="sheet"] main,
+  body[data-print="sheet"] .content{max-width:none!important;margin:0!important;padding:0!important;background:#fff!important;box-shadow:none!important}
+  body[data-print="sheet"] .shell > *:not(main){display:none!important}
+  body[data-print="sheet"] main{display:block!important}
+  body[data-print="sheet"] main > *:not(#toolContent){display:none!important}
+  body[data-print="sheet"] #toolContent{display:block!important}
+  body[data-print="sheet"] #toolContent > *:not(.print-card){display:none!important}
+  body[data-print="sheet"] .print-card{
+    display:flex!important;
+    flex-direction:column;
+    width:148mm;
+    height:210mm;
+    margin:43.5mm auto 0;
+    padding:7mm 7mm 5.5mm;
+    border:0.7mm solid #000;
+    background:#fff!important;
+    color:#000!important;
+    box-shadow:none!important;
+    overflow:hidden;
+    font-family:"Source Sans 3",sans-serif;
+    font-size:8pt;
+    line-height:1.25;
+    -webkit-print-color-adjust:exact;
+    print-color-adjust:exact
+  }
+  body[data-print="sheet"] .print-card *{color:#000!important;background:transparent!important;box-shadow:none!important}
+  .print-card-head h3{font-family:"Barlow Semi Condensed","Arial Narrow",sans-serif;font-size:20pt;font-weight:600;line-height:1;margin:0;padding:0 0 1.4mm;border-bottom:0.3mm solid #000}
+  .print-kind{margin:1.5mm 0 0;font-size:8pt;line-height:1.2}
+  .print-cols{display:grid;grid-template-columns:minmax(0,1.28fr) minmax(0,.9fr);gap:4mm;margin-top:3.5mm;align-items:start}
+  .print-specs{width:100%;border-collapse:collapse;table-layout:fixed}
+  .print-specs th,.print-specs td{font-weight:400;text-align:left;vertical-align:top;padding:.4mm 0;font-size:7.2pt;line-height:1.2}
+  .print-specs th{font-weight:700;padding-right:1.6mm;width:24mm}
+  .print-modes p{margin:0 0 1.6mm;font-size:7.5pt;line-height:1.22}
+  .print-modes strong{font-weight:700}
+  .print-safety{margin-top:auto;border-top:0.25mm solid #000;padding-top:2mm}
+  .print-safety p{margin:0;font-size:6.5pt;line-height:1.28}
 }
 </style>
 </head>
@@ -698,7 +731,12 @@ function renderCheatSheet(card){
   const sheet=card.cheatSheet;
   if(!sheet) return `<div class="panel"><p>No cheat sheet is on this card yet.</p></div>`;
   const sections=(sheet.sections||[]).map(sec=>`<h4>${esc(sec.heading)}</h4><ul>${(sec.lines||[]).map(line=>`<li>${esc(line)}</li>`).join('')}</ul>`).join('');
-  return `<h3 class="no-print">Cheat sheet</h3><p class="muted no-print">One A4 page. Print it in black and white if you like.</p><p class="no-print"><button class="primary" type="button" data-print>Print cheat sheet</button></p><article class="cheat-sheet"><h3>${esc(sheet.title||card.name)}</h3>${sections}</article>`;
+  const specRows=(card.specs||[]).map(s=>`<tr><th>${esc(s.label)}</th><td>${esc(s.value)}</td></tr>`).join('');
+  const modeLines=(card.modes||[]).map(m=>`<p><strong>${esc(m.name)}.</strong> ${esc(m.text)}</p>`).join('');
+  const kind=((card.subtitle||'').split('·')[0]||'').trim();
+  const safety=['Never look at the sun through a viewfinder, lens or telescope.','Look after the gear: strap on, cap on, keep it dry.','Ask before photographing people, and ask a parent before sharing photos online.','Be sun smart outdoors.'].concat(card.safetyExtra||[]);
+  const printCard=`<article class="print-card" aria-hidden="true"><header class="print-card-head"><h3>${esc(sheet.title||card.name)}</h3><p class="print-kind">${esc(kind)}</p></header><div class="print-cols"><table class="print-specs"><tbody>${specRows}</tbody></table><div class="print-modes">${modeLines}</div></div><footer class="print-safety">${safety.map(line=>`<p>${esc(line)}</p>`).join('')}</footer></article>`;
+  return `<h3 class="no-print">Cheat sheet</h3><p class="muted no-print">One A4 page. Print it in black and white if you like.</p><p class="no-print"><button class="primary" type="button" data-print>Print cheat sheet</button></p><article class="cheat-sheet"><h3>${esc(sheet.title||card.name)}</h3>${sections}</article>${printCard}`;
 }
 function renderFacts(card){
   return `<h3>Fact register</h3><p class="muted">Facts are stored once in the card. Each entry links to its official source and the date checked.</p><div class="facts">${card.facts.map(f=>`<article class="fact" id="fact-${esc(f.id)}"><div class="fact-head"><strong>${esc(f.id)} · ${esc(f.source)}</strong><span class="pill">Checked ${esc(f.checked)}</span></div><p>${esc(f.statement)}</p><a href="${esc(f.url)}" target="_blank" rel="noopener noreferrer">Open official source ↗</a></article>`).join('')}</div>`;
