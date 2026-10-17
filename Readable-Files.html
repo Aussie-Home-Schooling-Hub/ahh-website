@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#FBF5E6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#14110E" media="(prefers-color-scheme: dark)">
+<title>Readable files</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%233E2717'/%3E%3Cpath d='M4 4h8v1.6H4zm0 3.2h8v1.6H4zm0 3.2h5.2v1.6H4z' fill='%23FBF5E6'/%3E%3C/svg%3E">
+<style>
+  :root {
+    color-scheme: light;
+    --bg: #FBF5E6;
+    --paper: #FFFDF8;
+    --ink: #2B2117;
+    --muted: #4E3B2C;
+    --line: #E2D3B0;
+    --link: #6B4530;
+    --key: #3E2717;
+    --string: #243D1E;
+    --number: #6B4530;
+    --literal: #6B4530;
+    --code-bg: #F3E9D2;
+    --chip: #F3E9D2;
+    --btn-bg: #3E2717;
+    --btn-text: #FBF5E6;
+    --danger-bg: #F8E8E0;
+    --danger-ink: #2B2117;
+    --danger-line: #A15A45;
+    --focus: #3E2717;
+    --font-body: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    --font-display: Georgia, "Times New Roman", serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      color-scheme: dark;
+      --bg: #14110E;
+      --paper: #221C17;
+      --ink: #F6F0E4;
+      --muted: #E4D3B8;
+      --line: #4A3D32;
+      --link: #F6E2B8;
+      --key: #F6E2B8;
+      --string: #D7E4B8;
+      --number: #F0D7A4;
+      --literal: #F0D7A4;
+      --code-bg: #2C241D;
+      --chip: #3A3028;
+      --btn-bg: #F3E0B0;
+      --btn-text: #1C1612;
+      --danger-bg: #3A2A24;
+      --danger-ink: #F6F0E4;
+      --danger-line: #E0A898;
+      --focus: #F6E2B8;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { font-size: 100%; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 1.125rem;
+    line-height: 1.55;
+    -webkit-text-size-adjust: 100%;
+  }
+  main {
+    width: 100%;
+    max-width: 40rem;
+    margin: 0 auto;
+    padding: 1.25rem 1rem 2.5rem;
+    min-width: 0;
+  }
+  h1 {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: 600;
+    line-height: 1.2;
+    margin: 0 0 0.4rem;
+  }
+  .lede, .foot, .status { color: var(--muted); }
+  .lede { margin: 0 0 1rem; }
+  .foot { margin: 1.25rem 0 0; font-size: 1rem; }
+  .status { min-height: 1.5em; margin: 0.85rem 0 0; }
+  .zone {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem 1rem;
+    padding: 0.9rem 1rem;
+    background: var(--paper);
+    border: 2px dashed var(--line);
+    border-radius: 12px;
+  }
+  .zone p { margin: 0; flex: 1 1 12rem; }
+  .zone.over { border-color: var(--focus); background: var(--chip); }
+  .btn, .toggle, .file-btn {
+    font: inherit;
+    font-weight: 700;
+    font-size: 1.05rem;
+    min-height: 48px;
+    padding: 0.65rem 1rem;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+  .btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--btn-bg);
+    background: var(--btn-bg);
+    color: var(--btn-text);
+    flex: 0 0 auto;
+  }
+  .btn input {
+    position: absolute;
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+  }
+  .toggle, .file-btn {
+    background: transparent;
+    color: var(--ink);
+    border: 2px solid var(--line);
+  }
+  .file-btn[aria-current="true"] {
+    background: var(--chip);
+    border-color: var(--focus);
+  }
+  .files {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.85rem;
+  }
+  .view {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    min-width: 0;
+  }
+  .view-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.85rem;
+  }
+  .view-bar h2 {
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: 1.15rem;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+  }
+  .message {
+    margin: 0 0 0.85rem;
+    padding: 0.9rem 1rem;
+    background: var(--danger-bg);
+    color: var(--danger-ink);
+    border: 1px solid var(--danger-line);
+    border-radius: 10px;
+  }
+  .markdown, .json, .plain, .table-wrap { max-width: 100%; min-width: 0; }
+  .markdown > :first-child { margin-top: 0; }
+  .markdown h1, .markdown h2, .markdown h3, .markdown h4, .markdown h5, .markdown h6 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    line-height: 1.25;
+    margin: 1.15rem 0 0.4rem;
+    overflow-wrap: anywhere;
+  }
+  .markdown h1 { font-size: 1.75rem; }
+  .markdown h2 { font-size: 1.45rem; }
+  .markdown h3 { font-size: 1.25rem; }
+  .markdown h4, .markdown h5, .markdown h6 { font-size: 1.125rem; }
+  .markdown p, .markdown li, .markdown blockquote { overflow-wrap: anywhere; }
+  .markdown p { margin: 0.55rem 0; }
+  .markdown ul, .markdown ol { margin: 0.4rem 0 0.8rem; padding-left: 1.35rem; }
+  .markdown li + li { margin-top: 0.25rem; }
+  .markdown a {
+    color: var(--link);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.15em;
+  }
+  .markdown strong { font-weight: 700; }
+  .markdown blockquote {
+    margin: 0.8rem 0;
+    padding: 0.1rem 0 0.1rem 0.9rem;
+    border-left: 4px solid var(--line);
+  }
+  .markdown hr { border: 0; border-top: 1px solid var(--line); margin: 1.1rem 0; }
+  .markdown code, .plain, .json {
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+  }
+  .markdown code {
+    background: var(--code-bg);
+    padding: 0.05em 0.35em;
+    border-radius: 4px;
+    overflow-wrap: anywhere;
+  }
+  .markdown pre {
+    margin: 0.8rem 0;
+    background: var(--code-bg);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .markdown pre code {
+    display: block;
+    padding: 0.85rem 1rem;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+  .code-label {
+    padding: 0.45rem 1rem 0;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--muted);
+  }
+  .table-wrap { margin: 0.8rem 0; }
+  table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  th, td {
+    border: 1px solid var(--line);
+    padding: 0.45rem 0.55rem;
+    text-align: left;
+    vertical-align: top;
+    overflow-wrap: anywhere;
+  }
+  th { background: var(--chip); }
+  .task-label { font-weight: 700; }
+  .json {
+    background: var(--code-bg);
+    border-radius: 10px;
+    padding: 0.85rem 0.75rem;
+    line-height: 1.45;
+  }
+  .j-row {
+    padding-left: calc(var(--d, 0) * 1.05rem);
+    overflow-wrap: anywhere;
+  }
+  .j-key { color: var(--key); font-weight: 700; }
+  .j-str { color: var(--string); }
+  .j-num { color: var(--number); }
+  .j-bool, .j-null { color: var(--literal); font-weight: 700; }
+  .plain {
+    margin: 0;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    background: var(--code-bg);
+    border-radius: 10px;
+    padding: 0.85rem 1rem;
+  }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  @media (max-width: 420px) {
+    .btn, .toggle { width: 100%; }
+  }
+  @media print {
+    body { background: #fff; color: #000; }
+    .zone, .files, .toggle, .foot, .lede, .status { display: none !important; }
+    .view { border: 0; padding: 0; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>Readable files</h1>
+  <p class="lede">Open a Markdown (.md) or JSON (.json) file. It stays on this computer. Nothing is uploaded.</p>
+  <section class="zone" id="zone" aria-labelledby="drop-label">
+    <p id="drop-label">Drop a .md or .json file here, or choose one.</p>
+    <label class="btn">Choose a file
+      <input id="picker" type="file" accept=".md,.markdown,.json,text/markdown,application/json" multiple>
+    </label>
+  </section>
+  <p id="status" class="status" role="status">No file open yet.</p>
+  <div id="files" class="files" hidden></div>
+  <article id="view" class="view" hidden tabindex="-1">
+    <div class="view-bar">
+      <h2 id="filename"></h2>
+      <button type="button" id="toggle" class="toggle" hidden>Show plain text</button>
+    </div>
+    <p id="message" class="message" role="alert" hidden></p>
+    <div id="rendered"></div>
+    <pre id="plain" class="plain" hidden></pre>
+  </article>
+  <p class="foot">Closing the tab clears what you opened. This page does not save a copy.</p>
+</main>
+<script>
+'use strict';
+/* Reads Markdown and JSON in this browser. Does not upload files or save a profile. */
+(function () {
+  var zone = document.getElementById('zone');
+  var picker = document.getElementById('picker');
+  var statusEl = document.getElementById('status');
+  var filesEl = document.getElementById('files');
+  var view = document.getElementById('view');
+  var filenameEl = document.getElementById('filename');
+  var toggle = document.getElementById('toggle');
+  var messageEl = document.getElementById('message');
+  var rendered = document.getElementById('rendered');
+  var plainEl = document.getElementById('plain');
+  var opened = [];
+  var seq = 0;
+  var currentId = 0;
+  var dragDepth = 0;
+
+  picker.addEventListener('change', function () {
+    var picked = Array.prototype.slice.call(picker.files || []);
+    picker.value = '';
+    openFiles(picked);
+  });
+
+  document.addEventListener('dragenter', function (e) {
+    e.preventDefault();
+    dragDepth += 1;
+    zone.classList.add('over');
+  });
+  document.addEventListener('dragover', function (e) {
+    e.preventDefault();
+  });
+  document.addEventListener('dragleave', function () {
+    dragDepth = Math.max(0, dragDepth - 1);
+    if (dragDepth === 0) zone.classList.remove('over');
+  });
+  document.addEventListener('drop', function (e) {
+    e.preventDefault();
+    dragDepth = 0;
+    zone.classList.remove('over');
+    openFiles(e.dataTransfer && e.dataTransfer.files);
+  });
+
+  toggle.addEventListener('click', function () {
+    var file = currentFile();
+    if (!file || file.kind !== 'md' || messageEl.hidden === false) return;
+    var showPlain = plainEl.hidden;
+    plainEl.hidden = !showPlain;
+    rendered.hidden = showPlain;
+    toggle.textContent = showPlain ? 'Show formatted text' : 'Show plain text';
+  });
+
+  function currentFile() {
+    for (var i = 0; i < opened.length; i++) {
+      if (opened[i].id === currentId) return opened[i];
+    }
+    return null;
+  }
+
+  function kindOf(name) {
+    var lower = String(name || '').toLowerCase();
+    if (lower.endsWith('.md') || lower.endsWith('.markdown')) return 'md';
+    if (lower.endsWith('.json')) return 'json';
+    return '';
+  }
+
+  function readText(file) {
+    return new Promise(function (resolve, reject) {
+      var reader = new FileReader();
+      reader.onload = function () { resolve(String(reader.result || '')); };
+      reader.onerror = function () { reject(new Error('read failed')); };
+      reader.readAsText(file);
+    });
+  }
+
+  function upsert(name, text, kind) {
+    for (var i = 0; i < opened.length; i++) {
+      if (opened[i].name === name) {
+        opened[i].text = text;
+        opened[i].kind = kind;
+        return opened[i].id;
+      }
+    }
+    seq += 1;
+    opened.push({ id: seq, name: name, text: text, kind: kind });
+    return seq;
+  }
+
+  function rejectMessage(names) {
+    if (names.length === 1) {
+      return names[0] + ' is not a Markdown or JSON file. This page opens .md and .json files.';
+    }
+    return 'These files are not Markdown or JSON: ' + names.join(', ') + '. This page opens .md and .json files.';
+  }
+
+  async function openFiles(list) {
+    var incoming = Array.prototype.slice.call(list || []);
+    if (!incoming.length) return;
+    var rejected = [];
+    var failed = [];
+    var ids = [];
+    for (var i = 0; i < incoming.length; i++) {
+      var file = incoming[i];
+      var kind = kindOf(file.name);
+      if (!kind) {
+        rejected.push(file.name);
+        continue;
+      }
+      try {
+        var text = (await readText(file)).replace(/^\uFEFF/, '');
+        ids.push(upsert(file.name, text, kind));
+      } catch (err) {
+        failed.push(file.name);
+      }
+    }
+    if (ids.length) show(ids[0]);
+    if (rejected.length || failed.length) {
+      var extra = [];
+      if (rejected.length) extra.push(rejectMessage(rejected));
+      if (failed.length) extra.push('Could not read ' + failed.join(', ') + '.');
+      statusEl.textContent = (ids.length ? statusEl.textContent + ' ' : '') + extra.join(' ');
+    }
+  }
+
+  function show(id) {
+    var file = null;
+    for (var i = 0; i < opened.length; i++) {
+      if (opened[i].id === id) file = opened[i];
+    }
+    if (!file) return;
+    currentId = id;
+    view.hidden = false;
+    filenameEl.textContent = file.name;
+    document.title = file.name + ' — Readable files';
+    plainEl.hidden = true;
+    plainEl.textContent = file.text;
+    rendered.hidden = false;
+    rendered.innerHTML = '';
+    messageEl.hidden = true;
+    messageEl.textContent = '';
+    toggle.hidden = true;
+    toggle.textContent = 'Show plain text';
+
+    var problem = false;
+    if (file.text.trim() === '') {
+      showProblem(file.kind === 'json' ? 'This JSON file is empty.' : 'This Markdown file is empty.');
+      problem = true;
+    } else if (file.kind === 'json') {
+      try {
+        rendered.innerHTML = renderJson(JSON.parse(file.text));
+      } catch (err) {
+        var detail = err && err.message ? 'Detail: ' + err.message + '.' : '';
+        showProblem('This JSON file could not be read. Look for a missing comma, a missing quote, or an extra bracket.', detail);
+        plainEl.hidden = false;
+        problem = true;
+      }
+    } else {
+      rendered.innerHTML = '<div class="markdown">' + renderMarkdown(file.text) + '</div>';
+      toggle.hidden = false;
+    }
+    renderTabs();
+    statusEl.textContent = problem
+      ? file.name + (file.text.trim() === '' ? ' is empty.' : ' could not be read.')
+      : 'Opened ' + file.name + '.';
+    view.focus();
+  }
+
+  function showProblem(summary, detail) {
+    rendered.hidden = true;
+    rendered.innerHTML = '';
+    toggle.hidden = true;
+    messageEl.hidden = false;
+    messageEl.textContent = detail ? summary + ' ' + detail : summary;
+  }
+
+  function renderTabs() {
+    filesEl.innerHTML = '';
+    if (opened.length < 2) {
+      filesEl.hidden = true;
+      return;
+    }
+    filesEl.hidden = false;
+    opened.forEach(function (file) {
+      var button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'file-btn';
+      button.textContent = file.name;
+      if (file.id === currentId) button.setAttribute('aria-current', 'true');
+      button.addEventListener('click', function () { show(file.id); });
+      filesEl.appendChild(button);
+    });
+  }
+
+  function escapeHtml(value) {
+    return String(value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function unescapeHtml(value) {
+    return String(value)
+      .replace(/&quot;/g, '"')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&amp;/g, '&');
+  }
+
+  function safeUrl(url) {
+    var value = String(url || '').trim();
+    if (!value || /[\u0000-\u001F\u007F]/.test(value)) return false;
+    if (/^(https?:\/\/|mailto:)/i.test(value)) return true;
+    if (/^[a-z][a-z0-9+.-]*:/i.test(value)) return false;
+    if (value.indexOf('//') === 0) return false;
+    return true;
+  }
+
+  function formatLoose(text) {
+    var s = escapeHtml(text);
+    s = s.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+    s = s.replace(/__([^_]+)__/g, '<strong>$1</strong>');
+    s = s.replace(/\*([^*\n]+)\*/g, '<em>$1</em>');
+    s = s.replace(/(^|[\s(])_([^_\n]+)_(?=$|[\s).,;:!?])/g, '$1<em>$2</em>');
+    s = s.replace(/&lt;(https?:\/\/[\s\S]+?)&gt;/g, function (match, url) {
+      var decoded = unescapeHtml(url).trim();
+      if (!safeUrl(decoded) || /\s/.test(decoded)) return match;
+      var safe = escapeHtml(decoded);
+      return '<a href="' + safe + '">' + safe + '</a>';
+    });
+    return s;
+  }
+
+  function renderInline(raw) {
+    var codes = [];
+    var source = String(raw).replace(/`([^`\n]*)`/g, function (_, code) {
+      codes.push(escapeHtml(code));
+      return '\uE000' + (codes.length - 1) + '\uE000';
+    });
+    var re = /!\[([^\]]*)\]\(([^)\s]+)\)|\[([^\]]+)\]\(([^)\s]+)\)/g;
+    var html = '';
+    var last = 0;
+    var match;
+    while ((match = re.exec(source)) !== null) {
+      html += formatLoose(source.slice(last, match.index));
+      if (match[0].charAt(0) === '!') {
+        var alt = escapeHtml(match[1] || '');
+        html += alt ? 'Image: ' + alt : 'Image';
+      } else if (safeUrl(match[4])) {
+        html += '<a href="' + escapeHtml(match[4]) + '">' + formatLoose(match[3]) + '</a>';
+      } else {
+        html += formatLoose(match[3]);
+      }
+      last = match.index + match[0].length;
+    }
+    html += formatLoose(source.slice(last));
+    return html.replace(/\uE000(\d+)\uE000/g, function (_, n) {
+      return '<code>' + codes[Number(n)] + '</code>';
+    });
+  }
+
+  function splitRow(line) {
+    var s = line.trim();
+    if (s.charAt(0) === '|') s = s.slice(1);
+    if (s.charAt(s.length - 1) === '|') s = s.slice(0, -1);
+    return s.split('|').map(function (cell) { return cell.trim(); });
+  }
+
+  function isTableSeparator(line) {
+    if (!line || line.indexOf('|') === -1) return false;
+    var cells = splitRow(line);
+    return cells.length > 0 && cells.every(function (cell) { return /^:?-{3,}:?$/.test(cell); });
+  }
+
+  function blockStarts(lines, index) {
+    var line = lines[index];
+    if (/^\s*```/.test(line)) return true;
+    if (/^(#{1,6})\s+/.test(line)) return true;
+    if (/^\s*[-*+]\s+/.test(line)) return true;
+    if (/^\s*\d+[.)]\s+/.test(line)) return true;
+    if (/^\s*>\s?/.test(line)) return true;
+    if (/^\s*(?:-{3,}|\*{3,}|_{3,})\s*$/.test(line)) return true;
+    if (index + 1 < lines.length && line.indexOf('|') !== -1 && isTableSeparator(lines[index + 1])) return true;
+    return false;
+  }
+
+  function renderListItem(text) {
+    var task = text.match(/^\[([ xX])\]\s+(.*)$/);
+    if (!task) return '<li>' + renderInline(text) + '</li>';
+    var done = task[1].toLowerCase() === 'x';
+    return '<li class="task' + (done ? ' done' : '') + '"><span class="task-label">' + (done ? 'Done:' : 'To do:') + '</span> ' + renderInline(task[2]) + '</li>';
+  }
+
+  function collectItem(lines, index, pattern) {
+    var text = lines[index].replace(pattern, '');
+    var next = index + 1;
+    while (next < lines.length && /^\s{2,}\S/.test(lines[next]) && !/^\s*[-*+]\s+/.test(lines[next]) && !/^\s*\d+[.)]\s+/.test(lines[next])) {
+      text += ' ' + lines[next].trim();
+      next += 1;
+    }
+    return { text: text, next: next };
+  }
+
+  function renderTable(headers, body) {
+    var head = '<thead><tr>' + headers.map(function (cell) {
+      return '<th scope="col">' + renderInline(cell) + '</th>';
+    }).join('') + '</tr></thead>';
+    var rows = body.map(function (cells) {
+      return '<tr>' + cells.map(function (cell) {
+        return '<td>' + renderInline(cell) + '</td>';
+      }).join('') + '</tr>';
+    }).join('');
+    return '<div class="table-wrap"><table>' + head + '<tbody>' + rows + '</tbody></table></div>';
+  }
+
+  function renderMarkdown(src) {
+    var lines = String(src).replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n');
+    var out = [];
+    var i = 0;
+    while (i < lines.length) {
+      var line = lines[i];
+      if (line.trim() === '') { i += 1; continue; }
+
+      var fence = line.match(/^\s*```(.*)$/);
+      if (fence) {
+        var lang = fence[1].trim();
+        var buf = [];
+        i += 1;
+        while (i < lines.length && !/^\s*```\s*$/.test(lines[i])) {
+          buf.push(lines[i]);
+          i += 1;
+        }
+        if (i < lines.length) i += 1;
+        var label = lang ? '<div class="code-label">' + escapeHtml(lang) + '</div>' : '';
+        out.push('<pre>' + label + '<code>' + escapeHtml(buf.join('\n')) + '</code></pre>');
+        continue;
+      }
+
+      if (/^\s*(?:-{3,}|\*{3,}|_{3,})\s*$/.test(line)) {
+        out.push('<hr>');
+        i += 1;
+        continue;
+      }
+
+      var heading = line.match(/^(#{1,6})\s+(.*?)\s*#*\s*$/);
+      if (heading) {
+        var level = heading[1].length;
+        out.push('<h' + level + '>' + renderInline(heading[2].trim()) + '</h' + level + '>');
+        i += 1;
+        continue;
+      }
+
+      if (i + 1 < lines.length && line.indexOf('|') !== -1 && isTableSeparator(lines[i + 1])) {
+        var headers = splitRow(line);
+        i += 2;
+        var body = [];
+        while (i < lines.length && lines[i].trim() !== '' && lines[i].indexOf('|') !== -1) {
+          body.push(splitRow(lines[i]));
+          i += 1;
+        }
+        out.push(renderTable(headers, body));
+        continue;
+      }
+
+      if (/^\s*[-*+]\s+/.test(line)) {
+        var bullets = [];
+        while (i < lines.length && /^\s*[-*+]\s+/.test(lines[i])) {
+          var bullet = collectItem(lines, i, /^\s*[-*+]\s+/);
+          bullets.push(bullet.text);
+          i = bullet.next;
+        }
+        out.push('<ul>' + bullets.map(renderListItem).join('') + '</ul>');
+        continue;
+      }
+
+      if (/^\s*\d+[.)]\s+/.test(line)) {
+        var startMatch = line.match(/^\s*(\d+)[.)]\s+/);
+        var start = startMatch ? Number(startMatch[1]) : 1;
+        var steps = [];
+        while (i < lines.length && /^\s*\d+[.)]\s+/.test(lines[i])) {
+          var step = collectItem(lines, i, /^\s*\d+[.)]\s+/);
+          steps.push(step.text);
+          i = step.next;
+        }
+        var startAttr = start > 1 ? ' start="' + start + '"' : '';
+        out.push('<ol' + startAttr + '>' + steps.map(renderListItem).join('') + '</ol>');
+        continue;
+      }
+
+      if (/^\s*>\s?/.test(line)) {
+        var quote = [];
+        while (i < lines.length && /^\s*>\s?/.test(lines[i])) {
+          quote.push(lines[i].replace(/^\s*>\s?/, ''));
+          i += 1;
+        }
+        out.push('<blockquote><p>' + renderInline(quote.join(' ')) + '</p></blockquote>');
+        continue;
+      }
+
+      var para = [];
+      while (i < lines.length && lines[i].trim() !== '' && !blockStarts(lines, i)) {
+        para.push(lines[i].trim());
+        i += 1;
+      }
+      out.push('<p>' + renderInline(para.join(' ')) + '</p>');
+    }
+    return out.join('\n');
+  }
+
+  function isComplex(value) {
+    return value !== null && typeof value === 'object';
+  }
+
+  function renderScalar(value) {
+    if (value === null) return '<span class="j-null">null</span>';
+    if (typeof value === 'string') return '<span class="j-str">' + escapeHtml(JSON.stringify(value)) + '</span>';
+    if (typeof value === 'number') return '<span class="j-num">' + escapeHtml(String(value)) + '</span>';
+    if (typeof value === 'boolean') return '<span class="j-bool">' + (value ? 'true' : 'false') + '</span>';
+    return '';
+  }
+
+  function jsonRow(depth, inner) {
+    var d = Math.max(0, Math.min(depth, 6));
+    return '<div class="j-row" style="--d:' + d + '">' + inner + '</div>';
+  }
+
+  function renderCollection(value, depth, prefix, comma) {
+    var open = Array.isArray(value) ? '[' : '{';
+    var close = Array.isArray(value) ? ']' : '}';
+    var entries = Array.isArray(value)
+      ? value.map(function (item) { return { key: null, value: item }; })
+      : Object.keys(value).map(function (key) { return { key: key, value: value[key] }; });
+    if (!entries.length) return jsonRow(depth, prefix + open + close + comma);
+    var html = jsonRow(depth, prefix + open);
+    entries.forEach(function (entry, index) {
+      var c = index < entries.length - 1 ? ',' : '';
+      var p = entry.key === null ? '' : '<span class="j-key">' + escapeHtml(JSON.stringify(entry.key)) + '</span>: ';
+      if (isComplex(entry.value)) html += renderCollection(entry.value, depth + 1, p, c);
+      else html += jsonRow(depth + 1, p + renderScalar(entry.value) + c);
+    });
+    html += jsonRow(depth, close + comma);
+    return html;
+  }
+
+  function renderJson(value) {
+    var body = isComplex(value) ? renderCollection(value, 0, '', '') : jsonRow(0, renderScalar(value));
+    return '<div class="json" role="region" aria-label="Formatted JSON">' + body + '</div>';
+  }
+})();
+</script>
+</body>
+</html>
