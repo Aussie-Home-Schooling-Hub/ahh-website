@@ -448,6 +448,7 @@ textarea{min-height:96px;resize:vertical}
     <div class="log-keep">
     <h2>Learning log</h2>
     <p>One child. First name only. Nothing is sent anywhere unless you later import the file into Wattlewood yourself. Entries stay in this browser until you clear them.</p>
+    <p><strong>No Wattlewood? Use Print / Save as PDF to keep your evidence.</strong></p>
     <p id="save-status" class="status" aria-live="polite"></p>
     <p class="no-print"><button type="button" class="btn quiet" id="replace-save" hidden>Replace the unreadable save</button></p>
     <label class="field">Child's first name
@@ -932,6 +933,16 @@ textarea{min-height:96px;resize:vertical}
     exportStatus.textContent = "Evidence file downloaded.";
   }
 
+  // Dates print as DD/MM/YYYY. Saved and exported values stay as YYYY-MM-DD.
+  function formatPrintDate(value) {
+    if (!value) return "";
+    var parts = String(value).split("-");
+    if (parts.length !== 3) return value;
+    var y = Number(parts[0]), m = Number(parts[1]), d = Number(parts[2]);
+    if (!y || !m || !d) return value;
+    return pad(d) + "/" + pad(m) + "/" + y;
+  }
+
   function fillPrint() {
     var fields = document.querySelectorAll("input, textarea, select");
     for (var i = 0; i < fields.length; i++) {
@@ -946,6 +957,8 @@ textarea{min-height:96px;resize:vertical}
       var text = "";
       if (el.tagName === "SELECT") {
         if (el.value && el.selectedIndex >= 0) text = el.options[el.selectedIndex].text;
+      } else if (el.type === "date") {
+        text = formatPrintDate(el.value);
       } else {
         text = el.value;
       }
