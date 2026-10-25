@@ -53,6 +53,8 @@ img { max-width: 100%; display: block; }
   background: var(--walnut-dark); color: var(--parchment-light); margin-left: 6px;
 }
 .nav-links a.nav-cta:hover { background: var(--walnut); }
+.nav-links a.nav-new { color: var(--walnut-dark); font-weight: 700; }
+.nav-links a.nav-new::before { content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--brass); margin-right: 6px; vertical-align: middle; box-shadow: 0 0 0 3px rgba(201,162,75,.25); }
 .nav-toggle { display: none; }
 
 /* ===== Footer ===== */
