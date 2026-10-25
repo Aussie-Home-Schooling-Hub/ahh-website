@@ -430,6 +430,12 @@
   if (!el) return;
   el.classList.add('anchor-highlight');
   el.addEventListener('animationend', function() { el.classList.remove('anchor-highlight'); }, { once: true });
+  // Payhip buttons and web fonts load after the first jump and push the page down.
+  // Jump to the section again once they're in, unless the visitor has already scrolled.
+  var moved = false;
+  ['wheel', 'touchstart', 'keydown'].forEach(function(ev) { window.addEventListener(ev, function() { moved = true; }, { once: true, passive: true }); });
+  function rejump() { if (!moved) el.scrollIntoView({ behavior: 'auto', block: 'start' }); }
+  window.addEventListener('load', function() { rejump(); setTimeout(rejump, 800); setTimeout(rejump, 2000); });
 })();
 </script>
 <script src="https://payhip.com/payhip.js"></script>
