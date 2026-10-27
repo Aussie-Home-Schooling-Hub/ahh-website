@@ -428,3 +428,13 @@ section { padding: 80px 0; }
   .btn-row { flex-direction: column; align-items: stretch; }
   .trust-strip ul { flex-direction: column; align-items: flex-start; padding: 0 20px; }
 }
+
+/* Spooky Hunt, runs until 1 Nov 2026.
+   To remove on 2 Nov: delete this block and every element with a hunt-clue class. */
+.hunt-clue { display: flex; align-items: flex-start; gap: 14px; margin-top: 28px; padding: 16px 18px; background: var(--paper); border: 2px dashed var(--brass); border-radius: 12px; }
+.hunt-clue p { margin: 0; font-size: 16px; line-height: 1.5; color: var(--ink); }
+.hunt-clue .fine { margin-top: 6px; }
+.hunt-pumpkin { font-size: 30px; line-height: 1; flex: 0 0 auto; }
+.hunt-prize { background: var(--parchment); border-style: solid; }
+.hunt-prize .btn { margin-top: 12px; }
+.hunt-code { font-family: var(--font-display); font-weight: 700; letter-spacing: 0.06em; background: var(--brass); color: var(--walnut-dark); padding: 2px 8px; border-radius: 6px; white-space: nowrap; }
