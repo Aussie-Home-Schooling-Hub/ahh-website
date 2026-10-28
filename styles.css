@@ -438,3 +438,47 @@ section { padding: 80px 0; }
 .hunt-prize { background: var(--parchment); border-style: solid; }
 .hunt-prize .btn { margin-top: 12px; }
 .hunt-code { font-family: var(--font-display); font-weight: 700; letter-spacing: 0.06em; background: var(--brass); color: var(--walnut-dark); padding: 2px 8px; border-radius: 6px; white-space: nowrap; }
+
+/* ===== Shop categories (shop.html and the shop-*.html pages) ===== */
+.shop-top { padding-top: 40px; padding-bottom: 24px; }
+.shop-top h1 { font-size: 36px; margin-top: 18px; }
+.shop-lead { font-size: 17px; color: var(--walnut); max-width: 640px; margin-top: 12px; line-height: 1.6; }
+.shop-tabs { display: flex; flex-wrap: wrap; gap: 8px; }
+.shop-tabs a { text-decoration: none; font-weight: 600; font-size: 15px; color: var(--walnut-dark); padding: 9px 14px; border: 1.5px solid var(--line); border-radius: 999px; background: var(--paper); }
+.shop-tabs a:hover { border-color: var(--brass); }
+.shop-tabs a.current { background: var(--walnut-dark); border-color: var(--walnut-dark); color: var(--parchment-light); }
+.shop-tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.shop-tile { position: relative; display: flex; flex-direction: column; gap: 6px; padding: 20px 20px 44px; background: var(--paper); border: 1.5px solid var(--line); border-radius: 14px; text-decoration: none; color: var(--walnut); transition: border-color .15s ease, transform .15s ease; }
+.shop-tile:hover { border-color: var(--brass); transform: translateY(-2px); }
+.shop-tile-title { font-family: var(--font-display); font-weight: 700; font-size: 20px; color: var(--walnut-dark); line-height: 1.2; }
+.shop-tile-text { font-size: 15px; line-height: 1.5; }
+.shop-tile-go { position: absolute; left: 20px; bottom: 14px; font-size: 20px; font-weight: 700; color: var(--brass-dark); }
+.shop-tile-aac { background: #F7F1E1; border-color: #1F2A44; }
+.shop-tile-aac .shop-tile-title { font-family: Georgia, 'Times New Roman', serif; color: #1F2A44; }
+.shop-tile-aac .shop-tile-go { color: #A23B2A; }
+@media (max-width: 960px) { .shop-tiles { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px) { .shop-tiles { grid-template-columns: 1fr; } .shop-top h1 { font-size: 30px; } }
+@media (prefers-reduced-motion: reduce) { .shop-tile, .shop-tile:hover { transition: none; transform: none; } }
+
+/* ===== Aussie Activity Club page: old-school Aussie puzzle page, large and clear ===== */
+.aac-page main { background: #F7F1E1; color: #1F2A44; }
+.aac-page main h1, .aac-page main h2, .aac-page main h3 { font-family: Georgia, 'Times New Roman', serif; color: #1F2A44; font-weight: 700; }
+.aac-hero { padding-top: 40px; padding-bottom: 28px; }
+.aac-hero-inner { display: flex; align-items: center; gap: 18px; margin-top: 22px; padding-bottom: 22px; border-bottom: 5px double #1F2A44; }
+.aac-sprig { width: 72px; height: 72px; flex: 0 0 auto; }
+.aac-kicker { font-family: Georgia, 'Times New Roman', serif; font-weight: 700; letter-spacing: .12em; color: #A23B2A; font-size: 16px; margin: 0; }
+.aac-page .aac-hero h1 { font-size: 38px; margin-top: 4px; }
+.aac-lead { font-size: 20px; line-height: 1.55; margin-top: 10px; max-width: 680px; color: #1F2A44; }
+.aac-page .card { background: #FFFDF6; border: 4px double #1F2A44; border-radius: 6px; box-shadow: none; }
+.aac-page .card h3 { font-size: 23px; }
+.aac-page .card p { font-size: 18px; color: #1F2A44; line-height: 1.55; }
+.aac-page .price { font-family: Georgia, 'Times New Roman', serif; font-size: 21px; color: #A23B2A; }
+.aac-page main .btn { min-height: 52px; font-size: 17px; display: inline-flex; align-items: center; }
+.aac-page main .card .btn-primary, .aac-page main .btn-primary { background: #A23B2A; color: #fff; }
+.aac-page main .card .btn-primary:hover, .aac-page main .btn-primary:hover { background: #842E20; }
+.aac-page main .btn-secondary { color: #1F2A44; border: 2px solid #1F2A44; background: #FFFDF6; }
+.aac-page .shop-tabs a { background: #FFFDF6; border-color: #1F2A44; color: #1F2A44; }
+.aac-page .shop-tabs a.current { background: #1F2A44; color: #F7F1E1; }
+.aac-licence { overflow-wrap: anywhere; font-size: 18px; text-align: center; max-width: 720px; margin: 0 auto; padding: 16px 18px; border: 2px solid #1F2A44; border-radius: 6px; background: #FFFDF6; }
+.aac-page main .fine, .aac-page main p[style] { color: #1F2A44 !important; }
+@media (max-width: 560px) { .aac-page .aac-hero h1 { font-size: 30px; } .aac-sprig { width: 52px; height: 52px; } .aac-lead { font-size: 18px; } }
