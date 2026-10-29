@@ -400,6 +400,48 @@ section { padding: 80px 0; }
 }
 @media print { .founder-banner { display: none !important; } }
 
+/* Dated home page banners. Each one shows itself between its data-show-from and data-show-until dates
+   (script under the banners in index.html). For a new season, copy a banner and change its dates and words. */
+.season-banner[hidden] { display: none !important; }
+
+/* Plan next year: 1 to 30 Nov 2026 */
+.plan-banner {
+  background-color: var(--sage-dark);
+  background-image: repeating-linear-gradient(0deg, rgba(251,245,230,0.05) 0 1px, transparent 1px 30px);
+  color: var(--parchment-light); border-bottom: 4px solid var(--brass); overflow: hidden;
+}
+.plan-banner-inner { max-width: 1180px; margin: 0 auto; padding: 20px 28px; display: flex; align-items: center; gap: 28px; flex-wrap: wrap; }
+.plan-cal { position: relative; flex: 0 0 auto; width: 108px; height: 104px; perspective: 400px; transform: rotate(-4deg); }
+.plan-cal-rings { position: absolute; top: -7px; left: 0; right: 0; display: flex; justify-content: space-around; z-index: 3; }
+.plan-cal-rings i { display: block; width: 12px; height: 18px; border: 3px solid var(--brass); border-radius: 8px; background: var(--sage-dark); }
+.plan-cal-page {
+  position: absolute; inset: 0; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 14px;
+  background: var(--parchment-light); border-radius: 8px; border-top: 24px solid #A23B2A;
+  box-shadow: 0 4px 0 var(--parchment-dark), 0 8px 14px rgba(0,0,0,0.25);
+  font-family: var(--font-display); font-weight: 700; font-size: 34px; color: var(--walnut-dark); line-height: 1;
+}
+.plan-cal-old { z-index: 2; transform-origin: top center; animation: plan-flip 0.9s ease-in 0.8s forwards; }
+@keyframes plan-flip { to { transform: rotateX(-110deg); opacity: 0; } }
+.plan-banner-copy { flex: 1 1 380px; }
+.plan-banner-title { margin: 0 0 4px; font-family: var(--font-display); font-size: 34px; font-weight: 700; line-height: 1.1; color: #E8C877; }
+.plan-banner-text { margin: 0; font-family: var(--font-display); font-size: 20px; font-weight: 600; line-height: 1.4; color: var(--parchment-light); }
+.plan-banner-count { display: inline-block; margin: 10px 0 0; padding: 4px 14px; border: 2px dashed var(--brass); border-radius: 999px; font-size: 15px; font-weight: 700; color: var(--parchment-light); }
+.plan-banner-count[hidden] { display: none; }
+.plan-banner .plan-cta { display: inline-block; background: var(--brass); color: var(--walnut-dark); font-weight: 700; font-size: 17px; padding: 14px 24px; border-radius: 8px; text-decoration: none; white-space: nowrap; box-shadow: 0 3px 0 var(--brass-dark); transition: background .15s ease, transform .15s ease; }
+.plan-banner .plan-cta:hover { background: #E8C877; transform: translateY(-1px); }
+.plan-banner .plan-cta:focus-visible { outline: 3px solid var(--parchment); outline-offset: 3px; }
+@media (max-width: 720px) {
+  .plan-banner-inner { padding: 18px 20px; gap: 16px; }
+  .plan-cal { width: 84px; height: 82px; }
+  .plan-cal-page { font-size: 26px; border-top-width: 18px; padding-bottom: 10px; }
+  .plan-banner-copy { flex-basis: calc(100% - 110px); }
+  .plan-banner-title { font-size: 28px; }
+  .plan-banner-text { font-size: 17px; }
+  .plan-banner .plan-cta { width: 100%; text-align: center; }
+}
+@media (prefers-reduced-motion: reduce) { .plan-cal-old { animation: none; display: none; } }
+@media print { .season-banner { display: none !important; } }
+
 /* ---- Visual polish (Oct 2026) ---- */
 .hero-tags { list-style: none; padding: 0; margin: 0 0 18px; display: flex; flex-wrap: wrap; gap: 8px; }
 .hero-tags li { background: var(--paper); border: 1.5px solid var(--brass); color: var(--walnut-dark); font-weight: 700; font-size: 14px; padding: 6px 12px; border-radius: 999px; }

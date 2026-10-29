@@ -63,13 +63,49 @@
 </script>
 
 <main id="main">
-<aside class="founder-banner" aria-label="Founding offer">
+<aside class="founder-banner" aria-label="Founding offer" data-show-until="2026-10-31">
   <div class="founder-banner-inner">
     <span class="founder-badge">Founding sale</span>
     <p class="founder-banner-text"><strong>Wattlewood Complete is $299 until 31 Oct with code FOUNDER, then $349.</strong></p>
     <a href="https://payhip.com/b/Egslt" class="founder-cta" target="_blank" rel="noopener">Get Wattlewood Complete<span class="sr-only"> (opens in a new tab)</span></a>
   </div>
 </aside>
+
+<aside class="season-banner plan-banner" aria-label="Plan next year" data-show-from="2026-11-01" data-show-until="2026-11-30" hidden>
+  <div class="plan-banner-inner">
+    <div class="plan-cal" aria-hidden="true">
+      <span class="plan-cal-rings"><i></i><i></i></span>
+      <span class="plan-cal-page plan-cal-old">2026</span>
+      <span class="plan-cal-page plan-cal-new">2027</span>
+    </div>
+    <div class="plan-banner-copy">
+      <p class="plan-banner-title">2027, sorted.</p>
+      <p class="plan-banner-text">Plan next year before the Christmas chaos. Free Plan Builder for every state and territory, plus a free Registration Pack.</p>
+      <p class="plan-banner-count" data-xmas-count hidden><span data-xmas-days></span> sleeps till Christmas</p>
+    </div>
+    <a href="shop-free.html#plan-builder" class="plan-cta">Start planning free</a>
+  </div>
+</aside>
+<script>
+(function() {
+  // Shows or hides dated banners by the visitor's own date (from and until are inclusive).
+  var now = new Date();
+  var today = now.getFullYear() * 10000 + (now.getMonth() + 1) * 100 + now.getDate();
+  function num(s) { return s ? parseInt(s.replace(/-/g, ''), 10) : null; }
+  var els = document.querySelectorAll('[data-show-from], [data-show-until]');
+  for (var i = 0; i < els.length; i++) {
+    var from = num(els[i].getAttribute('data-show-from')), until = num(els[i].getAttribute('data-show-until'));
+    els[i].hidden = !((from === null || today >= from) && (until === null || today <= until));
+  }
+  var count = document.querySelector('[data-xmas-count]');
+  if (count) {
+    var xmas = new Date(now.getFullYear(), 11, 25);
+    var start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    var days = Math.round((xmas - start) / 86400000);
+    if (days > 1) { count.querySelector('[data-xmas-days]').textContent = days; count.hidden = false; }
+  }
+})();
+</script>
 
 <section class="hero" style="padding-top:64px; padding-bottom:48px;">
   <div class="wrap grid-2col" style="display:grid; grid-template-columns: 1.1fr 0.9fr; gap:56px; align-items:center;">
