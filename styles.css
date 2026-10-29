@@ -439,7 +439,27 @@ section { padding: 80px 0; }
   .plan-banner-text { font-size: 17px; }
   .plan-banner .plan-cta { width: 100%; text-align: center; }
 }
-@media (prefers-reduced-motion: reduce) { .plan-cal-old { animation: none; display: none; } }
+/* Christmas gifts: 1 to 24 Dec 2026 (uses the plan-banner layout above) */
+.gift-banner {
+  background-color: #7A2A1E;
+  background-image: repeating-linear-gradient(135deg, rgba(232,200,119,0.10) 0 14px, transparent 14px 40px);
+}
+.gift-box { position: relative; flex: 0 0 auto; width: 104px; height: 96px; margin-top: 14px; background: var(--sage-dark); border-radius: 6px; box-shadow: 0 8px 14px rgba(0,0,0,0.3); transform: rotate(-4deg); animation: gift-wiggle 2.4s ease-in-out 1s 2; }
+.gift-box::before { content: ''; position: absolute; top: 0; bottom: 0; left: 50%; width: 16px; margin-left: -8px; background: var(--brass); }
+.gift-lid { position: absolute; top: -14px; left: -6px; right: -6px; height: 26px; background: #6B7A3C; border-radius: 5px; box-shadow: 0 3px 0 rgba(0,0,0,0.2); }
+.gift-lid::before { content: ''; position: absolute; top: 0; bottom: 0; left: 50%; width: 16px; margin-left: -8px; background: var(--brass); }
+.gift-bow { position: absolute; top: -34px; left: 50%; width: 0; }
+.gift-bow i { position: absolute; top: 0; width: 26px; height: 20px; border: 5px solid #E8C877; border-radius: 50%; }
+.gift-bow i:first-child { right: 0; transform: rotate(-20deg); }
+.gift-bow i:last-child { left: 0; transform: rotate(20deg); }
+.gift-tag { position: absolute; bottom: 10px; right: -22px; padding: 3px 9px; background: var(--parchment-light); color: var(--walnut-dark); font-family: var(--font-display); font-weight: 700; font-size: 13px; border-radius: 4px; transform: rotate(8deg); box-shadow: 0 2px 4px rgba(0,0,0,0.25); white-space: nowrap; }
+@keyframes gift-wiggle { 0%, 100% { transform: rotate(-4deg); } 25% { transform: rotate(3deg); } 50% { transform: rotate(-6deg); } 75% { transform: rotate(2deg); } }
+@media (max-width: 720px) {
+  .gift-box { width: 80px; height: 74px; }
+  .gift-tag { font-size: 11px; right: -6px; bottom: 6px; }
+}
+
+@media (prefers-reduced-motion: reduce) { .plan-cal-old { animation: none; display: none; } .gift-box { animation: none; } }
 @media print { .season-banner { display: none !important; } }
 
 /* ---- Visual polish (Oct 2026) ---- */

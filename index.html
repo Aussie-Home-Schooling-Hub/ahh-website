@@ -81,9 +81,25 @@
     <div class="plan-banner-copy">
       <p class="plan-banner-title">2027, sorted.</p>
       <p class="plan-banner-text">Plan next year before the Christmas chaos. Free Plan Builder for every state and territory, plus a free Registration Pack.</p>
-      <p class="plan-banner-count" data-xmas-count hidden><span data-xmas-days></span> sleeps till Christmas</p>
+      <p class="plan-banner-count" data-xmas-count hidden><span data-xmas-days></span></p>
     </div>
     <a href="shop-free.html#plan-builder" class="plan-cta">Start planning free</a>
+  </div>
+</aside>
+
+<aside class="season-banner plan-banner gift-banner" aria-label="Christmas gifts" data-show-from="2026-12-01" data-show-until="2026-12-24" hidden>
+  <div class="plan-banner-inner">
+    <div class="gift-box" aria-hidden="true">
+      <span class="gift-lid"></span>
+      <span class="gift-bow"><i></i><i></i></span>
+      <span class="gift-tag">Nan &amp; Pop</span>
+    </div>
+    <div class="plan-banner-copy">
+      <p class="plan-banner-title">Nan and Pop, sorted.</p>
+      <p class="plan-banner-text">Christmas gifts for the grandparents. Large print Aussie puzzles and colouring books from $7.95.</p>
+      <p class="plan-banner-count" data-xmas-count hidden><span data-xmas-days></span></p>
+    </div>
+    <a href="activity-club.html" class="plan-cta">Shop Activity Club</a>
   </div>
 </aside>
 <script>
@@ -97,12 +113,13 @@
     var from = num(els[i].getAttribute('data-show-from')), until = num(els[i].getAttribute('data-show-until'));
     els[i].hidden = !((from === null || today >= from) && (until === null || today <= until));
   }
-  var count = document.querySelector('[data-xmas-count]');
-  if (count) {
-    var xmas = new Date(now.getFullYear(), 11, 25);
-    var start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    var days = Math.round((xmas - start) / 86400000);
-    if (days > 1) { count.querySelector('[data-xmas-days]').textContent = days; count.hidden = false; }
+  var xmas = new Date(now.getFullYear(), 11, 25);
+  var start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  var days = Math.round((xmas - start) / 86400000);
+  var counts = document.querySelectorAll('[data-xmas-count]');
+  for (var j = 0; j < counts.length && days >= 1; j++) {
+    counts[j].querySelector('[data-xmas-days]').textContent = days === 1 ? 'Christmas Eve! 1 sleep to go' : days + ' sleeps till Christmas';
+    counts[j].hidden = false;
   }
 })();
 </script>
