@@ -519,3 +519,27 @@ section { padding: 80px 0; }
 .aac-page .aac-cover { display: block; width: 100%; height: auto; aspect-ratio: 1 / 1; border-radius: 4px; border: 1px solid rgba(31,42,68,.25); margin-bottom: 14px; }
 .aac-page .aac-sampler-strip { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 14px; }
 .aac-page .aac-sampler-strip img { width: 100%; height: auto; aspect-ratio: 1 / 1; border-radius: 4px; border: 1px solid rgba(31,42,68,.25); }
+
+/* Freebie Sunday strip on the home page (shown by date, like the season banners) */
+.giveaway-strip { background: var(--brass); color: var(--walnut-dark); }
+.giveaway-strip-inner { max-width: 1180px; margin: 0 auto; padding: 12px 28px; display: flex; align-items: center; justify-content: center; gap: 10px 18px; flex-wrap: wrap; text-align: center; }
+.giveaway-strip p { margin: 0; font-size: 16px; line-height: 1.45; }
+.giveaway-strip-cta { display: inline-block; padding: 7px 16px; border-radius: 999px; background: var(--walnut-dark); color: var(--parchment-light); font-weight: 700; font-size: 15px; text-decoration: none; white-space: nowrap; }
+.giveaway-strip-cta:hover { background: var(--walnut); }
+
+/* Menu has seven links plus the button: keep each on one line, tighten, then collapse earlier */
+.nav-links { gap: 2px; }
+.nav-links a { white-space: nowrap; padding: 9px 11px; }
+.brand-name { white-space: nowrap; }
+@media (max-width: 1100px) {
+  .nav-links { display: none; }
+  .nav-toggle { display: flex; }
+  .nav-links.mobile-open {
+    display: flex; flex-direction: column; align-items: stretch; gap: 4px;
+    position: absolute; top: 100%; left: 0; right: 0;
+    background: var(--parchment-light); border-bottom: 1px solid var(--line);
+    padding: 12px 20px 20px;
+  }
+  .nav-links.mobile-open a { text-align: center; padding: 12px 16px; font-size: 15px; }
+  .nav-links.mobile-open a.nav-cta { margin-left: 0; margin-top: 6px; }
+}
